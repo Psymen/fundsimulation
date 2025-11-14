@@ -171,5 +171,6 @@ export interface GridAnalysisResult {
   parameters: GridAnalysisParameters;
   scenarios: GridScenario[];
   bestStrategies: BestStrategy[];
+  worstStrategies?: BestStrategy[]; // Optional: strategies to avoid
   commentary: string; // AI-generated qualitative analysis
 }

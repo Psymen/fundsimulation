@@ -93,6 +93,52 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
         </CardContent>
       </Card>
       
+      {/* Worst Strategies */}
+      {analysis.worstStrategies && analysis.worstStrategies.length > 0 && (
+        <Card className="border-red-900/50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingDown className="h-5 w-5 text-red-500" />
+              Strategies to Avoid
+            </CardTitle>
+            <CardDescription>Underperforming portfolio configurations</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {analysis.worstStrategies.map((strategy, idx) => (
+                <div
+                  key={idx}
+                  className="border border-red-900/50 rounded-lg p-4 hover:bg-red-950/30 transition-colors cursor-pointer"
+                  onClick={() => setSelectedScenario(strategy.scenario)}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-semibold text-sm text-red-400">{strategy.criterion}</h4>
+                    <Badge variant="outline" className="text-xs border-red-800">
+                      {strategy.scenario.numCompanies} cos
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">{strategy.reasoning}</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <div className="text-muted-foreground">MOIC</div>
+                      <div className="font-semibold text-red-400">
+                        {strategy.scenario.summary.medianMOIC.toFixed(2)}x
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-muted-foreground">Deploy</div>
+                      <div className="font-semibold">
+                        {strategy.scenario.deploymentRate.toFixed(0)}%
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      
       {/* Heatmap */}
       <Card>
         <CardHeader>

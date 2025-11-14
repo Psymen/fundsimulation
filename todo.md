@@ -118,3 +118,13 @@
 - [x] Include exit distribution editors for both stages
 - [x] Update grid analysis to use user-configured stage parameters instead of defaults
 - [x] Add accordion/collapsible sections for stage parameters
+
+## Add Worst Strategies Section
+
+- [x] Add identifyWorstStrategies function to grid-analysis.ts
+- [x] Identify lowest median MOIC strategy
+- [x] Identify worst risk-adjusted return (low MOIC with high volatility)
+- [x] Identify poorest capital efficiency (low MOIC with high deployment)
+- [x] Update GridResultsView to display "Worst Strategies" section
+- [x] Style worst strategies cards with warning colors (red/orange)
+- [x] Test worst strategies identification

@@ -210,6 +210,54 @@ export function identifyBestStrategies(scenarios: GridScenario[]): BestStrategy[
 }
 
 /**
+ * Identify worst strategies from grid results
+ */
+export function identifyWorstStrategies(scenarios: GridScenario[]): BestStrategy[] {
+  const strategies: BestStrategy[] = [];
+  
+  // 1. Lowest MOIC
+  const lowestMOIC = scenarios.reduce((worst, s) => 
+    s.summary.medianMOIC < worst.summary.medianMOIC ? s : worst
+  );
+  strategies.push({
+    scenario: lowestMOIC,
+    criterion: "Lowest Median MOIC",
+    reasoning: `${lowestMOIC.numCompanies} companies with ${lowestMOIC.seedPercentage}% seed achieves only ${lowestMOIC.summary.medianMOIC.toFixed(2)}x MOIC, underperforming the portfolio.`,
+  });
+  
+  // 2. Worst risk-adjusted (lowest P10 MOIC)
+  const worstRiskAdjusted = scenarios.reduce((worst, s) => 
+    s.summary.moicP10 < worst.summary.moicP10 ? s : worst
+  );
+  if (worstRiskAdjusted !== lowestMOIC) {
+    strategies.push({
+      scenario: worstRiskAdjusted,
+      criterion: "Worst Downside Protection",
+      reasoning: `${worstRiskAdjusted.numCompanies} companies with ${worstRiskAdjusted.seedPercentage}% seed has P10 MOIC of ${worstRiskAdjusted.summary.moicP10.toFixed(2)}x, offering poor downside protection.`,
+    });
+  }
+  
+  // 3. Poorest capital efficiency (low MOIC with low deployment)
+  const efficiencyScores = scenarios.map(s => ({
+    scenario: s,
+    score: s.summary.medianMOIC * (s.deploymentRate / 100),
+  }));
+  const leastEfficient = efficiencyScores.reduce((worst, s) => 
+    s.score < worst.score ? s : worst
+  ).scenario;
+  
+  if (!strategies.find(s => s.scenario === leastEfficient)) {
+    strategies.push({
+      scenario: leastEfficient,
+      criterion: "Least Capital Efficient",
+      reasoning: `${leastEfficient.numCompanies} companies with ${leastEfficient.seedPercentage}% seed delivers poor returns (${leastEfficient.summary.medianMOIC.toFixed(2)}x MOIC) with low deployment (${leastEfficient.deploymentRate.toFixed(0)}%).`,
+    });
+  }
+  
+  return strategies.slice(0, 3); // Return top 3 worst strategies
+}
+
+/**
  * Generate AI-style commentary analyzing the grid results
  */
 export function generateCommentary(scenarios: GridScenario[], params: GridAnalysisParameters): string {

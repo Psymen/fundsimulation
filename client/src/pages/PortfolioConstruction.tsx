@@ -8,7 +8,7 @@ import { Loader2, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import type { GridAnalysisParameters, GridAnalysisResult, GridScenario, StageParameters } from "@/types/simulation";
 import { DEFAULT_PARAMETERS } from "@/lib/defaults";
-import { runGridAnalysis, identifyBestStrategies, generateCommentary } from "@/lib/grid-analysis";
+import { runGridAnalysis, identifyBestStrategies, identifyWorstStrategies, generateCommentary } from "@/lib/grid-analysis";
 import GridResultsView from "@/components/GridResultsView";
 import StageParametersEditor from "@/components/StageParametersEditor";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -75,6 +75,7 @@ export default function PortfolioConstruction() {
       });
       
       const bestStrategies = identifyBestStrategies(scenarios);
+      const worstStrategies = identifyWorstStrategies(scenarios);
       const commentary = generateCommentary(scenarios, params);
       
       const result: GridAnalysisResult = {
@@ -83,6 +84,7 @@ export default function PortfolioConstruction() {
         parameters: params,
         scenarios,
         bestStrategies,
+        worstStrategies,
         commentary,
       };
       

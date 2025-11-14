@@ -24,7 +24,7 @@ interface ChartsPanelProps {
 export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
   if (!results || !summary) {
     return (
-      <div className="h-full flex items-center justify-center bg-slate-950 text-slate-400">
+      <div className="h-full flex items-center justify-center bg-background text-muted-foreground">
         <div className="text-center space-y-2">
           <p className="text-lg">No simulation results yet</p>
           <p className="text-sm">
@@ -51,9 +51,9 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
   const outliersData = createOutliersDistribution(results);
 
   return (
-    <div className="h-full overflow-y-auto p-6 bg-slate-950">
+    <div className="h-full overflow-y-auto p-6 bg-background">
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-slate-100">
+        <h2 className="text-2xl font-semibold text-foreground">
           Simulation Results
         </h2>
 
@@ -80,9 +80,9 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
         </div>
 
         {/* Probability Thresholds */}
-        <Card className="bg-slate-900 border-slate-700">
+        <Card className="bg-white border-border shadow-sm">
           <CardHeader>
-            <CardTitle className="text-slate-100">
+            <CardTitle className="text-foreground">
               Probability of Returns
             </CardTitle>
           </CardHeader>
@@ -101,16 +101,16 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                 probability={summary.probMOICAbove5x}
               />
             </div>
-            <p className="text-xs text-slate-400 mt-3">
+            <p className="text-xs text-muted-foreground mt-3">
               Percentage of simulations achieving each return threshold
             </p>
           </CardContent>
         </Card>
 
         {/* MOIC Histogram */}
-        <Card className="bg-slate-900 border-slate-700">
+        <Card className="bg-white border-border shadow-sm">
           <CardHeader>
-            <CardTitle className="text-slate-100">
+            <CardTitle className="text-foreground">
               Fund MOIC Distribution
             </CardTitle>
           </CardHeader>
@@ -135,19 +135,19 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                   }}
                 />
                 <Legend />
-                <Bar dataKey="count" fill="#10b981" name="Count" />
+                <Bar dataKey="count" fill="hsl(264, 80%, 60%)" name="Count" />
               </BarChart>
             </ResponsiveContainer>
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               Distribution of gross MOIC across all simulations
             </p>
           </CardContent>
         </Card>
 
         {/* IRR Histogram */}
-        <Card className="bg-slate-900 border-slate-700">
+        <Card className="bg-white border-border shadow-sm">
           <CardHeader>
-            <CardTitle className="text-slate-100">IRR Distribution</CardTitle>
+            <CardTitle className="text-foreground">IRR Distribution</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -170,19 +170,19 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                   }}
                 />
                 <Legend />
-                <Bar dataKey="count" fill="#f59e0b" name="Count" />
+                <Bar dataKey="count" fill="hsl(50, 90%, 65%)" name="Count" />
               </BarChart>
             </ResponsiveContainer>
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               Distribution of gross IRR across all simulations
             </p>
           </CardContent>
         </Card>
 
         {/* Outliers Distribution */}
-        <Card className="bg-slate-900 border-slate-700">
+        <Card className="bg-white border-border shadow-sm">
           <CardHeader>
-            <CardTitle className="text-slate-100">
+            <CardTitle className="text-foreground">
               Outliers per Simulation
             </CardTitle>
           </CardHeader>
@@ -211,10 +211,10 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                   }}
                 />
                 <Legend />
-                <Bar dataKey="count" fill="#8b5cf6" name="Count" />
+                <Bar dataKey="count" fill="hsl(150, 70%, 60%)" name="Count" />
               </BarChart>
             </ResponsiveContainer>
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="text-xs text-muted-foreground mt-2">
               Distribution of 20x+ returns across simulations
             </p>
           </CardContent>
@@ -235,16 +235,16 @@ interface MetricCardProps {
 
 function MetricCard({ title, value, subtitle, helpText }: MetricCardProps) {
   return (
-    <Card className="bg-slate-900 border-slate-700">
+    <Card className="bg-white border-border shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-medium text-slate-300">
+        <CardTitle className="text-sm font-medium text-foreground">
           {title}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-3xl font-bold text-emerald-400">{value}</div>
-        <div className="text-xs text-slate-400 mt-1">{subtitle}</div>
-        <div className="text-xs text-slate-500 mt-2 italic">{helpText}</div>
+        <div className="text-3xl font-bold text-primary">{value}</div>
+        <div className="text-xs text-muted-foreground mt-1">{subtitle}</div>
+        <div className="text-xs text-muted-foreground mt-2 italic">{helpText}</div>
       </CardContent>
     </Card>
   );
@@ -257,11 +257,11 @@ interface ProbabilityBadgeProps {
 
 function ProbabilityBadge({ label, probability }: ProbabilityBadgeProps) {
   return (
-    <div className="text-center p-3 bg-slate-800 rounded-lg border border-slate-700">
-      <div className="text-2xl font-bold text-emerald-400">
+    <div className="text-center p-3 bg-gray-50 rounded-lg border border-border">
+      <div className="text-2xl font-bold text-primary">
         {probability.toFixed(1)}%
       </div>
-      <div className="text-xs text-slate-400 mt-1">{label}</div>
+      <div className="text-xs text-muted-foreground mt-1">{label}</div>
     </div>
   );
 }

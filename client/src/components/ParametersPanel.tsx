@@ -92,12 +92,12 @@ export default function ParametersPanel({
   ) => (
     <div className="space-y-3">
       <div className="flex items-center gap-2">
-        <h4 className="text-xs font-medium text-slate-400">
+        <h4 className="text-xs font-medium text-muted-foreground">
           {stageName} Exit Distribution
         </h4>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Info className="h-3.5 w-3.5 text-slate-400 cursor-help" />
+            <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
           </TooltipTrigger>
           <TooltipContent className="max-w-xs">
             <p className="text-sm">
@@ -111,15 +111,15 @@ export default function ParametersPanel({
       {parameters[stage].exitBuckets.map((bucket, index) => (
         <div
           key={index}
-          className="p-2.5 bg-slate-800 rounded-lg border border-slate-700 space-y-2"
+          className="p-3 bg-white rounded-lg border border-border shadow-sm space-y-2"
         >
           <div className="flex items-center gap-2">
-            <div className="font-medium text-xs text-slate-200">
+            <div className="font-medium text-xs text-foreground">
               {bucket.label}
             </div>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Info className="h-3 w-3 text-slate-400 cursor-help" />
+                <Info className="h-3 w-3 text-muted-foreground cursor-help" />
               </TooltipTrigger>
               <TooltipContent className="max-w-sm">
                 <p className="text-sm">{BUCKET_DESCRIPTIONS[bucket.label]}</p>
@@ -128,7 +128,7 @@ export default function ParametersPanel({
           </div>
           <div className="grid grid-cols-3 gap-2">
             <div className="space-y-1">
-              <Label className="text-xs text-slate-400">Prob (%)</Label>
+              <Label className="text-xs text-muted-foreground">Prob (%)</Label>
               <Input
                 type="number"
                 step="0.1"
@@ -137,11 +137,11 @@ export default function ParametersPanel({
                   updateExitBucket(stage, index, "probability", Number(e.target.value))
                 }
                 onFocus={(e) => e.target.select()}
-                className="bg-slate-900 border-slate-600 text-slate-100 text-xs h-7"
+                className="bg-white border-input text-foreground text-xs h-7"
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs text-slate-400">Min (x)</Label>
+              <Label className="text-xs text-muted-foreground">Min (x)</Label>
               <Input
                 type="number"
                 step="0.1"
@@ -150,11 +150,11 @@ export default function ParametersPanel({
                   updateExitBucket(stage, index, "minMultiple", Number(e.target.value))
                 }
                 onFocus={(e) => e.target.select()}
-                className="bg-slate-900 border-slate-600 text-slate-100 text-xs h-7"
+                className="bg-white border-input text-foreground text-xs h-7"
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs text-slate-400">Max (x)</Label>
+              <Label className="text-xs text-muted-foreground">Max (x)</Label>
               <Input
                 type="number"
                 step="0.1"
@@ -163,7 +163,7 @@ export default function ParametersPanel({
                   updateExitBucket(stage, index, "maxMultiple", Number(e.target.value))
                 }
                 onFocus={(e) => e.target.select()}
-                className="bg-slate-900 border-slate-600 text-slate-100 text-xs h-7"
+                className="bg-white border-input text-foreground text-xs h-7"
               />
             </div>
           </div>
@@ -183,10 +183,10 @@ export default function ParametersPanel({
   );
 
   return (
-    <div className="h-full overflow-y-auto p-6 bg-slate-900 border-r border-slate-700">
+    <div className="h-full overflow-y-auto p-6 bg-gray-50 border-r border-border">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-slate-100">Parameters</h2>
+          <h2 className="text-xl font-semibold text-foreground">Parameters</h2>
           <Button
             variant="outline"
             size="sm"
@@ -200,10 +200,10 @@ export default function ParametersPanel({
 
         {/* Fund Setup */}
         <div className="space-y-4">
-          <h3 className="text-sm font-medium text-slate-300">Fund Setup</h3>
+          <h3 className="text-sm font-medium text-foreground">Fund Setup</h3>
 
           <div className="space-y-2">
-            <Label htmlFor="fundSize" className="text-slate-300">
+            <Label htmlFor="fundSize" className="text-foreground">
               Fund Size ($M)
             </Label>
             <Input
@@ -211,12 +211,12 @@ export default function ParametersPanel({
               type="number"
               value={parameters.fundSize}
               onChange={(e) => updateParameter("fundSize", Number(e.target.value))}
-              className="bg-slate-800 border-slate-700 text-slate-100"
+              className="bg-white border-input text-foreground"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="numCompanies" className="text-slate-300">
+            <Label htmlFor="numCompanies" className="text-foreground">
               Number of Portfolio Companies
             </Label>
             <Input
@@ -226,18 +226,18 @@ export default function ParametersPanel({
               onChange={(e) =>
                 updateParameter("numCompanies", Number(e.target.value))
               }
-              className="bg-slate-800 border-slate-700 text-slate-100"
+              className="bg-white border-input text-foreground"
             />
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Label htmlFor="seedPercentage" className="text-slate-300">
+              <Label htmlFor="seedPercentage" className="text-foreground">
                 Seed Percentage (%)
               </Label>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className="h-3.5 w-3.5 text-slate-400 cursor-help" />
+                  <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
                   <p className="text-sm">
@@ -256,16 +256,16 @@ export default function ParametersPanel({
               onChange={(e) =>
                 updateParameter("seedPercentage", Number(e.target.value))
               }
-              className="bg-slate-800 border-slate-700 text-slate-100"
+              className="bg-white border-input text-foreground"
             />
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-muted-foreground">
               {Math.round(parameters.numCompanies * (parameters.seedPercentage / 100))} seed,{" "}
               {parameters.numCompanies - Math.round(parameters.numCompanies * (parameters.seedPercentage / 100))} Series A
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="investmentPeriod" className="text-slate-300">
+            <Label htmlFor="investmentPeriod" className="text-foreground">
               Investment Period (years)
             </Label>
             <Input
@@ -275,12 +275,12 @@ export default function ParametersPanel({
               onChange={(e) =>
                 updateParameter("investmentPeriod", Number(e.target.value))
               }
-              className="bg-slate-800 border-slate-700 text-slate-100"
+              className="bg-white border-input text-foreground"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="fundLife" className="text-slate-300">
+            <Label htmlFor="fundLife" className="text-foreground">
               Fund Life (years)
             </Label>
             <Input
@@ -288,13 +288,13 @@ export default function ParametersPanel({
               type="number"
               value={parameters.fundLife}
               onChange={(e) => updateParameter("fundLife", Number(e.target.value))}
-              className="bg-slate-800 border-slate-700 text-slate-100"
+              className="bg-white border-input text-foreground"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
-              <Label htmlFor="exitWindowMin" className="text-slate-300">
+              <Label htmlFor="exitWindowMin" className="text-foreground">
                 Exit Window Min (years)
               </Label>
               <Input
@@ -304,12 +304,12 @@ export default function ParametersPanel({
                 onChange={(e) =>
                   updateParameter("exitWindowMin", Number(e.target.value))
                 }
-                className="bg-slate-800 border-slate-700 text-slate-100"
+                className="bg-white border-input text-foreground"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="exitWindowMax" className="text-slate-300">
+              <Label htmlFor="exitWindowMax" className="text-foreground">
                 Exit Window Max (years)
               </Label>
               <Input
@@ -319,13 +319,13 @@ export default function ParametersPanel({
                 onChange={(e) =>
                   updateParameter("exitWindowMax", Number(e.target.value))
                 }
-                className="bg-slate-800 border-slate-700 text-slate-100"
+                className="bg-white border-input text-foreground"
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="numSimulations" className="text-slate-300">
+            <Label htmlFor="numSimulations" className="text-foreground">
               Number of Simulations
             </Label>
             <Input
@@ -335,24 +335,24 @@ export default function ParametersPanel({
               onChange={(e) =>
                 updateParameter("numSimulations", Number(e.target.value))
               }
-              className="bg-slate-800 border-slate-700 text-slate-100"
+              className="bg-white border-input text-foreground"
             />
           </div>
         </div>
 
         {/* Stage-Specific Parameters */}
         <div className="space-y-4">
-          <h3 className="text-sm font-medium text-slate-300">Stage-Specific Parameters</h3>
+          <h3 className="text-sm font-medium text-foreground">Stage-Specific Parameters</h3>
           
           <Accordion type="multiple" defaultValue={["seed", "seriesA"]} className="space-y-2">
             {/* Seed Stage */}
-            <AccordionItem value="seed" className="border border-slate-700 rounded-lg bg-slate-800/50">
+            <AccordionItem value="seed" className="border border-border rounded-lg bg-white shadow-sm">
               <AccordionTrigger className="px-4 hover:no-underline">
                 <span className="text-sm font-medium text-emerald-400">Seed Stage</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 space-y-3">
                 <div className="space-y-2">
-                  <Label className="text-slate-300 text-xs">
+                  <Label className="text-foreground text-xs">
                     Average Initial Check Size ($M)
                   </Label>
                   <Input
@@ -362,12 +362,12 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seedStage", "avgCheckSize", Number(e.target.value))
                     }
-                    className="bg-slate-900 border-slate-600 text-slate-100 h-8"
+                    className="bg-white border-input text-foreground h-8"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-slate-300 text-xs">
+                  <Label className="text-foreground text-xs">
                     Follow-on Reserve Ratio (%)
                   </Label>
                   <Input
@@ -376,12 +376,12 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seedStage", "followOnReserveRatio", Number(e.target.value))
                     }
-                    className="bg-slate-900 border-slate-600 text-slate-100 h-8"
+                    className="bg-white border-input text-foreground h-8"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-slate-300 text-xs">
+                  <Label className="text-foreground text-xs">
                     Target Ownership (%) - Reference Only
                   </Label>
                   <Input
@@ -390,7 +390,7 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seedStage", "targetOwnership", Number(e.target.value))
                     }
-                    className="bg-slate-900 border-slate-600 text-slate-100 h-8"
+                    className="bg-white border-input text-foreground h-8"
                   />
                 </div>
 
@@ -399,13 +399,13 @@ export default function ParametersPanel({
             </AccordionItem>
 
             {/* Series A Stage */}
-            <AccordionItem value="seriesA" className="border border-slate-700 rounded-lg bg-slate-800/50">
+            <AccordionItem value="seriesA" className="border border-border rounded-lg bg-white shadow-sm">
               <AccordionTrigger className="px-4 hover:no-underline">
                 <span className="text-sm font-medium text-blue-400">Series A Stage</span>
               </AccordionTrigger>
               <AccordionContent className="px-4 pb-4 space-y-3">
                 <div className="space-y-2">
-                  <Label className="text-slate-300 text-xs">
+                  <Label className="text-foreground text-xs">
                     Average Initial Check Size ($M)
                   </Label>
                   <Input
@@ -415,12 +415,12 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seriesAStage", "avgCheckSize", Number(e.target.value))
                     }
-                    className="bg-slate-900 border-slate-600 text-slate-100 h-8"
+                    className="bg-white border-input text-foreground h-8"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-slate-300 text-xs">
+                  <Label className="text-foreground text-xs">
                     Follow-on Reserve Ratio (%)
                   </Label>
                   <Input
@@ -429,12 +429,12 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seriesAStage", "followOnReserveRatio", Number(e.target.value))
                     }
-                    className="bg-slate-900 border-slate-600 text-slate-100 h-8"
+                    className="bg-white border-input text-foreground h-8"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-slate-300 text-xs">
+                  <Label className="text-foreground text-xs">
                     Target Ownership (%) - Reference Only
                   </Label>
                   <Input
@@ -443,7 +443,7 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seriesAStage", "targetOwnership", Number(e.target.value))
                     }
-                    className="bg-slate-900 border-slate-600 text-slate-100 h-8"
+                    className="bg-white border-input text-foreground h-8"
                   />
                 </div>
 

@@ -21,12 +21,12 @@ export default function HistoricalRunsPanel({
 }: HistoricalRunsPanelProps) {
   if (savedRuns.length === 0) {
     return (
-      <div className="h-full overflow-y-auto p-6 bg-slate-900 border-l border-slate-700">
+      <div className="h-full overflow-y-auto p-6 bg-gray-50 border-l border-border">
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-slate-100">
+          <h2 className="text-xl font-semibold text-foreground">
             Historical Runs
           </h2>
-          <div className="text-center py-12 text-slate-400">
+          <div className="text-center py-12 text-muted-foreground">
             <Clock className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>No saved runs yet</p>
             <p className="text-sm mt-1">
@@ -39,10 +39,10 @@ export default function HistoricalRunsPanel({
   }
 
   return (
-    <div className="h-full overflow-y-auto p-6 bg-slate-900 border-l border-slate-700">
+    <div className="h-full overflow-y-auto p-6 bg-gray-50 border-l border-border">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-slate-100">
+          <h2 className="text-xl font-semibold text-foreground">
             Historical Runs
           </h2>
           <Button
@@ -82,16 +82,16 @@ function RunCard({ run, onLoadRun }: RunCardProps) {
   });
 
   return (
-    <Card className="bg-slate-800 border-slate-700 hover:border-slate-600 transition-colors">
+    <Card className="bg-white border-border hover:border-primary/50 transition-colors shadow-sm">
       <CardHeader className="pb-3">
-        <CardTitle className="text-sm font-medium text-slate-300 flex items-center gap-2">
+        <CardTitle className="text-sm font-medium text-foreground flex items-center gap-2">
           <Clock className="h-4 w-4" />
           {formattedDate}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {/* Key Parameters */}
-        <div className="text-xs text-slate-400 space-y-1">
+        <div className="text-xs text-muted-foreground space-y-1">
           <div>
             Fund: ${run.parameters.fundSize}M | Companies:{" "}
             {run.parameters.numCompanies}
@@ -107,15 +107,15 @@ function RunCard({ run, onLoadRun }: RunCardProps) {
 
         {/* Summary Metrics */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="bg-slate-900 p-2 rounded border border-slate-700">
-            <div className="text-xs text-slate-400">Median MOIC</div>
-            <div className="text-lg font-semibold text-emerald-400">
+          <div className="bg-gray-50 p-2 rounded border border-border">
+            <div className="text-xs text-muted-foreground">Median MOIC</div>
+            <div className="text-lg font-semibold text-primary">
               {run.summary.medianMOIC.toFixed(2)}x
             </div>
           </div>
-          <div className="bg-slate-900 p-2 rounded border border-slate-700">
-            <div className="text-xs text-slate-400">Median IRR</div>
-            <div className="text-lg font-semibold text-amber-400">
+          <div className="bg-gray-50 p-2 rounded border border-border">
+            <div className="text-xs text-muted-foreground">Median IRR</div>
+            <div className="text-lg font-semibold text-primary">
               {(run.summary.medianIRR * 100).toFixed(1)}%
             </div>
           </div>

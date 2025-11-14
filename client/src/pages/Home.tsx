@@ -152,16 +152,16 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-background">
       {/* Top Action Bar - Pinned */}
-      <div className="sticky top-0 z-50 bg-slate-900 border-b border-slate-700 shadow-lg">
-        <div className="container mx-auto py-3 px-4">
+      <div className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
+        <div className="container mx-auto py-4 px-6">
           <div className="flex items-center justify-between gap-4">
             {/* Run Simulation Button - Pinned */}
             <Button
               onClick={handleRunSimulation}
               disabled={isRunning || !!validationError}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium px-8 shadow-sm"
               size="lg"
             >
               {isRunning ? "Running..." : "Run Simulations"}

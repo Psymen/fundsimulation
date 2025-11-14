@@ -206,3 +206,16 @@
 - [x] Add visual comparison of simulation results vs benchmarks
 - [x] Test all keyboard shortcuts
 - [x] Test pinned buttons on mobile
+
+## Aesthetic Redesign (Light Analytics Dashboard Theme)
+
+- [x] Switch from dark theme to light theme (white/light gray backgrounds)
+- [x] Update color palette with vibrant analytics colors (blue, green, purple, cyan)
+- [x] Add subtle shadows and borders to cards instead of heavy borders
+- [x] Increase white space and padding for breathing room
+- [x] Update chart colors to match Amplitude-style vibrant palette
+- [x] Refine typography hierarchy (font sizes, weights, spacing)
+- [x] Update button styling to minimal flat design
+- [x] Redesign data tables with subtle row separators
+- [x] Update parameter panel styling with clean white cards
+- [x] Test light theme across all views

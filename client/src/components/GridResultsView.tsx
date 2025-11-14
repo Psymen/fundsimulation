@@ -37,9 +37,9 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
     const p90Value = allValues[p90Index];
     
     // Only color extreme performers
-    if (value <= p10Value) return "bg-red-700/60"; // Bottom 10%
-    if (value >= p90Value) return "bg-emerald-600/70"; // Top 10%
-    return "bg-muted"; // Middle 80% - neutral
+    if (value <= p10Value) return "bg-red-100"; // Bottom 10%
+    if (value >= p90Value) return "bg-green-100"; // Top 10%
+    return "bg-gray-50"; // Middle 80% - neutral
   };
   
   const formatValue = (scenario: GridScenario | undefined): string => {
@@ -274,7 +274,7 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
           <div className="flex items-center gap-4 mt-4 text-sm">
             <span className="text-muted-foreground">Performance:</span>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-900/80 rounded"></div>
+              <div className="w-4 h-4 bg-red-200 rounded"></div>
               <span>Low</span>
             </div>
             <div className="flex items-center gap-2">
@@ -282,7 +282,7 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
               <span>Medium</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-emerald-500/90 rounded"></div>
+              <div className="w-4 h-4 bg-green-200 rounded"></div>
               <span>High</span>
             </div>
           </div>

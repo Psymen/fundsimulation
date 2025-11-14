@@ -62,13 +62,13 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
           <MetricCard
             title="Median MOIC"
             value={summary.medianMOIC.toFixed(2) + "x"}
-            subtitle={`P10: ${summary.moicP10.toFixed(2)}x | P90: ${summary.moicP90.toFixed(2)}x`}
+            subtitle={`P10: ${summary.moicP10.toFixed(2)}x | P90: ${summary.moicP90.toFixed(2)}x | σ: ${summary.moicStdDev.toFixed(2)}`}
             helpText="Multiple on Invested Capital - how many times the fund returns its invested capital"
           />
           <MetricCard
             title="Median IRR"
             value={(summary.medianIRR * 100).toFixed(1) + "%"}
-            subtitle={`P10: ${(summary.irrP10 * 100).toFixed(1)}% | P90: ${(summary.irrP90 * 100).toFixed(1)}%`}
+            subtitle={`P10: ${(summary.irrP10 * 100).toFixed(1)}% | P90: ${(summary.irrP90 * 100).toFixed(1)}% | σ: ${(summary.irrStdDev * 100).toFixed(1)}%`}
             helpText="Internal Rate of Return - annualized return accounting for timing of cash flows"
           />
           <MetricCard

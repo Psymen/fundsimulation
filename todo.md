@@ -135,3 +135,25 @@
 - [x] Remove leading zeros from number input fields
 - [x] Test commentary rendering
 - [x] Test number input behavior
+
+## Add Variance Metrics
+
+- [x] Add standard deviation calculation to summary statistics
+- [x] Display MOIC standard deviation in simulation results
+- [x] Show P10-P90 range more prominently in results cards
+- [x] Add variance metrics to best/worst strategies cards in grid analysis
+- [x] Update heatmap cells to show variance indicator (optional tooltip)
+- [x] Ensure UI remains clean and uncluttered
+- [x] Test variance display in both simulation and grid analysis views
+
+## Grid Cell Detail Modal
+
+- [x] Create ScenarioDetailModal component
+- [x] Add MOIC distribution histogram in modal
+- [x] Add IRR distribution histogram in modal
+- [x] Display full percentile breakdown (P10, P25, P50, P75, P90)
+- [x] Show standard deviation and variance metrics
+- [x] Display probability thresholds (2x, 3x, 5x MOIC)
+- [x] Show deployment metrics and company counts
+- [x] Add modal trigger on grid cell click
+- [x] Test modal with different scenarios

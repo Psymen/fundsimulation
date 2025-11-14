@@ -85,9 +85,11 @@ export interface SummaryStatistics {
   medianMOIC: number;
   moicP10: number;
   moicP90: number;
+  moicStdDev: number;
   medianIRR: number;
   irrP10: number;
   irrP90: number;
+  irrStdDev: number;
   probMOICAbove2x: number;
   probMOICAbove3x: number;
   probMOICAbove5x: number;
@@ -141,6 +143,7 @@ export interface GridScenario {
   
   // Results
   summary: SummaryStatistics;
+  results: SimulationResult[]; // Full simulation results for detailed analysis
   
   // Deployment metrics
   targetCapital: number; // Total capital we attempted to deploy

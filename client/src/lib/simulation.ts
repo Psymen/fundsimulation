@@ -241,6 +241,17 @@ export function calculateSummaryStatistics(
   const probMOICAbove3x = results.filter((r) => r.grossMOIC >= 3).length / results.length;
   const probMOICAbove5x = results.filter((r) => r.grossMOIC >= 5).length / results.length;
 
+  // Calculate standard deviations
+  const meanMOIC = moics.reduce((sum, v) => sum + v, 0) / moics.length;
+  const moicStdDev = Math.sqrt(
+    moics.reduce((sum, v) => sum + Math.pow(v - meanMOIC, 2), 0) / moics.length
+  );
+  
+  const meanIRR = irrs.reduce((sum, v) => sum + v, 0) / irrs.length;
+  const irrStdDev = Math.sqrt(
+    irrs.reduce((sum, v) => sum + Math.pow(v - meanIRR, 2), 0) / irrs.length
+  );
+
   // Average counts
   const avgWriteOffs =
     results.reduce((sum, r) => sum + r.numWriteOffs, 0) / results.length;
@@ -251,9 +262,11 @@ export function calculateSummaryStatistics(
     medianMOIC,
     moicP10,
     moicP90,
+    moicStdDev,
     medianIRR,
     irrP10,
     irrP90,
+    irrStdDev,
     probMOICAbove2x,
     probMOICAbove3x,
     probMOICAbove5x,

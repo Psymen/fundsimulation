@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import type { GridAnalysisResult, GridScenario } from "@/types/simulation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, TrendingDown, Target, Award } from "lucide-react";
+import { ScenarioDetailModal } from "@/components/ScenarioDetailModal";
 
 interface GridResultsViewProps {
   analysis: GridAnalysisResult;
@@ -73,18 +74,24 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">{strategy.reasoning}</p>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div>
-                    <div className="text-muted-foreground">MOIC</div>
-                    <div className="font-semibold text-emerald-400">
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">MOIC:</span>
+                    <span className="font-semibold text-emerald-400">
                       {strategy.scenario.summary.medianMOIC.toFixed(2)}x
-                    </div>
+                    </span>
                   </div>
-                  <div>
-                    <div className="text-muted-foreground">Deploy</div>
-                    <div className="font-semibold">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">P10-P90:</span>
+                    <span className="font-mono">
+                      {strategy.scenario.summary.moicP10.toFixed(2)}x - {strategy.scenario.summary.moicP90.toFixed(2)}x
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Deploy:</span>
+                    <span className="font-semibold">
                       {strategy.scenario.deploymentRate.toFixed(0)}%
-                    </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -118,18 +125,24 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
                     </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground mb-3">{strategy.reasoning}</p>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <div className="text-muted-foreground">MOIC</div>
-                      <div className="font-semibold text-red-400">
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">MOIC:</span>
+                      <span className="font-semibold text-red-400">
                         {strategy.scenario.summary.medianMOIC.toFixed(2)}x
-                      </div>
+                      </span>
                     </div>
-                    <div>
-                      <div className="text-muted-foreground">Deploy</div>
-                      <div className="font-semibold">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">P10-P90:</span>
+                      <span className="font-mono">
+                        {strategy.scenario.summary.moicP10.toFixed(2)}x - {strategy.scenario.summary.moicP90.toFixed(2)}x
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Deploy:</span>
+                      <span className="font-semibold">
                         {strategy.scenario.deploymentRate.toFixed(0)}%
-                      </div>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -331,6 +344,13 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
           </div>
         </CardContent>
       </Card>
+      
+      {/* Scenario Detail Modal */}
+      <ScenarioDetailModal 
+        scenario={selectedScenario}
+        isOpen={selectedScenario !== null}
+        onClose={() => setSelectedScenario(null)}
+      />
     </div>
   );
 }

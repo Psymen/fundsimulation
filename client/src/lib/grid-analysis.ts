@@ -130,6 +130,7 @@ export async function runGridAnalysis(
         numCompanies,
         seedPercentage,
         summary,
+        results, // Store full results for detailed modal
         targetCapital,
         deployedCapital: deployment.avgDeployedCapital,
         deploymentRate: deployment.deploymentRate,

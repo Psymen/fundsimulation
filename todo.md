@@ -179,3 +179,15 @@
 - [x] Add visual strikethrough for scenarios with >200% deployment
 - [x] Update grid cell rendering logic to handle both under and over deployment
 - [x] Test grid with over-deployment strikethrough
+
+## Realistic Follow-on Investment Logic
+
+- [x] Research Carta/PitchBook data on valuation step-ups by stage
+- [x] Research follow-on participation rates and pro-rata behavior
+- [x] Redesign follow-on logic to model pro-rata based on company success
+- [x] Add valuation step-up parameters (e.g., Seed→A: 3-5x, A→B: 2-3x)
+- [x] Model selective deployment (only winners get follow-on)
+- [x] Calculate follow-on size based on maintaining ownership percentage
+- [x] Update types to support new follow-on parameters
+- [x] Update defaults with realistic market assumptions
+- [x] Test new follow-on logic with various scenarios

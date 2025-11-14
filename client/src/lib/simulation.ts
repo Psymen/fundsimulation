@@ -1,5 +1,6 @@
 /**
  * Monte Carlo simulation logic for VC portfolio analysis
+ * Updated with realistic pro-rata follow-on investment modeling
  */
 
 import type {
@@ -74,6 +75,102 @@ function calculateIRR(cashFlows: number[], years: number[]): number {
 }
 
 /**
+ * Calculate follow-on investment using realistic pro-rata participation logic
+ * 
+ * Key principles based on Carta/PitchBook market data:
+ * 1. Only successful companies (returnMultiple > 1.0) raise follow-on rounds
+ * 2. Higher-performing companies require larger pro-rata checks due to valuation step-ups
+ * 3. VCs selectively participate based on performance signals
+ * 4. Failed companies don't consume reserves
+ * 
+ * Market data:
+ * - Seed → Series A: 2.5-2.8x valuation step-up
+ * - Series A → Series B: 2.0-3.0x valuation step-up
+ * - VCs exercise pro-rata selectively (not uniformly)
+ * - Typical fund deployment: 70-90%
+ * 
+ * @param initialCheck - Initial investment amount
+ * @param returnMultiple - Company's ultimate return multiple
+ * @param reserveRatio - Percentage of initial check reserved for follow-on (0-100)
+ * @param stage - Investment stage (seed or seriesA)
+ * @returns Follow-on investment amount
+ */
+function calculateFollowOn(
+  initialCheck: number,
+  returnMultiple: number,
+  reserveRatio: number,
+  stage: InvestmentStage
+): number {
+  // Failed companies (< 1x) don't raise follow-on rounds
+  if (returnMultiple < 1.0) {
+    return 0;
+  }
+
+  // Calculate available reserve capital
+  const maxReserve = initialCheck * (reserveRatio / 100);
+
+  // Determine participation rate based on company performance
+  // High performers get more pro-rata participation
+  let participationRate: number;
+  
+  if (returnMultiple >= 10) {
+    // Breakout winners: 90-100% pro-rata participation
+    participationRate = uniformRandom(0.9, 1.0);
+  } else if (returnMultiple >= 5) {
+    // Strong performers: 70-90% pro-rata participation
+    participationRate = uniformRandom(0.7, 0.9);
+  } else if (returnMultiple >= 3) {
+    // Good performers: 50-70% pro-rata participation
+    participationRate = uniformRandom(0.5, 0.7);
+  } else if (returnMultiple >= 2) {
+    // Moderate performers: 30-50% pro-rata participation
+    participationRate = uniformRandom(0.3, 0.5);
+  } else {
+    // Marginal performers (1-2x): 10-30% pro-rata participation
+    participationRate = uniformRandom(0.1, 0.3);
+  }
+
+  // Model valuation step-ups and number of follow-on rounds
+  // Higher return multiples imply more rounds and larger step-ups
+  let followOnMultiple: number;
+  
+  if (returnMultiple >= 10) {
+    // Breakout companies: 2-3 follow-on rounds with 2.5-3x step-ups each
+    // Total follow-on: ~2-4x initial check
+    followOnMultiple = uniformRandom(2.0, 4.0);
+  } else if (returnMultiple >= 5) {
+    // Strong companies: 1-2 follow-on rounds with 2-3x step-ups
+    // Total follow-on: ~1.5-2.5x initial check
+    followOnMultiple = uniformRandom(1.5, 2.5);
+  } else if (returnMultiple >= 3) {
+    // Good companies: 1 follow-on round with 2-2.5x step-up
+    // Total follow-on: ~1-1.5x initial check
+    followOnMultiple = uniformRandom(1.0, 1.5);
+  } else if (returnMultiple >= 2) {
+    // Moderate companies: 1 follow-on round with smaller step-up
+    // Total follow-on: ~0.5-1x initial check
+    followOnMultiple = uniformRandom(0.5, 1.0);
+  } else {
+    // Marginal companies: Small bridge rounds
+    // Total follow-on: ~0.2-0.5x initial check
+    followOnMultiple = uniformRandom(0.2, 0.5);
+  }
+
+  // Calculate theoretical pro-rata need based on valuation step-ups
+  const theoreticalFollowOn = initialCheck * followOnMultiple;
+
+  // Actual follow-on is limited by:
+  // 1. Available reserves
+  // 2. Participation rate (selective deployment)
+  const actualFollowOn = Math.min(
+    maxReserve,
+    theoreticalFollowOn * participationRate
+  );
+
+  return actualFollowOn;
+}
+
+/**
  * Simulate a single company investment
  */
 function simulateCompany(
@@ -82,20 +179,27 @@ function simulateCompany(
   exitWindowMin: number,
   exitWindowMax: number
 ): CompanyResult {
-  // Calculate invested capital (initial + follow-on)
   const initialCheck = stageParams.avgCheckSize;
-  const followOn = initialCheck * (stageParams.followOnReserveRatio / 100);
-  const investedCapital = initialCheck + followOn;
-
+  
   // Sample outcome bucket from stage-specific distribution
   const bucket = sampleBucket(stageParams.exitBuckets);
-
+  
   // Sample return multiple within bucket range
   const returnMultiple = uniformRandom(bucket.minMultiple, bucket.maxMultiple);
-
+  
   // Sample exit year
   const exitYear = uniformRandom(exitWindowMin, exitWindowMax);
 
+  // Calculate follow-on investment based on realistic pro-rata logic
+  const followOn = calculateFollowOn(
+    initialCheck,
+    returnMultiple,
+    stageParams.followOnReserveRatio,
+    stage
+  );
+
+  const investedCapital = initialCheck + followOn;
+  
   // Calculate returned capital
   const returnedCapital = investedCapital * returnMultiple;
 

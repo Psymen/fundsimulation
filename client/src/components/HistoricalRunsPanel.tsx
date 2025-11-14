@@ -82,7 +82,7 @@ function RunCard({ run, onLoadRun }: RunCardProps) {
   });
 
   return (
-    <Card className="bg-white border-border hover:border-primary/50 transition-colors shadow-sm">
+    <Card className="bg-card border-border hover:border-primary/50 transition-colors shadow-sm">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium text-foreground flex items-center gap-2">
           <Clock className="h-4 w-4" />
@@ -107,13 +107,13 @@ function RunCard({ run, onLoadRun }: RunCardProps) {
 
         {/* Summary Metrics */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="bg-gray-50 p-2 rounded border border-border">
+          <div className="bg-muted p-2 rounded border border-border">
             <div className="text-xs text-muted-foreground">Median MOIC</div>
             <div className="text-lg font-semibold text-primary">
               {run.summary.medianMOIC.toFixed(2)}x
             </div>
           </div>
-          <div className="bg-gray-50 p-2 rounded border border-border">
+          <div className="bg-muted p-2 rounded border border-border">
             <div className="text-xs text-muted-foreground">Median IRR</div>
             <div className="text-lg font-semibold text-primary">
               {(run.summary.medianIRR * 100).toFixed(1)}%

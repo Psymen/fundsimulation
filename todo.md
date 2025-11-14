@@ -242,3 +242,14 @@
 - [x] Update chart colors to softer, less saturated versions
 - [x] Test color contrast ratios meet WCAG AA standards
 - [x] Test refined palette across all views
+
+## Comprehensive UI Audit (Fix Remaining Light Elements)
+
+- [x] Fix top bar - remove white background, ensure button visibility
+- [x] Fix historical runs cards - apply dark theme styling
+- [x] Fix grid results/sensitivities in Portfolio Construction view
+- [x] Audit all Card components for white backgrounds
+- [x] Audit all button styles for visibility on dark backgrounds
+- [x] Check metric cards, probability badges, and stat displays
+- [x] Test both Simulation and Portfolio Construction views
+- [x] Verify 100% dark theme consistency across all elements

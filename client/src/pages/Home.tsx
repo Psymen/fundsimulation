@@ -154,7 +154,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Action Bar - Pinned */}
-      <div className="sticky top-0 z-40 bg-card border-b border-border shadow-sm">
+      <div className="sticky top-0 z-40 bg-background border-b border-border shadow-lg">
         <div className="container mx-auto py-4 px-6">
           <div className="flex items-center justify-between gap-4">
             {/* Run Simulation Button - Pinned */}

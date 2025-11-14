@@ -37,9 +37,9 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
     const p90Value = allValues[p90Index];
     
     // Only color extreme performers
-    if (value <= p10Value) return "bg-red-100"; // Bottom 10%
-    if (value >= p90Value) return "bg-green-100"; // Top 10%
-    return "bg-gray-50"; // Middle 80% - neutral
+    if (value <= p10Value) return "bg-destructive/20 text-destructive-foreground"; // Bottom 10%
+    if (value >= p90Value) return "bg-green-500/20 text-green-400"; // Top 10%
+    return "bg-muted"; // Middle 80% - neutral
   };
   
   const formatValue = (scenario: GridScenario | undefined): string => {

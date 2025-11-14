@@ -18,7 +18,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header with tabs */}
-      <header className="border-b border-border bg-white shadow-sm sticky top-0 z-50">
+      <header className="border-b border-border bg-background shadow-sm sticky top-0 z-50">
         <div className="container mx-auto">
           <div className="flex items-center justify-between h-14">
             <h1 className="text-lg font-semibold text-foreground">{APP_TITLE}</h1>

@@ -165,3 +165,11 @@
 - [x] Fix IRR display formatting (multiply by 100 before displaying)
 - [x] Test IRR calculations with known scenarios
 - [x] Verify IRR displays correctly in all views (simulation, grid analysis, modal)
+
+## Grid Visualization Improvements
+
+- [x] Add variance statistics (σ, P10-P90) to grid heatmap cells
+- [x] Add visual strikethrough/cross-out for cells with <60% deployment
+- [x] Soften color gradient to only highlight top 10% and bottom 10% performers
+- [x] Update color scale calculation to use percentile-based thresholds
+- [x] Test grid visualization with new styling

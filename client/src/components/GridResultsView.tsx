@@ -24,22 +24,21 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
     return analysis.scenarios.find(s => s.numCompanies === numCompanies && s.seedPercentage === seedPct);
   };
   
-  // Get color for heatmap cell
+  // Get color for heatmap cell - only highlight top/bottom 10%
   const getColor = (scenario: GridScenario | undefined): string => {
     if (!scenario) return "bg-muted";
     
     const value = scenario.summary.medianMOIC;
-    const allValues = analysis.scenarios.map(s => s.summary.medianMOIC);
-    const min = Math.min(...allValues);
-    const max = Math.max(...allValues);
-    const normalized = (value - min) / (max - min);
+    const allValues = analysis.scenarios.map(s => s.summary.medianMOIC).sort((a, b) => a - b);
+    const p10Index = Math.floor(allValues.length * 0.1);
+    const p90Index = Math.floor(allValues.length * 0.9);
+    const p10Value = allValues[p10Index];
+    const p90Value = allValues[p90Index];
     
-    // Color scale from red (low) to yellow (mid) to green (high)
-    if (normalized < 0.33) return "bg-red-900/80";
-    if (normalized < 0.5) return "bg-red-700/80";
-    if (normalized < 0.67) return "bg-yellow-700/80";
-    if (normalized < 0.83) return "bg-emerald-700/80";
-    return "bg-emerald-500/90";
+    // Only color extreme performers
+    if (value <= p10Value) return "bg-red-700/60"; // Bottom 10%
+    if (value >= p90Value) return "bg-emerald-600/70"; // Top 10%
+    return "bg-muted"; // Middle 80% - neutral
   };
   
   const formatValue = (scenario: GridScenario | undefined): string => {
@@ -186,16 +185,29 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
                       return (
                         <td
                           key={`${count}-${pct}`}
-                          className={`border border-border p-3 text-center cursor-pointer hover:opacity-80 transition-opacity ${getColor(scenario)}`}
+                          className={`border border-border p-3 text-center cursor-pointer hover:opacity-80 transition-opacity relative ${getColor(scenario)}`}
                           onClick={() => scenario && setSelectedScenario(scenario)}
                         >
-                          <div className="font-semibold text-white">
+                          {scenario && scenario.deploymentRate < 60 && (
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <div className="w-full h-0.5 bg-red-500 rotate-[-20deg] opacity-70"></div>
+                            </div>
+                          )}
+                          <div className={`font-semibold ${scenario && scenario.deploymentRate < 60 ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
                             {formatValue(scenario)}
                           </div>
                           {scenario && (
-                            <div className="text-xs text-white/80 mt-1">
-                              {scenario.deploymentRate.toFixed(0)}% deploy
-                            </div>
+                            <>
+                              <div className="text-xs text-muted-foreground mt-1">
+                                σ = {scenario.summary.moicStdDev.toFixed(2)}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                {scenario.summary.moicP10.toFixed(2)}x - {scenario.summary.moicP90.toFixed(2)}x
+                              </div>
+                              <div className={`text-xs mt-1 font-medium ${scenario.deploymentRate < 60 ? 'text-red-400' : 'text-muted-foreground'}`}>
+                                {scenario.deploymentRate.toFixed(0)}% deploy
+                              </div>
+                            </>
                           )}
                         </td>
                       );

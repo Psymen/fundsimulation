@@ -27,3 +27,26 @@
 - [x] Tooltips on exit distribution buckets
 - [x] Dark theme professional design
 - [x] Mobile-responsive layout
+
+## Bug Fix: localStorage Quota Exceeded
+- [x] Modify storage.ts to NOT save full simulation results (too large)
+- [x] Only save summary statistics and parameters
+- [x] Limit maximum number of saved runs (e.g., 20 most recent)
+- [x] Add automatic cleanup of oldest runs when limit reached
+- [x] Update SavedRun type to remove results field
+- [x] Update HistoricalRunsPanel to work without full results
+- [ ] Test that storage works within quota limits
+
+## IndexedDB Migration (Unlimited Storage)
+- [x] Create IndexedDB wrapper utilities with async API
+- [x] Implement database initialization with proper schema
+- [x] Implement saveRun function using IndexedDB
+- [x] Implement loadSavedRuns function using IndexedDB
+- [x] Implement deleteAllRuns function using IndexedDB
+- [x] Update SavedRun type to include full results again
+- [x] Update Home.tsx to use async storage functions
+- [x] Update HistoricalRunsPanel to use async storage functions
+- [x] Add migration utility to transfer localStorage data to IndexedDB
+- [x] Fix NaN display issue for old runs without seedPercentage
+- [x] Test IndexedDB storage with multiple simulation runs
+- [x] Verify no quota exceeded errors with large datasets

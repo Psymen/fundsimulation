@@ -97,6 +97,7 @@ export interface SummaryStatistics {
 
 /**
  * Saved run for historical comparison
+ * Stored in IndexedDB with full results for unlimited storage
  */
 export interface SavedRun {
   id: string;

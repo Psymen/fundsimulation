@@ -14,7 +14,12 @@ import {
   calculateSummaryStatistics,
   runSimulations,
 } from "@/lib/simulation";
-import { deleteAllRuns, loadSavedRuns, saveRun } from "@/lib/storage";
+import {
+  deleteAllRuns,
+  loadSavedRuns,
+  migrateFromLocalStorage,
+  saveRun,
+} from "@/lib/indexeddb-storage";
 import type {
   PortfolioParameters,
   SavedRun,
@@ -34,9 +39,16 @@ export default function Home() {
   const [isRunning, setIsRunning] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Load saved runs on mount
+  // Load saved runs on mount and migrate from localStorage
   useEffect(() => {
-    setSavedRuns(loadSavedRuns());
+    const initStorage = async () => {
+      // Migrate old localStorage data to IndexedDB
+      await migrateFromLocalStorage();
+      // Load runs from IndexedDB
+      const runs = await loadSavedRuns();
+      setSavedRuns(runs);
+    };
+    initStorage();
   }, []);
 
   // Validate parameters
@@ -69,7 +81,7 @@ export default function Home() {
     toast.info("Running simulations...");
 
     // Use setTimeout to allow UI to update
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
         const simulationResults = runSimulations(parameters);
         const summaryStats = calculateSummaryStatistics(simulationResults);
@@ -85,8 +97,9 @@ export default function Home() {
           summary: summaryStats,
           results: simulationResults,
         };
-        saveRun(savedRun);
-        setSavedRuns(loadSavedRuns());
+        await saveRun(savedRun);
+        const runs = await loadSavedRuns();
+        setSavedRuns(runs);
 
         toast.success("Simulations completed!");
       } catch (error) {
@@ -100,14 +113,15 @@ export default function Home() {
 
   const handleLoadRun = (run: SavedRun) => {
     setParameters(run.parameters);
+    // IndexedDB stores full results, so we can load them
     setResults(run.results);
     setSummary(run.summary);
-    toast.success("Parameters loaded from saved run");
+    toast.success("Parameters and results loaded from saved run");
   };
 
-  const handleDeleteAll = () => {
+  const handleDeleteAll = async () => {
     if (confirm("Are you sure you want to delete all saved runs?")) {
-      deleteAllRuns();
+      await deleteAllRuns();
       setSavedRuns([]);
       toast.success("All saved runs deleted");
     }

@@ -263,3 +263,8 @@
 - [x] Add "?" key listener to show shortcuts modal
 - [x] List all keyboard shortcuts in modal (Cmd/Ctrl+Enter to run)
 - [x] Test all refinements across both views
+
+## Bug Fix - Dialog Ref Warning
+
+- [x] Fix DialogOverlay component ref warning by wrapping with React.forwardRef
+- [x] Test Dialog component to verify warning is resolved

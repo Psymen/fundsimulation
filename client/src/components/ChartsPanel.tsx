@@ -51,7 +51,7 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
   const outliersData = createOutliersDistribution(results);
 
   return (
-    <div className="h-full overflow-y-auto p-6 bg-background">
+    <div className="h-full overflow-y-auto p-6">
       <div className="space-y-6">
         <h2 className="text-2xl font-semibold text-foreground">
           Simulation Results
@@ -80,7 +80,7 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
         </div>
 
         {/* Probability Thresholds */}
-        <Card className="bg-white border-border shadow-sm">
+        <Card className="bg-card border-border shadow-sm">
           <CardHeader>
             <CardTitle className="text-foreground">
               Probability of Returns
@@ -108,7 +108,7 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
         </Card>
 
         {/* MOIC Histogram */}
-        <Card className="bg-white border-border shadow-sm">
+        <Card className="bg-card border-border shadow-sm">
           <CardHeader>
             <CardTitle className="text-foreground">
               Fund MOIC Distribution
@@ -145,7 +145,7 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
         </Card>
 
         {/* IRR Histogram */}
-        <Card className="bg-white border-border shadow-sm">
+        <Card className="bg-card border-border shadow-sm">
           <CardHeader>
             <CardTitle className="text-foreground">IRR Distribution</CardTitle>
           </CardHeader>
@@ -180,7 +180,7 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
         </Card>
 
         {/* Outliers Distribution */}
-        <Card className="bg-white border-border shadow-sm">
+        <Card className="bg-card border-border shadow-sm">
           <CardHeader>
             <CardTitle className="text-foreground">
               Outliers per Simulation
@@ -235,7 +235,7 @@ interface MetricCardProps {
 
 function MetricCard({ title, value, subtitle, helpText }: MetricCardProps) {
   return (
-    <Card className="bg-white border-border shadow-sm">
+    <Card className="bg-card border-border shadow-sm">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm font-medium text-foreground">
           {title}
@@ -257,7 +257,7 @@ interface ProbabilityBadgeProps {
 
 function ProbabilityBadge({ label, probability }: ProbabilityBadgeProps) {
   return (
-    <div className="text-center p-3 bg-gray-50 rounded-lg border border-border">
+    <div className="text-center p-3 bg-muted rounded-lg border border-border">
       <div className="text-2xl font-bold text-primary">
         {probability.toFixed(1)}%
       </div>

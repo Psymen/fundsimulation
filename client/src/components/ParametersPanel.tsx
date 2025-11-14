@@ -111,7 +111,7 @@ export default function ParametersPanel({
       {parameters[stage].exitBuckets.map((bucket, index) => (
         <div
           key={index}
-          className="p-3 bg-white rounded-lg border border-border shadow-sm space-y-2"
+          className="p-3 bg-card rounded-lg border border-border shadow-sm space-y-2"
         >
           <div className="flex items-center gap-2">
             <div className="font-medium text-xs text-foreground">
@@ -137,7 +137,7 @@ export default function ParametersPanel({
                   updateExitBucket(stage, index, "probability", Number(e.target.value))
                 }
                 onFocus={(e) => e.target.select()}
-                className="bg-white border-input text-foreground text-xs h-7"
+                className="bg-card border-input text-foreground text-xs h-7"
               />
             </div>
             <div className="space-y-1">
@@ -150,7 +150,7 @@ export default function ParametersPanel({
                   updateExitBucket(stage, index, "minMultiple", Number(e.target.value))
                 }
                 onFocus={(e) => e.target.select()}
-                className="bg-white border-input text-foreground text-xs h-7"
+                className="bg-card border-input text-foreground text-xs h-7"
               />
             </div>
             <div className="space-y-1">
@@ -163,7 +163,7 @@ export default function ParametersPanel({
                   updateExitBucket(stage, index, "maxMultiple", Number(e.target.value))
                 }
                 onFocus={(e) => e.target.select()}
-                className="bg-white border-input text-foreground text-xs h-7"
+                className="bg-card border-input text-foreground text-xs h-7"
               />
             </div>
           </div>
@@ -183,7 +183,7 @@ export default function ParametersPanel({
   );
 
   return (
-    <div className="h-full overflow-y-auto p-6 bg-gray-50 border-r border-border">
+    <div className="h-full overflow-y-auto rounded-lg border border-border bg-card p-6 shadow-sm">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-foreground">Parameters</h2>
@@ -211,7 +211,7 @@ export default function ParametersPanel({
               type="number"
               value={parameters.fundSize}
               onChange={(e) => updateParameter("fundSize", Number(e.target.value))}
-              className="bg-white border-input text-foreground"
+              className="bg-card border-input text-foreground"
             />
           </div>
 
@@ -226,7 +226,7 @@ export default function ParametersPanel({
               onChange={(e) =>
                 updateParameter("numCompanies", Number(e.target.value))
               }
-              className="bg-white border-input text-foreground"
+              className="bg-card border-input text-foreground"
             />
           </div>
 
@@ -256,7 +256,7 @@ export default function ParametersPanel({
               onChange={(e) =>
                 updateParameter("seedPercentage", Number(e.target.value))
               }
-              className="bg-white border-input text-foreground"
+              className="bg-card border-input text-foreground"
             />
             <p className="text-xs text-muted-foreground">
               {Math.round(parameters.numCompanies * (parameters.seedPercentage / 100))} seed,{" "}
@@ -275,7 +275,7 @@ export default function ParametersPanel({
               onChange={(e) =>
                 updateParameter("investmentPeriod", Number(e.target.value))
               }
-              className="bg-white border-input text-foreground"
+              className="bg-card border-input text-foreground"
             />
           </div>
 
@@ -288,7 +288,7 @@ export default function ParametersPanel({
               type="number"
               value={parameters.fundLife}
               onChange={(e) => updateParameter("fundLife", Number(e.target.value))}
-              className="bg-white border-input text-foreground"
+              className="bg-card border-input text-foreground"
             />
           </div>
 
@@ -304,7 +304,7 @@ export default function ParametersPanel({
                 onChange={(e) =>
                   updateParameter("exitWindowMin", Number(e.target.value))
                 }
-                className="bg-white border-input text-foreground"
+                className="bg-card border-input text-foreground"
               />
             </div>
 
@@ -319,7 +319,7 @@ export default function ParametersPanel({
                 onChange={(e) =>
                   updateParameter("exitWindowMax", Number(e.target.value))
                 }
-                className="bg-white border-input text-foreground"
+                className="bg-card border-input text-foreground"
               />
             </div>
           </div>
@@ -335,7 +335,7 @@ export default function ParametersPanel({
               onChange={(e) =>
                 updateParameter("numSimulations", Number(e.target.value))
               }
-              className="bg-white border-input text-foreground"
+              className="bg-card border-input text-foreground"
             />
           </div>
         </div>
@@ -346,7 +346,7 @@ export default function ParametersPanel({
           
           <Accordion type="multiple" defaultValue={["seed", "seriesA"]} className="space-y-2">
             {/* Seed Stage */}
-            <AccordionItem value="seed" className="border border-border rounded-lg bg-white shadow-sm">
+            <AccordionItem value="seed" className="border border-border rounded-lg bg-card shadow-sm">
               <AccordionTrigger className="px-4 hover:no-underline">
                 <span className="text-sm font-medium text-emerald-400">Seed Stage</span>
               </AccordionTrigger>
@@ -362,7 +362,7 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seedStage", "avgCheckSize", Number(e.target.value))
                     }
-                    className="bg-white border-input text-foreground h-8"
+                    className="bg-card border-input text-foreground h-8"
                   />
                 </div>
 
@@ -376,7 +376,7 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seedStage", "followOnReserveRatio", Number(e.target.value))
                     }
-                    className="bg-white border-input text-foreground h-8"
+                    className="bg-card border-input text-foreground h-8"
                   />
                 </div>
 
@@ -390,7 +390,7 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seedStage", "targetOwnership", Number(e.target.value))
                     }
-                    className="bg-white border-input text-foreground h-8"
+                    className="bg-card border-input text-foreground h-8"
                   />
                 </div>
 
@@ -399,7 +399,7 @@ export default function ParametersPanel({
             </AccordionItem>
 
             {/* Series A Stage */}
-            <AccordionItem value="seriesA" className="border border-border rounded-lg bg-white shadow-sm">
+            <AccordionItem value="seriesA" className="border border-border rounded-lg bg-card shadow-sm">
               <AccordionTrigger className="px-4 hover:no-underline">
                 <span className="text-sm font-medium text-blue-400">Series A Stage</span>
               </AccordionTrigger>
@@ -415,7 +415,7 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seriesAStage", "avgCheckSize", Number(e.target.value))
                     }
-                    className="bg-white border-input text-foreground h-8"
+                    className="bg-card border-input text-foreground h-8"
                   />
                 </div>
 
@@ -429,7 +429,7 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seriesAStage", "followOnReserveRatio", Number(e.target.value))
                     }
-                    className="bg-white border-input text-foreground h-8"
+                    className="bg-card border-input text-foreground h-8"
                   />
                 </div>
 
@@ -443,7 +443,7 @@ export default function ParametersPanel({
                     onChange={(e) =>
                       updateStageParameter("seriesAStage", "targetOwnership", Number(e.target.value))
                     }
-                    className="bg-white border-input text-foreground h-8"
+                    className="bg-card border-input text-foreground h-8"
                   />
                 </div>
 

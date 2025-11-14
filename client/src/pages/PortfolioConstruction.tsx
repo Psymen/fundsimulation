@@ -112,7 +112,7 @@ export default function PortfolioConstruction() {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Action Bar - Pinned */}
-      <div className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
+      <div className="sticky top-0 z-40 bg-card border-b border-border shadow-sm">
         <div className="container mx-auto py-3 px-4">
           <div className="flex items-center justify-between gap-4">
             {/* Run Grid Analysis Button - Pinned */}

@@ -219,3 +219,13 @@
 - [x] Redesign data tables with subtle row separators
 - [x] Update parameter panel styling with clean white cards
 - [x] Test light theme across all views
+
+## UI Refinement & Dark Theme Revert
+
+- [x] Revert from light theme back to dark theme
+- [x] Update all color variables in index.css to dark theme
+- [x] Convert parameters sidebar to scrollable card with fixed height
+- [x] Ensure results are always visible without scrolling
+- [x] Review spacing and hierarchy with critical design eye
+- [x] Test scrolling behavior on parameters panel
+- [x] Test dark theme across all views

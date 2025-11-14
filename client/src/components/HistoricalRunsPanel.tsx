@@ -21,7 +21,7 @@ export default function HistoricalRunsPanel({
 }: HistoricalRunsPanelProps) {
   if (savedRuns.length === 0) {
     return (
-      <div className="h-full overflow-y-auto p-6 bg-gray-50 border-l border-border">
+      <div className="h-full overflow-y-auto rounded-lg border border-border bg-card p-6 shadow-sm">
         <div className="space-y-4">
           <h2 className="text-xl font-semibold text-foreground">
             Historical Runs
@@ -39,7 +39,7 @@ export default function HistoricalRunsPanel({
   }
 
   return (
-    <div className="h-full overflow-y-auto p-6 bg-gray-50 border-l border-border">
+    <div className="h-full overflow-y-auto rounded-lg border border-border bg-card p-6 shadow-sm">
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-foreground">

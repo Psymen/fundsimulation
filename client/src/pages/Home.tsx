@@ -154,7 +154,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Action Bar - Pinned */}
-      <div className="sticky top-0 z-40 bg-white border-b border-border shadow-sm">
+      <div className="sticky top-0 z-40 bg-card border-b border-border shadow-sm">
         <div className="container mx-auto py-4 px-6">
           <div className="flex items-center justify-between gap-4">
             {/* Run Simulation Button - Pinned */}
@@ -195,9 +195,9 @@ export default function Home() {
       </div>
 
       {/* Main Content - Three Column Layout */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Panel - Parameters */}
-        <div className="w-80 flex-shrink-0 overflow-hidden">
+      <div className="flex-1 flex overflow-hidden p-4 gap-4">
+        {/* Left Panel - Parameters Card */}
+        <div className="w-80 flex-shrink-0">
           <ParametersPanel
             parameters={parameters}
             onParametersChange={setParameters}
@@ -208,12 +208,12 @@ export default function Home() {
         </div>
 
         {/* Center Panel - Charts */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden rounded-lg border border-border bg-card shadow-sm">
           <ChartsPanel results={results} summary={summary} />
         </div>
 
         {/* Right Panel - Historical Runs */}
-        <div className="w-80 flex-shrink-0 overflow-hidden">
+        <div className="w-80 flex-shrink-0">
           <HistoricalRunsPanel
             savedRuns={savedRuns}
             onLoadRun={handleLoadRun}

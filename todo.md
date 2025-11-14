@@ -173,3 +173,9 @@
 - [x] Soften color gradient to only highlight top 10% and bottom 10% performers
 - [x] Update color scale calculation to use percentile-based thresholds
 - [x] Test grid visualization with new styling
+
+## Add Over-Deployment Strikethrough
+
+- [x] Add visual strikethrough for scenarios with >200% deployment
+- [x] Update grid cell rendering logic to handle both under and over deployment
+- [x] Test grid with over-deployment strikethrough

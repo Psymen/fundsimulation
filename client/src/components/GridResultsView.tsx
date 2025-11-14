@@ -188,12 +188,12 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
                           className={`border border-border p-3 text-center cursor-pointer hover:opacity-80 transition-opacity relative ${getColor(scenario)}`}
                           onClick={() => scenario && setSelectedScenario(scenario)}
                         >
-                          {scenario && scenario.deploymentRate < 60 && (
+                          {scenario && (scenario.deploymentRate < 60 || scenario.deploymentRate > 200) && (
                             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                               <div className="w-full h-0.5 bg-red-500 rotate-[-20deg] opacity-70"></div>
                             </div>
                           )}
-                          <div className={`font-semibold ${scenario && scenario.deploymentRate < 60 ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
+                          <div className={`font-semibold ${scenario && (scenario.deploymentRate < 60 || scenario.deploymentRate > 200) ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
                             {formatValue(scenario)}
                           </div>
                           {scenario && (
@@ -204,7 +204,7 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
                               <div className="text-xs text-muted-foreground">
                                 {scenario.summary.moicP10.toFixed(2)}x - {scenario.summary.moicP90.toFixed(2)}x
                               </div>
-                              <div className={`text-xs mt-1 font-medium ${scenario.deploymentRate < 60 ? 'text-red-400' : 'text-muted-foreground'}`}>
+                              <div className={`text-xs mt-1 font-medium ${(scenario.deploymentRate < 60 || scenario.deploymentRate > 200) ? 'text-red-400' : 'text-muted-foreground'}`}>
                                 {scenario.deploymentRate.toFixed(0)}% deploy
                               </div>
                             </>

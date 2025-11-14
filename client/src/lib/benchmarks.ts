@@ -54,18 +54,19 @@ export function getBenchmarkCategory(moic: number): string {
 
 /**
  * Get color for benchmark category
+ * Returns badge styling with background and text colors for proper contrast
  */
 export function getBenchmarkColor(category: string): string {
   switch (category) {
     case "Top Quartile":
-      return "text-emerald-500";
+      return "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
     case "Above Median":
-      return "text-green-500";
+      return "bg-green-500/20 text-green-300 border-green-500/30";
     case "Below Median":
-      return "text-yellow-500";
+      return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
     case "Bottom Quartile":
-      return "text-red-500";
+      return "bg-red-500/20 text-red-300 border-red-500/30";
     default:
-      return "text-slate-400";
+      return "bg-slate-500/20 text-slate-300 border-slate-500/30";
   }
 }

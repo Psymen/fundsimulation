@@ -268,3 +268,8 @@
 
 - [x] Fix DialogOverlay component ref warning by wrapping with React.forwardRef
 - [x] Test Dialog component to verify warning is resolved
+
+## Bug Fix - Badge Text Contrast
+
+- [x] Fix "Top Quartile" badge text contrast for better readability
+- [x] Test badge visibility across all quartile levels

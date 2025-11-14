@@ -50,3 +50,55 @@
 - [x] Fix NaN display issue for old runs without seedPercentage
 - [x] Test IndexedDB storage with multiple simulation runs
 - [x] Verify no quota exceeded errors with large datasets
+
+## Portfolio Construction Analyzer
+
+### Types and Simulation Logic
+- [x] Create GridAnalysisParameters type (fund size, investment count range, seed percentages)
+- [x] Create GridScenario type (investment count, seed %, results, deployment metrics)
+- [x] Create GridAnalysisResult type (scenarios array, best strategies, commentary)
+- [x] Implement grid parameter generation (calculate buckets ≤10 for investment counts)
+- [x] Implement runGridAnalysis function to simulate all scenario combinations)
+- [x] Add capital deployment calculation logic (actual deployed vs fund size)
+- [x] Add reserve ratio auto-adjustment based on stage mix
+
+### UI - Parameter Panel
+- [x] Create PortfolioConstructionPage component
+- [x] Add fund size input (default $200M)
+- [x] Add investment count range inputs (min/max)
+- [x] Add seed percentage multi-select (0%, 25%, 50%, 75%, 100%)
+- [x] Add number of simulations input
+- [x] Add "Run Grid Analysis" button with validation
+- [x] Add loading state during grid simulation
+
+### UI - Results Visualization
+- [x] Create heatmap grid component (rows = investment counts, columns = seed %)
+- [x] Add color coding by MOIC or IRR (user toggle)
+- [x] Add cell click handler to show detailed scenario metrics
+- [x] Create "Best Strategies" section showing top scenarios
+- [x] Add deployment % metric display
+- [x] Add P10/P90 percentile displays
+- [ ] Add export functionality for grid results
+
+### AI Commentary
+- [x] Implement commentary generation analyzing grid patterns
+- [x] Identify optimal strategies by different criteria (highest MOIC, best risk-adjusted, etc.)
+- [x] Generate insights about seed vs Series A trade-offs
+- [x] Add deployment efficiency analysis
+- [x] Display commentary in results section
+
+### Storage and Navigation
+- [x] Update IndexedDB schema to support grid analyses
+- [x] Implement saveGridAnalysis function
+- [x] Implement loadGridAnalyses function
+- [x] Add tab navigation (Simulation vs Portfolio Construction)
+- [x] Update App.tsx with routing for new tab
+- [x] Add historical grid analyses panel
+
+### Testing
+- [x] Test grid analysis with various parameter combinations
+- [x] Verify deployment calculations are accurate
+- [x] Test heatmap visualization and interactions
+- [x] Verify commentary generation
+- [x] Test IndexedDB storage for grid analyses
+- [x] Test tab navigation

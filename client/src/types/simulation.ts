@@ -106,3 +106,70 @@ export interface SavedRun {
   summary: SummaryStatistics;
   results: SimulationResult[];
 }
+
+/**
+ * Portfolio Construction Grid Analysis Types
+ */
+
+/**
+ * Parameters for grid analysis
+ */
+export interface GridAnalysisParameters {
+  fundSize: number; // in millions
+  investmentCountMin: number;
+  investmentCountMax: number;
+  seedPercentages: number[]; // array of percentages to test (e.g., [0, 25, 50, 75, 100])
+  numSimulationsPerScenario: number;
+  
+  // Stage parameters (same for all scenarios)
+  seedStage: StageParameters;
+  seriesAStage: StageParameters;
+  
+  // Timing parameters
+  investmentPeriod: number;
+  fundLife: number;
+  exitWindowMin: number;
+  exitWindowMax: number;
+}
+
+/**
+ * Single scenario in the grid
+ */
+export interface GridScenario {
+  numCompanies: number;
+  seedPercentage: number;
+  
+  // Results
+  summary: SummaryStatistics;
+  
+  // Deployment metrics
+  targetCapital: number; // Total capital we attempted to deploy
+  deployedCapital: number; // Actual capital deployed
+  deploymentRate: number; // deployedCapital / fundSize (percentage)
+  undeployedCapital: number; // fundSize - deployedCapital
+  
+  // Average across simulations
+  avgNumSeedCompanies: number;
+  avgNumSeriesACompanies: number;
+}
+
+/**
+ * Best strategy recommendation
+ */
+export interface BestStrategy {
+  scenario: GridScenario;
+  criterion: string; // e.g., "Highest MOIC", "Best Risk-Adjusted Returns"
+  reasoning: string;
+}
+
+/**
+ * Complete grid analysis result
+ */
+export interface GridAnalysisResult {
+  id: string;
+  timestamp: number;
+  parameters: GridAnalysisParameters;
+  scenarios: GridScenario[];
+  bestStrategies: BestStrategy[];
+  commentary: string; // AI-generated qualitative analysis
+}

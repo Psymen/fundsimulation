@@ -143,35 +143,32 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950">
-      {/* Header */}
-      <header className="bg-slate-900 border-b border-slate-700 px-6 py-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-slate-100">{APP_TITLE}</h1>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleExportJSON}
-              className="gap-2"
-              disabled={!parameters}
-            >
-              <Copy className="h-4 w-4" />
-              Copy Parameters
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleExportCSV}
-              className="gap-2"
-              disabled={!results}
-            >
-              <Download className="h-4 w-4" />
-              Export CSV
-            </Button>
-          </div>
+    <div className="min-h-screen bg-slate-950">
+      {/* Export buttons */}
+      <div className="container mx-auto py-4">
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportJSON}
+            className="gap-2"
+            disabled={!parameters}
+          >
+            <Copy className="h-4 w-4" />
+            Copy Parameters
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            className="gap-2"
+            disabled={!results}
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </Button>
         </div>
-      </header>
+      </div>
 
       {/* Main Content - Three Column Layout */}
       <div className="flex-1 flex overflow-hidden">

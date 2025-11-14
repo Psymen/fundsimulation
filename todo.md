@@ -229,3 +229,16 @@
 - [x] Review spacing and hierarchy with critical design eye
 - [x] Test scrolling behavior on parameters panel
 - [x] Test dark theme across all views
+
+## Color Palette Refinement (Reduce Eye Strain)
+
+- [x] Replace pure black with dark gray (#0d1117 or #121212)
+- [x] Replace 100% white text with 87% opacity for high-emphasis text
+- [x] Update secondary text to 60% opacity
+- [x] Update muted text to 45% opacity (using 60%)
+- [x] Update card backgrounds to elevated surface color (#161b22)
+- [x] Update borders to subtle rgba(255, 255, 255, 0.1)
+- [x] Replace harsh accent colors with desaturated versions
+- [x] Update chart colors to softer, less saturated versions
+- [x] Test color contrast ratios meet WCAG AA standards
+- [x] Test refined palette across all views

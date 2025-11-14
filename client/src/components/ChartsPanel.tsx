@@ -135,7 +135,7 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                   }}
                 />
                 <Legend />
-                <Bar dataKey="count" fill="hsl(264, 80%, 60%)" name="Count" />
+                <Bar dataKey="count" fill="#a371f7" name="Count" />
               </BarChart>
             </ResponsiveContainer>
             <p className="text-xs text-muted-foreground mt-2">
@@ -170,7 +170,7 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                   }}
                 />
                 <Legend />
-                <Bar dataKey="count" fill="hsl(50, 90%, 65%)" name="Count" />
+                <Bar dataKey="count" fill="#d29922" name="Count" />
               </BarChart>
             </ResponsiveContainer>
             <p className="text-xs text-muted-foreground mt-2">
@@ -211,7 +211,7 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                   }}
                 />
                 <Legend />
-                <Bar dataKey="count" fill="hsl(150, 70%, 60%)" name="Count" />
+                <Bar dataKey="count" fill="#3fb950" name="Count" />
               </BarChart>
             </ResponsiveContainer>
             <p className="text-xs text-muted-foreground mt-2">

@@ -5,8 +5,10 @@
 import type {
   CompanyResult,
   ExitBucket,
+  InvestmentStage,
   PortfolioParameters,
   SimulationResult,
+  StageParameters,
   SummaryStatistics,
 } from "@/types/simulation";
 
@@ -72,39 +74,75 @@ function calculateIRR(cashFlows: number[], years: number[]): number {
 }
 
 /**
+ * Simulate a single company investment
+ */
+function simulateCompany(
+  stage: InvestmentStage,
+  stageParams: StageParameters,
+  exitWindowMin: number,
+  exitWindowMax: number
+): CompanyResult {
+  // Calculate invested capital (initial + follow-on)
+  const initialCheck = stageParams.avgCheckSize;
+  const followOn = initialCheck * (stageParams.followOnReserveRatio / 100);
+  const investedCapital = initialCheck + followOn;
+
+  // Sample outcome bucket from stage-specific distribution
+  const bucket = sampleBucket(stageParams.exitBuckets);
+
+  // Sample return multiple within bucket range
+  const returnMultiple = uniformRandom(bucket.minMultiple, bucket.maxMultiple);
+
+  // Sample exit year
+  const exitYear = uniformRandom(exitWindowMin, exitWindowMax);
+
+  // Calculate returned capital
+  const returnedCapital = investedCapital * returnMultiple;
+
+  return {
+    stage,
+    investedCapital,
+    returnedCapital,
+    returnMultiple,
+    exitYear,
+    bucketLabel: bucket.label,
+  };
+}
+
+/**
  * Run a single Monte Carlo simulation
  */
 export function runSingleSimulation(
   params: PortfolioParameters
 ): SimulationResult {
   const companies: CompanyResult[] = [];
-  const investmentPeriodYears = params.investmentPeriod;
+  
+  // Calculate number of seed vs Series A companies
+  const numSeedCompanies = Math.round(params.numCompanies * (params.seedPercentage / 100));
+  const numSeriesACompanies = params.numCompanies - numSeedCompanies;
 
-  for (let i = 0; i < params.numCompanies; i++) {
-    // Calculate invested capital (initial + follow-on)
-    const initialCheck = params.avgCheckSize;
-    const followOn = initialCheck * (params.followOnReserveRatio / 100);
-    const investedCapital = initialCheck + followOn;
+  // Simulate seed stage companies
+  for (let i = 0; i < numSeedCompanies; i++) {
+    companies.push(
+      simulateCompany(
+        "seed",
+        params.seedStage,
+        params.exitWindowMin,
+        params.exitWindowMax
+      )
+    );
+  }
 
-    // Sample outcome bucket
-    const bucket = sampleBucket(params.exitBuckets);
-
-    // Sample return multiple within bucket range
-    const returnMultiple = uniformRandom(bucket.minMultiple, bucket.maxMultiple);
-
-    // Sample exit year
-    const exitYear = uniformRandom(params.exitWindowMin, params.exitWindowMax);
-
-    // Calculate returned capital
-    const returnedCapital = investedCapital * returnMultiple;
-
-    companies.push({
-      investedCapital,
-      returnedCapital,
-      returnMultiple,
-      exitYear,
-      bucketLabel: bucket.label,
-    });
+  // Simulate Series A companies
+  for (let i = 0; i < numSeriesACompanies; i++) {
+    companies.push(
+      simulateCompany(
+        "seriesA",
+        params.seriesAStage,
+        params.exitWindowMin,
+        params.exitWindowMax
+      )
+    );
   }
 
   // Aggregate metrics
@@ -130,6 +168,7 @@ export function runSingleSimulation(
   const years: number[] = [];
 
   // Capital deployment (negative cash flows)
+  const investmentPeriodYears = params.investmentPeriod;
   const deploymentPerYear = totalInvestedCapital / investmentPeriodYears;
   for (let year = 0; year < investmentPeriodYears; year++) {
     cashFlows.push(-deploymentPerYear);
@@ -153,6 +192,8 @@ export function runSingleSimulation(
     grossIRR,
     numWriteOffs,
     numOutliers,
+    numSeedCompanies,
+    numSeriesACompanies,
   };
 }
 
@@ -172,61 +213,35 @@ export function runSimulations(
 }
 
 /**
- * Calculate percentile from sorted array
- */
-function percentile(sortedArray: number[], p: number): number {
-  if (sortedArray.length === 0) return 0;
-  const index = (p / 100) * (sortedArray.length - 1);
-  const lower = Math.floor(index);
-  const upper = Math.ceil(index);
-  const weight = index - lower;
-  return sortedArray[lower] * (1 - weight) + sortedArray[upper] * weight;
-}
-
-/**
  * Calculate summary statistics from simulation results
  */
 export function calculateSummaryStatistics(
   results: SimulationResult[]
 ): SummaryStatistics {
-  if (results.length === 0) {
-    return {
-      medianMOIC: 0,
-      moicP10: 0,
-      moicP90: 0,
-      medianIRR: 0,
-      irrP10: 0,
-      irrP90: 0,
-      probMOICAbove2x: 0,
-      probMOICAbove3x: 0,
-      probMOICAbove5x: 0,
-      avgWriteOffs: 0,
-      avgOutliers: 0,
-    };
-  }
-
-  // Extract and sort metrics
+  // Extract metrics
   const moics = results.map((r) => r.grossMOIC).sort((a, b) => a - b);
   const irrs = results.map((r) => r.grossIRR).sort((a, b) => a - b);
 
   // Calculate percentiles
-  const medianMOIC = percentile(moics, 50);
-  const moicP10 = percentile(moics, 10);
-  const moicP90 = percentile(moics, 90);
+  const getPercentile = (arr: number[], p: number) => {
+    const index = Math.floor(arr.length * p);
+    return arr[index];
+  };
 
-  const medianIRR = percentile(irrs, 50);
-  const irrP10 = percentile(irrs, 10);
-  const irrP90 = percentile(irrs, 90);
+  const medianMOIC = getPercentile(moics, 0.5);
+  const moicP10 = getPercentile(moics, 0.1);
+  const moicP90 = getPercentile(moics, 0.9);
+
+  const medianIRR = getPercentile(irrs, 0.5);
+  const irrP10 = getPercentile(irrs, 0.1);
+  const irrP90 = getPercentile(irrs, 0.9);
 
   // Calculate probabilities
-  const probMOICAbove2x =
-    (results.filter((r) => r.grossMOIC >= 2).length / results.length) * 100;
-  const probMOICAbove3x =
-    (results.filter((r) => r.grossMOIC >= 3).length / results.length) * 100;
-  const probMOICAbove5x =
-    (results.filter((r) => r.grossMOIC >= 5).length / results.length) * 100;
+  const probMOICAbove2x = results.filter((r) => r.grossMOIC >= 2).length / results.length;
+  const probMOICAbove3x = results.filter((r) => r.grossMOIC >= 3).length / results.length;
+  const probMOICAbove5x = results.filter((r) => r.grossMOIC >= 5).length / results.length;
 
-  // Calculate averages
+  // Average counts
   const avgWriteOffs =
     results.reduce((sum, r) => sum + r.numWriteOffs, 0) / results.length;
   const avgOutliers =

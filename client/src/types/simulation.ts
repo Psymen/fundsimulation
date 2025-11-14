@@ -13,19 +13,40 @@ export interface ExitBucket {
 }
 
 /**
+ * Investment stage (Seed or Series A)
+ */
+export type InvestmentStage = "seed" | "seriesA";
+
+/**
+ * Stage-specific parameters
+ */
+export interface StageParameters {
+  avgCheckSize: number; // in millions
+  followOnReserveRatio: number; // 0-100 (percentage)
+  targetOwnership: number; // 0-100 (percentage, for reference only)
+  exitBuckets: ExitBucket[];
+}
+
+/**
  * Portfolio parameters for simulation
  */
 export interface PortfolioParameters {
   fundSize: number; // in millions
   numCompanies: number;
-  avgCheckSize: number; // in millions
-  followOnReserveRatio: number; // 0-100 (percentage)
-  targetOwnership: number; // 0-100 (percentage, for reference only)
+  
+  // Portfolio composition
+  seedPercentage: number; // 0-100 (percentage of companies that are seed)
+  
+  // Stage-specific parameters
+  seedStage: StageParameters;
+  seriesAStage: StageParameters;
+  
+  // Timing parameters
   investmentPeriod: number; // in years
   fundLife: number; // in years
   exitWindowMin: number; // min exit year
   exitWindowMax: number; // max exit year
-  exitBuckets: ExitBucket[];
+  
   numSimulations: number;
 }
 
@@ -33,6 +54,7 @@ export interface PortfolioParameters {
  * Result of a single company within a simulation
  */
 export interface CompanyResult {
+  stage: InvestmentStage;
   investedCapital: number;
   returnedCapital: number;
   returnMultiple: number;
@@ -52,6 +74,8 @@ export interface SimulationResult {
   grossIRR: number;
   numWriteOffs: number;
   numOutliers: number;
+  numSeedCompanies: number;
+  numSeriesACompanies: number;
 }
 
 /**

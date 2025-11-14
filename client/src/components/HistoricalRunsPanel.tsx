@@ -96,6 +96,10 @@ function RunCard({ run, onLoadRun }: RunCardProps) {
             Fund: ${run.parameters.fundSize}M | Companies:{" "}
             {run.parameters.numCompanies}
           </div>
+          <div>
+            {Math.round((run.parameters.seedPercentage / 100) * run.parameters.numCompanies)} seed,{" "}
+            {run.parameters.numCompanies - Math.round((run.parameters.seedPercentage / 100) * run.parameters.numCompanies)} Series A
+          </div>
           <div>Simulations: {run.parameters.numSimulations}</div>
         </div>
 

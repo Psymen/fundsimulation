@@ -49,8 +49,8 @@ export default function Home() {
       setValidationError("Number of companies must be positive");
       return;
     }
-    if (parameters.avgCheckSize <= 0) {
-      setValidationError("Average check size must be positive");
+    if (parameters.seedStage.avgCheckSize <= 0 || parameters.seriesAStage.avgCheckSize <= 0) {
+      setValidationError("Average check sizes must be positive");
       return;
     }
     if (parameters.numSimulations <= 0) {

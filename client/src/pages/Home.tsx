@@ -29,6 +29,7 @@ import type {
 import { Copy, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useHotkeys } from "react-hotkeys-hook";
 
 export default function Home() {
   const [parameters, setParameters] =
@@ -50,6 +51,14 @@ export default function Home() {
     };
     initStorage();
   }, []);
+
+  // Keyboard shortcut: Cmd/Ctrl+Enter to run simulation
+  useHotkeys('mod+enter', (e) => {
+    e.preventDefault();
+    if (!isRunning && !validationError) {
+      handleRunSimulation();
+    }
+  }, [isRunning, validationError]);
 
   // Validate parameters
   useEffect(() => {
@@ -144,29 +153,44 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-950">
-      {/* Export buttons */}
-      <div className="container mx-auto py-4">
-        <div className="flex justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleExportJSON}
-            className="gap-2"
-            disabled={!parameters}
-          >
-            <Copy className="h-4 w-4" />
-            Copy Parameters
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleExportCSV}
-            className="gap-2"
-            disabled={!results}
-          >
-            <Download className="h-4 w-4" />
-            Export CSV
-          </Button>
+      {/* Top Action Bar - Pinned */}
+      <div className="sticky top-0 z-50 bg-slate-900 border-b border-slate-700 shadow-lg">
+        <div className="container mx-auto py-3 px-4">
+          <div className="flex items-center justify-between gap-4">
+            {/* Run Simulation Button - Pinned */}
+            <Button
+              onClick={handleRunSimulation}
+              disabled={isRunning || !!validationError}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8"
+              size="lg"
+            >
+              {isRunning ? "Running..." : "Run Simulations"}
+            </Button>
+            
+            {/* Export buttons */}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportJSON}
+                className="gap-2"
+                disabled={!parameters}
+              >
+                <Copy className="h-4 w-4" />
+                Copy Parameters
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExportCSV}
+                className="gap-2"
+                disabled={!results}
+              >
+                <Download className="h-4 w-4" />
+                Export CSV
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 

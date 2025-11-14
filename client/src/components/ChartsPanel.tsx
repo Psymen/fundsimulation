@@ -289,8 +289,12 @@ function createHistogram(
   return bins.map((count, index) => {
     const binStart = min + index * binWidth;
     const binEnd = binStart + binWidth;
+    // Format bin labels more cleanly - use integers for whole numbers
+    const formatValue = (val: number) => {
+      return Number.isInteger(val) ? val.toString() : val.toFixed(1);
+    };
     return {
-      bin: `${binStart.toFixed(1)}-${binEnd.toFixed(1)}`,
+      bin: `${formatValue(binStart)}-${formatValue(binEnd)}`,
       count,
     };
   });

@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Info } from "lucide-react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import type { GridAnalysisParameters, GridAnalysisResult, GridScenario, StageParameters } from "@/types/simulation";
 import { DEFAULT_PARAMETERS } from "@/lib/defaults";
@@ -100,8 +101,46 @@ export default function PortfolioConstruction() {
   
   const isValid = selectedSeedPercentages.length > 0 && investmentCountMin <= investmentCountMax;
   
+  // Keyboard shortcut: Cmd/Ctrl+Enter to run grid analysis
+  useHotkeys('mod+enter', (e) => {
+    e.preventDefault();
+    if (isValid && !isRunning) {
+      handleRunAnalysis();
+    }
+  }, [isValid, isRunning, handleRunAnalysis]);
+  
   return (
     <div className="min-h-screen bg-background">
+      {/* Top Action Bar - Pinned */}
+      <div className="sticky top-0 z-50 bg-slate-900 border-b border-slate-700 shadow-lg">
+        <div className="container mx-auto py-3 px-4">
+          <div className="flex items-center justify-between gap-4">
+            {/* Run Grid Analysis Button - Pinned */}
+            <Button
+              onClick={handleRunAnalysis}
+              disabled={!isValid || isRunning}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8"
+              size="lg"
+            >
+              {isRunning ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Running {progress.current}/{progress.total}
+                </>
+              ) : (
+                "Run Grid Analysis"
+              )}
+            </Button>
+            
+            {isRunning && (
+              <div className="text-sm text-slate-300">
+                This may take a few minutes...
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
       <div className="container mx-auto py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Portfolio Construction Analyzer</h1>
@@ -250,28 +289,6 @@ export default function PortfolioConstruction() {
                     </AccordionItem>
                   </Accordion>
                 </div>
-                
-                <Button
-                  onClick={handleRunAnalysis}
-                  disabled={!isValid || isRunning}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isRunning ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Running {progress.current}/{progress.total}
-                    </>
-                  ) : (
-                    "Run Grid Analysis"
-                  )}
-                </Button>
-                
-                {isRunning && (
-                  <div className="text-sm text-muted-foreground text-center">
-                    This may take a few minutes...
-                  </div>
-                )}
               </CardContent>
             </Card>
           </div>

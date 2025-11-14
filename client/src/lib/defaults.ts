@@ -105,7 +105,7 @@ export const DEFAULT_SERIES_A_STAGE: StageParameters = {
  * Default portfolio parameters
  */
 export const DEFAULT_PARAMETERS: PortfolioParameters = {
-  fundSize: 100, // $100M fund
+  fundSize: 200, // $200M fund
   numCompanies: 25,
   
   // 60% seed, 40% Series A

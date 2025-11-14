@@ -459,16 +459,6 @@ export default function ParametersPanel({
             {validationError}
           </div>
         )}
-
-        {/* Run Button */}
-        <Button
-          onClick={onRunSimulation}
-          disabled={isRunning || !probabilityValid || !!validationError}
-          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-          size="lg"
-        >
-          {isRunning ? "Running..." : "Run Simulations"}
-        </Button>
       </div>
     </div>
   );

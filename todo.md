@@ -191,3 +191,18 @@
 - [x] Update types to support new follow-on parameters
 - [x] Update defaults with realistic market assumptions
 - [x] Test new follow-on logic with various scenarios
+
+## UX Improvements
+
+- [x] Fix IRR distribution x-axis formatting (weird labels)
+- [x] Pin Run Simulation button to top of page in Simulation view
+- [x] Pin Run Grid Analysis button to top of page in Portfolio Construction view
+- [x] Install react-hotkeys-hook library
+- [x] Add keyboard shortcut (Cmd/Ctrl+Enter) to run simulation
+- [x] Add keyboard shortcut (Cmd/Ctrl+Enter) to run grid analysis
+- [x] Update default fund size from $100M to $200M
+- [x] Add benchmark data visualization to Portfolio Construction view
+- [x] Show industry benchmarks (top quartile, median, bottom quartile)
+- [x] Add visual comparison of simulation results vs benchmarks
+- [x] Test all keyboard shortcuts
+- [x] Test pinned buttons on mobile

@@ -6,10 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Checkbox } from "@/components/ui/checkbox";
 import { Loader2, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import type { GridAnalysisParameters, GridAnalysisResult, GridScenario } from "@/types/simulation";
+import type { GridAnalysisParameters, GridAnalysisResult, GridScenario, StageParameters } from "@/types/simulation";
 import { DEFAULT_PARAMETERS } from "@/lib/defaults";
 import { runGridAnalysis, identifyBestStrategies, generateCommentary } from "@/lib/grid-analysis";
 import GridResultsView from "@/components/GridResultsView";
+import StageParametersEditor from "@/components/StageParametersEditor";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export default function PortfolioConstruction() {
   // Grid parameters
@@ -18,6 +20,10 @@ export default function PortfolioConstruction() {
   const [investmentCountMax, setInvestmentCountMax] = useState(40);
   const [selectedSeedPercentages, setSelectedSeedPercentages] = useState<number[]>([0, 25, 50, 75, 100]);
   const [numSimulations, setNumSimulations] = useState(500);
+  
+  // Stage-specific parameters
+  const [seedStage, setSeedStage] = useState<StageParameters>(DEFAULT_PARAMETERS.seedStage);
+  const [seriesAStage, setSeriesAStage] = useState<StageParameters>(DEFAULT_PARAMETERS.seriesAStage);
   
   // Results
   const [gridResults, setGridResults] = useState<GridScenario[] | null>(null);
@@ -56,8 +62,8 @@ export default function PortfolioConstruction() {
         investmentCountMax,
         seedPercentages: selectedSeedPercentages,
         numSimulationsPerScenario: numSimulations,
-        seedStage: DEFAULT_PARAMETERS.seedStage,
-        seriesAStage: DEFAULT_PARAMETERS.seriesAStage,
+        seedStage,
+        seriesAStage,
         investmentPeriod: DEFAULT_PARAMETERS.investmentPeriod,
         fundLife: DEFAULT_PARAMETERS.fundLife,
         exitWindowMin: DEFAULT_PARAMETERS.exitWindowMin,
@@ -203,6 +209,40 @@ export default function PortfolioConstruction() {
                     max={2000}
                     step={100}
                   />
+                </div>
+                
+                {/* Stage-Specific Parameters */}
+                <div className="border-t pt-4">
+                  <h3 className="font-semibold mb-3">Stage-Specific Parameters</h3>
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="seed">
+                      <AccordionTrigger className="text-sm">
+                        <span className="text-emerald-400 font-semibold">Seed Stage Parameters</span>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <StageParametersEditor
+                          stage="seed"
+                          parameters={seedStage}
+                          onChange={setSeedStage}
+                          color="emerald"
+                        />
+                      </AccordionContent>
+                    </AccordionItem>
+                    
+                    <AccordionItem value="seriesA">
+                      <AccordionTrigger className="text-sm">
+                        <span className="text-blue-400 font-semibold">Series A Stage Parameters</span>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <StageParametersEditor
+                          stage="seriesA"
+                          parameters={seriesAStage}
+                          onChange={setSeriesAStage}
+                          color="blue"
+                        />
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
                 
                 <Button

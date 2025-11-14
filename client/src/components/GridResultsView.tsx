@@ -11,7 +11,7 @@ interface GridResultsViewProps {
 }
 
 export default function GridResultsView({ analysis }: GridResultsViewProps) {
-  const [metric, setMetric] = useState<"moic" | "irr">("moic");
+  // Removed IRR metric - MOIC only
   const [selectedScenario, setSelectedScenario] = useState<GridScenario | null>(null);
   
   // Get unique investment counts and seed percentages
@@ -27,10 +27,8 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
   const getColor = (scenario: GridScenario | undefined): string => {
     if (!scenario) return "bg-muted";
     
-    const value = metric === "moic" ? scenario.summary.medianMOIC : scenario.summary.medianIRR;
-    const allValues = analysis.scenarios.map(s => 
-      metric === "moic" ? s.summary.medianMOIC : s.summary.medianIRR
-    );
+    const value = scenario.summary.medianMOIC;
+    const allValues = analysis.scenarios.map(s => s.summary.medianMOIC);
     const min = Math.min(...allValues);
     const max = Math.max(...allValues);
     const normalized = (value - min) / (max - min);
@@ -45,8 +43,8 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
   
   const formatValue = (scenario: GridScenario | undefined): string => {
     if (!scenario) return "-";
-    const value = metric === "moic" ? scenario.summary.medianMOIC : scenario.summary.medianIRR;
-    return metric === "moic" ? `${value.toFixed(2)}x` : `${value.toFixed(1)}%`;
+    const value = scenario.summary.medianMOIC;
+    return `${value.toFixed(2)}x`;
   };
   
   return (
@@ -75,17 +73,11 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">{strategy.reasoning}</p>
-                <div className="grid grid-cols-3 gap-2 text-xs">
+                <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
                     <div className="text-muted-foreground">MOIC</div>
                     <div className="font-semibold text-emerald-400">
                       {strategy.scenario.summary.medianMOIC.toFixed(2)}x
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-muted-foreground">IRR</div>
-                    <div className="font-semibold text-amber-400">
-                      {strategy.scenario.summary.medianIRR.toFixed(1)}%
                     </div>
                   </div>
                   <div>
@@ -104,20 +96,10 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
       {/* Heatmap */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Portfolio Performance Heatmap</CardTitle>
-              <CardDescription>
-                {metric === "moic" ? "Median MOIC" : "Median IRR"} across configurations
-              </CardDescription>
-            </div>
-            <Tabs value={metric} onValueChange={(v) => setMetric(v as "moic" | "irr")}>
-              <TabsList>
-                <TabsTrigger value="moic">MOIC</TabsTrigger>
-                <TabsTrigger value="irr">IRR</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
+          <CardTitle>Portfolio Performance Heatmap</CardTitle>
+          <CardDescription>
+            Median MOIC across configurations
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">

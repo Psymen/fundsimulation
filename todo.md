@@ -102,3 +102,19 @@
 - [x] Verify commentary generation
 - [x] Test IndexedDB storage for grid analyses
 - [x] Test tab navigation
+
+## Portfolio Construction Improvements
+
+### UI Simplification
+- [x] Remove IRR toggle from heatmap (MOIC only)
+- [x] Remove IRR column from best strategies cards
+- [x] Simplify simulations per scenario input (remove increment/decrement buttons)
+
+### Stage-Specific Parameters
+- [x] Add Seed Stage parameter editor to Portfolio Construction page
+- [x] Add Series A Stage parameter editor to Portfolio Construction page
+- [x] Include check size inputs for both stages
+- [x] Include reserve ratio inputs for both stages
+- [x] Include exit distribution editors for both stages
+- [x] Update grid analysis to use user-configured stage parameters instead of defaults
+- [x] Add accordion/collapsible sections for stage parameters

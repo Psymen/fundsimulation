@@ -90,10 +90,10 @@ export function ScenarioDetailModal({ scenario, isOpen, onClose }: ScenarioDetai
             <div className="border rounded-lg p-4">
               <div className="text-sm text-muted-foreground mb-1">Median IRR</div>
               <div className="text-2xl font-bold text-amber-400">
-                {scenario.summary.medianIRR.toFixed(1)}%
+                {(scenario.summary.medianIRR * 100).toFixed(1)}%
               </div>
               <div className="text-xs text-muted-foreground mt-1">
-                σ = {scenario.summary.irrStdDev.toFixed(1)}%
+                σ = {(scenario.summary.irrStdDev * 100).toFixed(1)}%
               </div>
             </div>
 
@@ -152,23 +152,23 @@ export function ScenarioDetailModal({ scenario, isOpen, onClose }: ScenarioDetai
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">P10:</span>
-                    <span className="font-mono">{scenario.summary.irrP10.toFixed(1)}%</span>
+                    <span className="font-mono">{(scenario.summary.irrP10 * 100).toFixed(1)}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">P25:</span>
-                    <span className="font-mono">{irrP25.toFixed(1)}%</span>
+                    <span className="font-mono">{(irrP25 * 100).toFixed(1)}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">P50 (Median):</span>
-                    <span className="font-mono font-semibold">{scenario.summary.medianIRR.toFixed(1)}%</span>
+                    <span className="font-mono font-semibold">{(scenario.summary.medianIRR * 100).toFixed(1)}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">P75:</span>
-                    <span className="font-mono">{irrP75.toFixed(1)}%</span>
+                    <span className="font-mono">{(irrP75 * 100).toFixed(1)}%</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">P90:</span>
-                    <span className="font-mono">{scenario.summary.irrP90.toFixed(1)}%</span>
+                    <span className="font-mono">{(scenario.summary.irrP90 * 100).toFixed(1)}%</span>
                   </div>
                 </div>
               </div>

@@ -157,3 +157,11 @@
 - [x] Show deployment metrics and company counts
 - [x] Add modal trigger on grid cell click
 - [x] Test modal with different scenarios
+
+## Fix IRR Calculation Bug
+
+- [x] Investigate IRR calculation in simulation.ts
+- [x] Identify why IRR is showing 0.3% instead of ~30%
+- [x] Fix IRR display formatting (multiply by 100 before displaying)
+- [x] Test IRR calculations with known scenarios
+- [x] Verify IRR displays correctly in all views (simulation, grid analysis, modal)

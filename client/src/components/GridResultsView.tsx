@@ -258,10 +258,10 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
               <div className="border rounded-lg p-4">
                 <div className="text-sm text-muted-foreground mb-1">Median IRR</div>
                 <div className="text-2xl font-bold text-amber-400">
-                  {selectedScenario.summary.medianIRR.toFixed(1)}%
+                  {(selectedScenario.summary.medianIRR * 100).toFixed(1)}%
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">
-                  P10: {selectedScenario.summary.irrP10.toFixed(1)}% | P90: {selectedScenario.summary.irrP90.toFixed(1)}%
+                  P10: {(selectedScenario.summary.irrP10 * 100).toFixed(1)}% | P90: {(selectedScenario.summary.irrP90 * 100).toFixed(1)}%
                 </div>
               </div>
               

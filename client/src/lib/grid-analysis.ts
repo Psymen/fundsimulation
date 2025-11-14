@@ -176,7 +176,7 @@ export function identifyBestStrategies(scenarios: GridScenario[]): BestStrategy[
     strategies.push({
       scenario: highestIRR,
       criterion: "Highest Median IRR",
-      reasoning: `${highestIRR.numCompanies} companies with ${highestIRR.seedPercentage}% seed achieves ${highestIRR.summary.medianIRR.toFixed(1)}% IRR with ${highestIRR.deploymentRate.toFixed(0)}% deployment.`,
+      reasoning: `${highestIRR.numCompanies} companies with ${highestIRR.seedPercentage}% seed achieves ${(highestIRR.summary.medianIRR * 100).toFixed(1)}% IRR with ${highestIRR.deploymentRate.toFixed(0)}% deployment.`,
     });
   }
   

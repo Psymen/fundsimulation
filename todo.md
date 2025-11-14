@@ -253,3 +253,13 @@
 - [x] Check metric cards, probability badges, and stat displays
 - [x] Test both Simulation and Portfolio Construction views
 - [x] Verify 100% dark theme consistency across all elements
+
+## UI Refinements (Polish)
+
+- [x] Remove number input spinners (up/down arrows) with CSS
+- [x] Pin top bar to viewport top (stays visible when scrolling)
+- [x] Add background shade to stage parameters sections for visual distinction
+- [x] Create keyboard shortcuts modal component
+- [x] Add "?" key listener to show shortcuts modal
+- [x] List all keyboard shortcuts in modal (Cmd/Ctrl+Enter to run)
+- [x] Test all refinements across both views

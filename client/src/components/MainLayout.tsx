@@ -2,6 +2,7 @@ import { Link, useLocation } from "wouter";
 import { APP_TITLE } from "@/const";
 import { Button } from "@/components/ui/button";
 import { BarChart3, Network } from "lucide-react";
+import KeyboardShortcutsModal from "@/components/KeyboardShortcutsModal";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -50,6 +51,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
       <main className="flex-1">
         {children}
       </main>
+      
+      {/* Keyboard Shortcuts Modal */}
+      <KeyboardShortcutsModal />
     </div>
   );
 }

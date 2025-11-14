@@ -346,7 +346,7 @@ export default function ParametersPanel({
           
           <Accordion type="multiple" defaultValue={["seed", "seriesA"]} className="space-y-2">
             {/* Seed Stage */}
-            <AccordionItem value="seed" className="border border-border rounded-lg bg-card shadow-sm">
+            <AccordionItem value="seed" className="border border-border rounded-lg bg-muted/30 shadow-sm">
               <AccordionTrigger className="px-4 hover:no-underline">
                 <span className="text-sm font-medium text-emerald-400">Seed Stage</span>
               </AccordionTrigger>
@@ -399,7 +399,7 @@ export default function ParametersPanel({
             </AccordionItem>
 
             {/* Series A Stage */}
-            <AccordionItem value="seriesA" className="border border-border rounded-lg bg-card shadow-sm">
+            <AccordionItem value="seriesA" className="border border-border rounded-lg bg-muted/30 shadow-sm">
               <AccordionTrigger className="px-4 hover:no-underline">
                 <span className="text-sm font-medium text-blue-400">Series A Stage</span>
               </AccordionTrigger>

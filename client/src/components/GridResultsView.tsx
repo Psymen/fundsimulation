@@ -304,10 +304,30 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
           <CardDescription>Key insights from the grid analysis</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="prose prose-sm dark:prose-invert max-w-none">
-            <div className="whitespace-pre-wrap text-sm leading-relaxed">
-              {analysis.commentary}
-            </div>
+          <div className="space-y-4 text-sm leading-relaxed">
+            {analysis.commentary.split('\n\n').map((section, idx) => {
+              const lines = section.split('\n').filter(l => l.trim());
+              if (lines.length === 0) return null;
+              
+              // Check if first line is a heading (starts with **)
+              const firstLine = lines[0];
+              const isHeading = firstLine.startsWith('**') && firstLine.endsWith('**');
+              
+              return (
+                <div key={idx} className="space-y-2">
+                  {isHeading && (
+                    <h4 className="font-semibold text-base text-foreground">
+                      {firstLine.replace(/\*\*/g, '')}
+                    </h4>
+                  )}
+                  {lines.slice(isHeading ? 1 : 0).map((line, lineIdx) => (
+                    <p key={lineIdx} className="text-muted-foreground">
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              );
+            })}
           </div>
         </CardContent>
       </Card>

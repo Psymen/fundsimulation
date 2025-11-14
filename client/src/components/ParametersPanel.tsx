@@ -136,6 +136,7 @@ export default function ParametersPanel({
                 onChange={(e) =>
                   updateExitBucket(stage, index, "probability", Number(e.target.value))
                 }
+                onFocus={(e) => e.target.select()}
                 className="bg-slate-900 border-slate-600 text-slate-100 text-xs h-7"
               />
             </div>
@@ -148,6 +149,7 @@ export default function ParametersPanel({
                 onChange={(e) =>
                   updateExitBucket(stage, index, "minMultiple", Number(e.target.value))
                 }
+                onFocus={(e) => e.target.select()}
                 className="bg-slate-900 border-slate-600 text-slate-100 text-xs h-7"
               />
             </div>
@@ -160,6 +162,7 @@ export default function ParametersPanel({
                 onChange={(e) =>
                   updateExitBucket(stage, index, "maxMultiple", Number(e.target.value))
                 }
+                onFocus={(e) => e.target.select()}
                 className="bg-slate-900 border-slate-600 text-slate-100 text-xs h-7"
               />
             </div>

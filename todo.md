@@ -128,3 +128,10 @@
 - [x] Update GridResultsView to display "Worst Strategies" section
 - [x] Style worst strategies cards with warning colors (red/orange)
 - [x] Test worst strategies identification
+
+## Formatting Fixes
+
+- [x] Fix analyst commentary to use HTML/CSS formatting instead of markdown
+- [x] Remove leading zeros from number input fields
+- [x] Test commentary rendering
+- [x] Test number input behavior

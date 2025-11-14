@@ -44,6 +44,7 @@ export default function StageParametersEditor({ stage, parameters, onChange, col
           type="number"
           value={parameters.avgCheckSize}
           onChange={(e) => onChange({ ...parameters, avgCheckSize: Number(e.target.value) })}
+          onFocus={(e) => e.target.select()}
           min={0.1}
           step={0.1}
         />
@@ -70,6 +71,7 @@ export default function StageParametersEditor({ stage, parameters, onChange, col
           type="number"
           value={parameters.followOnReserveRatio}
           onChange={(e) => onChange({ ...parameters, followOnReserveRatio: Number(e.target.value) })}
+          onFocus={(e) => e.target.select()}
           min={0}
           max={200}
         />
@@ -93,6 +95,7 @@ export default function StageParametersEditor({ stage, parameters, onChange, col
           type="number"
           value={parameters.targetOwnership}
           onChange={(e) => onChange({ ...parameters, targetOwnership: Number(e.target.value) })}
+          onFocus={(e) => e.target.select()}
           min={1}
           max={100}
         />
@@ -149,6 +152,7 @@ export default function StageParametersEditor({ stage, parameters, onChange, col
                   type="number"
                   value={bucket.probability}
                   onChange={(e) => handleBucketChange(idx, 'probability', Number(e.target.value))}
+                  onFocus={(e) => e.target.select()}
                   min={0}
                   max={100}
                   step={0.1}
@@ -158,6 +162,7 @@ export default function StageParametersEditor({ stage, parameters, onChange, col
                   type="number"
                   value={bucket.minMultiple}
                   onChange={(e) => handleBucketChange(idx, 'minMultiple', Number(e.target.value))}
+                  onFocus={(e) => e.target.select()}
                   min={0}
                   step={0.1}
                   className="h-8"
@@ -166,6 +171,7 @@ export default function StageParametersEditor({ stage, parameters, onChange, col
                   type="number"
                   value={bucket.maxMultiple}
                   onChange={(e) => handleBucketChange(idx, 'maxMultiple', Number(e.target.value))}
+                  onFocus={(e) => e.target.select()}
                   min={0}
                   step={0.1}
                   className="h-8"

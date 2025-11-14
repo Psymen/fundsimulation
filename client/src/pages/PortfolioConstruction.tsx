@@ -126,6 +126,7 @@ export default function PortfolioConstruction() {
                     type="number"
                     value={fundSize}
                     onChange={(e) => setFundSize(Number(e.target.value))}
+                    onFocus={(e) => e.target.select()}
                     min={10}
                     max={1000}
                   />
@@ -141,6 +142,7 @@ export default function PortfolioConstruction() {
                         type="number"
                         value={investmentCountMin}
                         onChange={(e) => setInvestmentCountMin(Number(e.target.value))}
+                        onFocus={(e) => e.target.select()}
                         min={5}
                         max={100}
                       />
@@ -152,6 +154,7 @@ export default function PortfolioConstruction() {
                         type="number"
                         value={investmentCountMax}
                         onChange={(e) => setInvestmentCountMax(Number(e.target.value))}
+                        onFocus={(e) => e.target.select()}
                         min={5}
                         max={100}
                       />
@@ -207,6 +210,7 @@ export default function PortfolioConstruction() {
                     type="number"
                     value={numSimulations}
                     onChange={(e) => setNumSimulations(Number(e.target.value))}
+                    onFocus={(e) => e.target.select()}
                     min={100}
                     max={2000}
                     step={100}

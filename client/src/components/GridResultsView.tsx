@@ -6,6 +6,7 @@ import type { GridAnalysisResult, GridScenario } from "@/types/simulation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp, TrendingDown, Target, Award, BarChart3 } from "lucide-react";
 import { ScenarioDetailModal } from "@/components/ScenarioDetailModal";
+import { IndustryBenchmarksModal } from "@/components/IndustryBenchmarksModal";
 import { VC_BENCHMARKS, getBenchmarkCategory, getBenchmarkColor } from "@/lib/benchmarks";
 
 interface GridResultsViewProps {
@@ -15,6 +16,7 @@ interface GridResultsViewProps {
 export default function GridResultsView({ analysis }: GridResultsViewProps) {
   // Removed IRR metric - MOIC only
   const [selectedScenario, setSelectedScenario] = useState<GridScenario | null>(null);
+  const [benchmarksOpen, setBenchmarksOpen] = useState(false);
   
   // Get unique investment counts and seed percentages
   const investmentCounts = Array.from(new Set(analysis.scenarios.map(s => s.numCompanies))).sort((a, b) => a - b);
@@ -50,65 +52,27 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
   
   return (
     <div className="space-y-6">
-      {/* Industry Benchmarks */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-blue-500" />
-            Industry Benchmarks
-          </CardTitle>
-          <CardDescription>Compare your simulations against VC industry performance data</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            {VC_BENCHMARKS.map((benchmark) => (
-              <div key={benchmark.category} className="border rounded-lg p-4">
-                <div className="text-sm font-medium text-muted-foreground mb-1">
-                  {benchmark.category}
-                </div>
-                <div className="text-2xl font-bold mb-1">
-                  {benchmark.moic.toFixed(1)}x MOIC
-                </div>
-                <div className="text-sm text-muted-foreground mb-2">
-                  {(benchmark.irr * 100).toFixed(0)}% IRR
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {benchmark.description}
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          {/* Show where best strategy falls */}
-          {analysis.bestStrategies.length > 0 && (
-            <div className="border-t pt-4">
-              <div className="text-sm font-medium mb-2">Your Best Strategy Performance</div>
-              <div className="flex items-center gap-4">
-                <div>
-                  <span className="text-2xl font-bold">
-                    {analysis.bestStrategies[0].scenario.summary.medianMOIC.toFixed(2)}x
-                  </span>
-                  <span className="text-sm text-muted-foreground ml-2">Median MOIC</span>
-                </div>
-                <div className="flex-1">
-                  <Badge className={getBenchmarkColor(getBenchmarkCategory(analysis.bestStrategies[0].scenario.summary.medianMOIC))}>
-                    {getBenchmarkCategory(analysis.bestStrategies[0].scenario.summary.medianMOIC)}
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
       {/* Best Strategies */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Award className="h-5 w-5 text-yellow-500" />
-            Best Strategies
-          </CardTitle>
-          <CardDescription>Top performing portfolio configurations</CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Award className="h-5 w-5 text-yellow-500" />
+                Best Strategies
+              </CardTitle>
+              <CardDescription>Top performing portfolio configurations</CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setBenchmarksOpen(true)}
+              className="flex items-center gap-2"
+            >
+              <BarChart3 className="h-4 w-4" />
+              View Benchmarks
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -414,6 +378,13 @@ export default function GridResultsView({ analysis }: GridResultsViewProps) {
         scenario={selectedScenario}
         isOpen={selectedScenario !== null}
         onClose={() => setSelectedScenario(null)}
+      />
+      
+      {/* Industry Benchmarks Modal */}
+      <IndustryBenchmarksModal
+        open={benchmarksOpen}
+        onOpenChange={setBenchmarksOpen}
+        bestStrategyMOIC={analysis.bestStrategies.length > 0 ? analysis.bestStrategies[0].scenario.summary.medianMOIC : undefined}
       />
     </div>
   );

@@ -273,3 +273,12 @@
 
 - [x] Fix "Top Quartile" badge text contrast for better readability
 - [x] Test badge visibility across all quartile levels
+
+## UX Improvements - Benchmarks Modal & Global Shortcuts
+
+- [x] Create Industry Benchmarks modal component
+- [x] Move benchmark comparison data from main view to modal
+- [x] Add "View Benchmarks" button in Best Strategies section
+- [x] Make keyboard shortcuts global (work even when focused on inputs)
+- [x] Test modal opens correctly with benchmark data
+- [x] Test Cmd/Ctrl+Enter works from any focus state

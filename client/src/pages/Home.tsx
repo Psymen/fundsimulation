@@ -52,12 +52,14 @@ export default function Home() {
     initStorage();
   }, []);
 
-  // Keyboard shortcut: Cmd/Ctrl+Enter to run simulation
+  // Keyboard shortcut: Cmd/Ctrl+Enter to run simulation (works globally, even in input fields)
   useHotkeys('mod+enter', (e) => {
     e.preventDefault();
     if (!isRunning && !validationError) {
       handleRunSimulation();
     }
+  }, {
+    enableOnFormTags: ['INPUT', 'TEXTAREA', 'SELECT'],
   }, [isRunning, validationError]);
 
   // Validate parameters

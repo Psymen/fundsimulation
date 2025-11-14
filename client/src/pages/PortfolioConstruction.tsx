@@ -101,12 +101,14 @@ export default function PortfolioConstruction() {
   
   const isValid = selectedSeedPercentages.length > 0 && investmentCountMin <= investmentCountMax;
   
-  // Keyboard shortcut: Cmd/Ctrl+Enter to run grid analysis
+  // Keyboard shortcut: Cmd/Ctrl+Enter to run grid analysis (works globally, even in input fields)
   useHotkeys('mod+enter', (e) => {
     e.preventDefault();
     if (isValid && !isRunning) {
       handleRunAnalysis();
     }
+  }, {
+    enableOnFormTags: ['INPUT', 'TEXTAREA', 'SELECT'],
   }, [isValid, isRunning, handleRunAnalysis]);
   
   return (

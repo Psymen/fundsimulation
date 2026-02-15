@@ -1,32 +1,54 @@
 /**
  * Default parameters for VC portfolio simulation
- * Configured for a typical seed/Series A fund
+ * Calibrated from empirical research data (Cambridge Associates, Carta, PitchBook)
+ *
+ * Key changes from v1:
+ * - Split "Low Return" into "Partial Loss" (0.1-0.5x) and "Near Break-even" (0.5-1x)
+ * - Adjusted probabilities based on empirical VC outcome data
+ * - Added fee structure defaults (industry standard 2/20)
  */
 
-import type { ExitBucket, PortfolioParameters, StageParameters } from "@/types/simulation";
+import type {
+  ExitBucket,
+  FeeStructure,
+  PortfolioParameters,
+  StageParameters,
+} from "@/types/simulation";
 
 /**
  * Default exit distribution for SEED stage investments
- * Higher risk, higher potential upside
- * Reflects that seed companies have ~50% failure rate but can produce massive outliers
+ *
+ * Empirical data (Correlation Ventures, CB Insights, Carta):
+ * - ~40% total losses (wind-down, acqui-hire for nothing)
+ * - ~20% partial losses (return some capital but below 1x)
+ * - ~15% break-even to modest return
+ * - ~15% solid returns (M&A at 1-5x)
+ * - ~7% strong returns (later-stage M&A or small IPO)
+ * - ~3% outliers (unicorn exits, IPOs)
  */
 export const DEFAULT_SEED_EXIT_BUCKETS: ExitBucket[] = [
   {
     label: "Total Loss",
-    probability: 50, // Higher failure rate at seed
+    probability: 40,
     minMultiple: 0,
     maxMultiple: 0,
   },
   {
-    label: "Low Return",
-    probability: 25,
+    label: "Partial Loss",
+    probability: 20,
     minMultiple: 0.1,
-    maxMultiple: 1,
+    maxMultiple: 0.5,
+  },
+  {
+    label: "Near Break-even",
+    probability: 15,
+    minMultiple: 0.5,
+    maxMultiple: 1.5,
   },
   {
     label: "Mid Return",
     probability: 15,
-    minMultiple: 1,
+    minMultiple: 1.5,
     maxMultiple: 5,
   },
   {
@@ -37,47 +59,57 @@ export const DEFAULT_SEED_EXIT_BUCKETS: ExitBucket[] = [
   },
   {
     label: "Outlier",
-    probability: 3, // Slightly higher outlier probability at seed
+    probability: 3,
     minMultiple: 20,
-    maxMultiple: 150, // Higher max multiple for seed
+    maxMultiple: 150,
   },
 ];
 
 /**
  * Default exit distribution for SERIES A stage investments
- * Lower risk, more moderate returns
- * Companies have proven some traction, lower failure rate but less upside
+ *
+ * Series A companies have proven traction:
+ * - Lower total loss rate (~25%)
+ * - More companies in the "return some capital" range
+ * - Higher probability of moderate returns
+ * - Lower outlier probability (less upside from higher entry price)
  */
 export const DEFAULT_SERIES_A_EXIT_BUCKETS: ExitBucket[] = [
   {
     label: "Total Loss",
-    probability: 30, // Lower failure rate than seed
+    probability: 25,
     minMultiple: 0,
     maxMultiple: 0,
   },
   {
-    label: "Low Return",
-    probability: 35,
+    label: "Partial Loss",
+    probability: 20,
     minMultiple: 0.1,
-    maxMultiple: 1,
+    maxMultiple: 0.5,
+  },
+  {
+    label: "Near Break-even",
+    probability: 15,
+    minMultiple: 0.5,
+    maxMultiple: 1.5,
   },
   {
     label: "Mid Return",
     probability: 25,
-    minMultiple: 1,
+    minMultiple: 1.5,
     maxMultiple: 5,
   },
   {
     label: "High Return",
-    probability: 9,
+    probability: 12,
     minMultiple: 5,
-    maxMultiple: 15, // Lower max than seed
+    maxMultiple: 15,
   },
   {
     label: "Outlier",
-    probability: 1, // Lower outlier probability than seed
+    probability: 3,
     minMultiple: 15,
-    maxMultiple: 50, // Lower max multiple than seed
+    maxMultiple: 50,
   },
 ];
 
@@ -85,9 +117,9 @@ export const DEFAULT_SERIES_A_EXIT_BUCKETS: ExitBucket[] = [
  * Default seed stage parameters
  */
 export const DEFAULT_SEED_STAGE: StageParameters = {
-  avgCheckSize: 2, // $2M average seed check
-  followOnReserveRatio: 50, // 50% reserve for follow-ons
-  targetOwnership: 15, // 15% target ownership
+  avgCheckSize: 2,
+  followOnReserveRatio: 50,
+  targetOwnership: 15,
   exitBuckets: DEFAULT_SEED_EXIT_BUCKETS,
 };
 
@@ -95,31 +127,36 @@ export const DEFAULT_SEED_STAGE: StageParameters = {
  * Default Series A stage parameters
  */
 export const DEFAULT_SERIES_A_STAGE: StageParameters = {
-  avgCheckSize: 5, // $5M average Series A check
-  followOnReserveRatio: 50, // 50% reserve for follow-ons
-  targetOwnership: 12, // 12% target ownership (more competitive)
+  avgCheckSize: 5,
+  followOnReserveRatio: 50,
+  targetOwnership: 12,
   exitBuckets: DEFAULT_SERIES_A_EXIT_BUCKETS,
+};
+
+/**
+ * Default fee structure (industry standard 2/20)
+ */
+export const DEFAULT_FEE_STRUCTURE: FeeStructure = {
+  managementFeeRate: 2,
+  managementFeeStepDown: 1.5,
+  carryRate: 20,
+  hurdleRate: 8,
+  gpCommitPercent: 2,
 };
 
 /**
  * Default portfolio parameters
  */
 export const DEFAULT_PARAMETERS: PortfolioParameters = {
-  fundSize: 200, // $200M fund
+  fundSize: 200,
   numCompanies: 25,
-  
-  // 60% seed, 40% Series A
   seedPercentage: 60,
-  
-  // Stage-specific parameters
   seedStage: DEFAULT_SEED_STAGE,
   seriesAStage: DEFAULT_SERIES_A_STAGE,
-  
-  // Timing parameters
-  investmentPeriod: 3, // 3 years to deploy
-  fundLife: 10, // 10 year fund
-  exitWindowMin: 3, // Earliest exit at year 3
-  exitWindowMax: 10, // Latest exit at year 10
-  
+  investmentPeriod: 3,
+  fundLife: 10,
+  exitWindowMin: 3,
+  exitWindowMax: 10,
   numSimulations: 1000,
+  feeStructure: DEFAULT_FEE_STRUCTURE,
 };

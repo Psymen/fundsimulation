@@ -13,6 +13,45 @@ export interface ExitBucket {
 }
 
 /**
+ * Fee structure for fund economics (2/20 standard)
+ */
+export interface FeeStructure {
+  managementFeeRate: number; // Annual % on committed capital (default 2%)
+  managementFeeStepDown: number; // Annual % after investment period (default 1.5%)
+  carryRate: number; // % of profits above hurdle (default 20%)
+  hurdleRate: number; // Preferred return % (default 8%)
+  gpCommitPercent: number; // GP commitment as % of fund (default 2%)
+}
+
+/**
+ * Net returns calculation result
+ */
+export interface NetReturnsResult {
+  grossProceeds: number;
+  managementFees: number;
+  carriedInterest: number;
+  netToLP: number;
+  netMOIC: number;
+  feeDragPercent: number;
+  gpTotalComp: number;
+  distributable: number;
+}
+
+/**
+ * Yearly fund metrics for J-curve / DPI tracking
+ */
+export interface YearlyFundMetrics {
+  year: number;
+  capitalCalled: number;
+  cumulativeDistributions: number;
+  unrealizedValue: number;
+  managementFees: number;
+  dpi: number; // Distributions to Paid-In
+  rvpi: number; // Residual Value to Paid-In
+  tvpi: number; // Total Value to Paid-In (DPI + RVPI)
+}
+
+/**
  * Investment stage (Seed or Series A)
  */
 export type InvestmentStage = "seed" | "seriesA";
@@ -33,21 +72,24 @@ export interface StageParameters {
 export interface PortfolioParameters {
   fundSize: number; // in millions
   numCompanies: number;
-  
+
   // Portfolio composition
   seedPercentage: number; // 0-100 (percentage of companies that are seed)
-  
+
   // Stage-specific parameters
   seedStage: StageParameters;
   seriesAStage: StageParameters;
-  
+
   // Timing parameters
   investmentPeriod: number; // in years
   fundLife: number; // in years
   exitWindowMin: number; // min exit year
   exitWindowMax: number; // max exit year
-  
+
   numSimulations: number;
+
+  // Fee structure (optional - defaults to 2/20)
+  feeStructure?: FeeStructure;
 }
 
 /**
@@ -76,6 +118,16 @@ export interface SimulationResult {
   numOutliers: number;
   numSeedCompanies: number;
   numSeriesACompanies: number;
+
+  // Net returns (after fees and carry)
+  netMOIC?: number;
+  netIRR?: number;
+  managementFees?: number;
+  carriedInterest?: number;
+  feeDragPercent?: number;
+
+  // Yearly metrics (J-curve data)
+  yearlyMetrics?: YearlyFundMetrics[];
 }
 
 /**
@@ -95,6 +147,13 @@ export interface SummaryStatistics {
   probMOICAbove5x: number;
   avgWriteOffs: number;
   avgOutliers: number;
+
+  // Net metrics (after fees)
+  medianNetMOIC?: number;
+  netMoicP10?: number;
+  netMoicP90?: number;
+  medianNetIRR?: number;
+  avgFeeDrag?: number;
 }
 
 /**

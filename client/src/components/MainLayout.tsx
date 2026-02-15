@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { APP_TITLE } from "@/const";
 import { Button } from "@/components/ui/button";
-import { BarChart3, Network } from "lucide-react";
+import { BarChart3, Network, TrendingUp, DollarSign, ShieldAlert } from "lucide-react";
 import KeyboardShortcutsModal from "@/components/KeyboardShortcutsModal";
 
 interface MainLayoutProps {
@@ -13,7 +13,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
   
   const tabs = [
     { path: "/", label: "Simulation", icon: BarChart3 },
-    { path: "/portfolio-construction", label: "Portfolio Construction", icon: Network },
+    { path: "/portfolio-construction", label: "Portfolio", icon: Network },
+    { path: "/power-law", label: "Power Law", icon: TrendingUp },
+    { path: "/fund-economics", label: "Economics", icon: DollarSign },
+    { path: "/stress-test", label: "Stress Test", icon: ShieldAlert },
   ];
   
   return (

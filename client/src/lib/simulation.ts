@@ -1,6 +1,6 @@
 /**
  * Monte Carlo simulation logic for VC portfolio analysis
- * Updated with realistic pro-rata follow-on investment modeling
+ * Updated with realistic distributions, exit timing, and fee modeling
  */
 
 import type {
@@ -12,19 +12,20 @@ import type {
   StageParameters,
   SummaryStatistics,
 } from "@/types/simulation";
-
-/**
- * Sample a random value uniformly between min and max
- */
-function uniformRandom(min: number, max: number): number {
-  return min + Math.random() * (max - min);
-}
+import {
+  sampleReturnMultiple,
+  sampleExitYear,
+  uniformRandom,
+} from "@/lib/distributions";
+import { calculateNetReturns } from "@/lib/fees";
+import { DEFAULT_FEE_STRUCTURE } from "@/lib/fees";
+import { calculateYearlyMetrics } from "@/lib/fund-metrics";
 
 /**
  * Sample an outcome bucket based on probabilities
  */
 function sampleBucket(buckets: ExitBucket[]): ExitBucket {
-  const rand = Math.random() * 100; // 0-100
+  const rand = Math.random() * 100;
   let cumulative = 0;
 
   for (const bucket of buckets) {
@@ -34,7 +35,6 @@ function sampleBucket(buckets: ExitBucket[]): ExitBucket {
     }
   }
 
-  // Fallback to last bucket if rounding issues
   return buckets[buckets.length - 1];
 }
 
@@ -43,8 +43,7 @@ function sampleBucket(buckets: ExitBucket[]): ExitBucket {
  * Uses Newton-Raphson method for IRR approximation
  */
 function calculateIRR(cashFlows: number[], years: number[]): number {
-  // Newton-Raphson method to find IRR
-  let irr = 0.15; // Initial guess: 15%
+  let irr = 0.15;
   const maxIterations = 100;
   const tolerance = 0.0001;
 
@@ -58,6 +57,8 @@ function calculateIRR(cashFlows: number[], years: number[]): number {
       dnpv -= (t * cashFlows[j]) / Math.pow(1 + irr, t + 1);
     }
 
+    if (Math.abs(dnpv) < 1e-10) break;
+
     const newIRR = irr - npv / dnpv;
 
     if (Math.abs(newIRR - irr) < tolerance) {
@@ -66,7 +67,6 @@ function calculateIRR(cashFlows: number[], years: number[]): number {
 
     irr = newIRR;
 
-    // Prevent divergence
     if (irr < -0.99) irr = -0.99;
     if (irr > 10) irr = 10;
   }
@@ -76,92 +76,46 @@ function calculateIRR(cashFlows: number[], years: number[]): number {
 
 /**
  * Calculate follow-on investment using realistic pro-rata participation logic
- * 
- * Key principles based on Carta/PitchBook market data:
- * 1. Only successful companies (returnMultiple > 1.0) raise follow-on rounds
- * 2. Higher-performing companies require larger pro-rata checks due to valuation step-ups
- * 3. VCs selectively participate based on performance signals
- * 4. Failed companies don't consume reserves
- * 
- * Market data:
- * - Seed → Series A: 2.5-2.8x valuation step-up
- * - Series A → Series B: 2.0-3.0x valuation step-up
- * - VCs exercise pro-rata selectively (not uniformly)
- * - Typical fund deployment: 70-90%
- * 
- * @param initialCheck - Initial investment amount
- * @param returnMultiple - Company's ultimate return multiple
- * @param reserveRatio - Percentage of initial check reserved for follow-on (0-100)
- * @param stage - Investment stage (seed or seriesA)
- * @returns Follow-on investment amount
  */
 function calculateFollowOn(
   initialCheck: number,
   returnMultiple: number,
   reserveRatio: number,
-  stage: InvestmentStage
+  _stage: InvestmentStage
 ): number {
-  // Failed companies (< 1x) don't raise follow-on rounds
   if (returnMultiple < 1.0) {
     return 0;
   }
 
-  // Calculate available reserve capital
   const maxReserve = initialCheck * (reserveRatio / 100);
 
-  // Determine participation rate based on company performance
-  // High performers get more pro-rata participation
   let participationRate: number;
-  
   if (returnMultiple >= 10) {
-    // Breakout winners: 90-100% pro-rata participation
     participationRate = uniformRandom(0.9, 1.0);
   } else if (returnMultiple >= 5) {
-    // Strong performers: 70-90% pro-rata participation
     participationRate = uniformRandom(0.7, 0.9);
   } else if (returnMultiple >= 3) {
-    // Good performers: 50-70% pro-rata participation
     participationRate = uniformRandom(0.5, 0.7);
   } else if (returnMultiple >= 2) {
-    // Moderate performers: 30-50% pro-rata participation
     participationRate = uniformRandom(0.3, 0.5);
   } else {
-    // Marginal performers (1-2x): 10-30% pro-rata participation
     participationRate = uniformRandom(0.1, 0.3);
   }
 
-  // Model valuation step-ups and number of follow-on rounds
-  // Higher return multiples imply more rounds and larger step-ups
   let followOnMultiple: number;
-  
   if (returnMultiple >= 10) {
-    // Breakout companies: 2-3 follow-on rounds with 2.5-3x step-ups each
-    // Total follow-on: ~2-4x initial check
     followOnMultiple = uniformRandom(2.0, 4.0);
   } else if (returnMultiple >= 5) {
-    // Strong companies: 1-2 follow-on rounds with 2-3x step-ups
-    // Total follow-on: ~1.5-2.5x initial check
     followOnMultiple = uniformRandom(1.5, 2.5);
   } else if (returnMultiple >= 3) {
-    // Good companies: 1 follow-on round with 2-2.5x step-up
-    // Total follow-on: ~1-1.5x initial check
     followOnMultiple = uniformRandom(1.0, 1.5);
   } else if (returnMultiple >= 2) {
-    // Moderate companies: 1 follow-on round with smaller step-up
-    // Total follow-on: ~0.5-1x initial check
     followOnMultiple = uniformRandom(0.5, 1.0);
   } else {
-    // Marginal companies: Small bridge rounds
-    // Total follow-on: ~0.2-0.5x initial check
     followOnMultiple = uniformRandom(0.2, 0.5);
   }
 
-  // Calculate theoretical pro-rata need based on valuation step-ups
   const theoreticalFollowOn = initialCheck * followOnMultiple;
-
-  // Actual follow-on is limited by:
-  // 1. Available reserves
-  // 2. Participation rate (selective deployment)
   const actualFollowOn = Math.min(
     maxReserve,
     theoreticalFollowOn * participationRate
@@ -172,6 +126,7 @@ function calculateFollowOn(
 
 /**
  * Simulate a single company investment
+ * Uses log-normal/Pareto distributions and outcome-dependent exit timing
  */
 function simulateCompany(
   stage: InvestmentStage,
@@ -180,17 +135,27 @@ function simulateCompany(
   exitWindowMax: number
 ): CompanyResult {
   const initialCheck = stageParams.avgCheckSize;
-  
+
   // Sample outcome bucket from stage-specific distribution
   const bucket = sampleBucket(stageParams.exitBuckets);
-  
-  // Sample return multiple within bucket range
-  const returnMultiple = uniformRandom(bucket.minMultiple, bucket.maxMultiple);
-  
-  // Sample exit year
-  const exitYear = uniformRandom(exitWindowMin, exitWindowMax);
 
-  // Calculate follow-on investment based on realistic pro-rata logic
+  // Sample return multiple using realistic distributions
+  const isOutlier = bucket.label === "Outlier";
+  const returnMultiple = sampleReturnMultiple(
+    bucket.minMultiple,
+    bucket.maxMultiple,
+    isOutlier
+  );
+
+  // Sample exit year based on outcome and stage (realistic timing)
+  const exitYear = sampleExitYear(
+    returnMultiple,
+    stage,
+    exitWindowMin,
+    exitWindowMax
+  );
+
+  // Calculate follow-on investment
   const followOn = calculateFollowOn(
     initialCheck,
     returnMultiple,
@@ -199,8 +164,6 @@ function simulateCompany(
   );
 
   const investedCapital = initialCheck + followOn;
-  
-  // Calculate returned capital
   const returnedCapital = investedCapital * returnMultiple;
 
   return {
@@ -220,12 +183,12 @@ export function runSingleSimulation(
   params: PortfolioParameters
 ): SimulationResult {
   const companies: CompanyResult[] = [];
-  
-  // Calculate number of seed vs Series A companies
-  const numSeedCompanies = Math.round(params.numCompanies * (params.seedPercentage / 100));
+
+  const numSeedCompanies = Math.round(
+    params.numCompanies * (params.seedPercentage / 100)
+  );
   const numSeriesACompanies = params.numCompanies - numSeedCompanies;
 
-  // Simulate seed stage companies
   for (let i = 0; i < numSeedCompanies; i++) {
     companies.push(
       simulateCompany(
@@ -237,7 +200,6 @@ export function runSingleSimulation(
     );
   }
 
-  // Simulate Series A companies
   for (let i = 0; i < numSeriesACompanies; i++) {
     companies.push(
       simulateCompany(
@@ -262,30 +224,55 @@ export function runSingleSimulation(
   const grossMOIC = totalReturnedCapital / totalInvestedCapital;
   const multipleOnCommittedCapital = totalReturnedCapital / params.fundSize;
 
-  // Count write-offs and outliers
   const numWriteOffs = companies.filter((c) => c.returnMultiple < 0.1).length;
   const numOutliers = companies.filter((c) => c.returnMultiple >= 20).length;
 
-  // Calculate IRR
-  // Model: capital drawn evenly over investment period, exits at sampled years
+  // Calculate gross IRR
   const cashFlows: number[] = [];
   const years: number[] = [];
 
-  // Capital deployment (negative cash flows)
+  // Capital deployment using realistic pacing (front-loaded)
   const investmentPeriodYears = params.investmentPeriod;
-  const deploymentPerYear = totalInvestedCapital / investmentPeriodYears;
+  const pacingWeights = [0.30, 0.35, 0.25, 0.10]; // Front-loaded deployment
   for (let year = 0; year < investmentPeriodYears; year++) {
-    cashFlows.push(-deploymentPerYear);
-    years.push(year + 0.5); // Mid-year convention
+    const weight = pacingWeights[year] ?? 1 / investmentPeriodYears;
+    cashFlows.push(-totalInvestedCapital * weight);
+    years.push(year + 0.5);
   }
 
-  // Exits (positive cash flows)
+  // Exits
   for (const company of companies) {
     cashFlows.push(company.returnedCapital);
     years.push(company.exitYear);
   }
 
   const grossIRR = calculateIRR(cashFlows, years);
+
+  // Calculate net returns (after fees and carry)
+  const feeStructure = params.feeStructure ?? DEFAULT_FEE_STRUCTURE;
+  const netResult = calculateNetReturns(
+    totalReturnedCapital,
+    params.fundSize,
+    totalInvestedCapital,
+    feeStructure,
+    params.investmentPeriod,
+    params.fundLife
+  );
+
+  // Calculate yearly metrics (J-curve data)
+  const yearlyMetrics = calculateYearlyMetrics(
+    companies,
+    params.fundSize,
+    params.fundLife,
+    params.investmentPeriod,
+    feeStructure
+  );
+
+  // Calculate net IRR (approximate by scaling gross IRR by fee drag)
+  const netIRR =
+    grossIRR > 0
+      ? grossIRR * (1 - netResult.feeDragPercent / 100)
+      : grossIRR;
 
   return {
     companies,
@@ -298,6 +285,12 @@ export function runSingleSimulation(
     numOutliers,
     numSeedCompanies,
     numSeriesACompanies,
+    netMOIC: netResult.netMOIC,
+    netIRR,
+    managementFees: netResult.managementFees,
+    carriedInterest: netResult.carriedInterest,
+    feeDragPercent: netResult.feeDragPercent,
+    yearlyMetrics,
   };
 }
 
@@ -322,11 +315,9 @@ export function runSimulations(
 export function calculateSummaryStatistics(
   results: SimulationResult[]
 ): SummaryStatistics {
-  // Extract metrics
   const moics = results.map((r) => r.grossMOIC).sort((a, b) => a - b);
   const irrs = results.map((r) => r.grossIRR).sort((a, b) => a - b);
 
-  // Calculate percentiles
   const getPercentile = (arr: number[], p: number) => {
     const index = Math.floor(arr.length * p);
     return arr[index];
@@ -340,27 +331,43 @@ export function calculateSummaryStatistics(
   const irrP10 = getPercentile(irrs, 0.1);
   const irrP90 = getPercentile(irrs, 0.9);
 
-  // Calculate probabilities
-  const probMOICAbove2x = results.filter((r) => r.grossMOIC >= 2).length / results.length;
-  const probMOICAbove3x = results.filter((r) => r.grossMOIC >= 3).length / results.length;
-  const probMOICAbove5x = results.filter((r) => r.grossMOIC >= 5).length / results.length;
+  const probMOICAbove2x =
+    results.filter((r) => r.grossMOIC >= 2).length / results.length;
+  const probMOICAbove3x =
+    results.filter((r) => r.grossMOIC >= 3).length / results.length;
+  const probMOICAbove5x =
+    results.filter((r) => r.grossMOIC >= 5).length / results.length;
 
-  // Calculate standard deviations
   const meanMOIC = moics.reduce((sum, v) => sum + v, 0) / moics.length;
   const moicStdDev = Math.sqrt(
     moics.reduce((sum, v) => sum + Math.pow(v - meanMOIC, 2), 0) / moics.length
   );
-  
+
   const meanIRR = irrs.reduce((sum, v) => sum + v, 0) / irrs.length;
   const irrStdDev = Math.sqrt(
     irrs.reduce((sum, v) => sum + Math.pow(v - meanIRR, 2), 0) / irrs.length
   );
 
-  // Average counts
   const avgWriteOffs =
     results.reduce((sum, r) => sum + r.numWriteOffs, 0) / results.length;
   const avgOutliers =
     results.reduce((sum, r) => sum + r.numOutliers, 0) / results.length;
+
+  // Net metrics
+  const netMoics = results
+    .map((r) => r.netMOIC ?? r.grossMOIC)
+    .sort((a, b) => a - b);
+  const netIrrs = results
+    .map((r) => r.netIRR ?? r.grossIRR)
+    .sort((a, b) => a - b);
+  const feeDrags = results.map((r) => r.feeDragPercent ?? 0);
+
+  const medianNetMOIC = getPercentile(netMoics, 0.5);
+  const netMoicP10 = getPercentile(netMoics, 0.1);
+  const netMoicP90 = getPercentile(netMoics, 0.9);
+  const medianNetIRR = getPercentile(netIrrs, 0.5);
+  const avgFeeDrag =
+    feeDrags.reduce((sum, v) => sum + v, 0) / feeDrags.length;
 
   return {
     medianMOIC,
@@ -376,5 +383,10 @@ export function calculateSummaryStatistics(
     probMOICAbove5x,
     avgWriteOffs,
     avgOutliers,
+    medianNetMOIC,
+    netMoicP10,
+    netMoicP90,
+    medianNetIRR,
+    avgFeeDrag,
   };
 }

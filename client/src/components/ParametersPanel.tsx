@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/accordion";
 import { BUCKET_DESCRIPTIONS } from "@/lib/bucket-descriptions";
 import { DEFAULT_PARAMETERS } from "@/lib/defaults";
-import type { ExitBucket, PortfolioParameters, StageParameters } from "@/types/simulation";
+import type { ExitBucket, FeeStructure, PortfolioParameters, StageParameters } from "@/types/simulation";
+import { DEFAULT_FEE_STRUCTURE } from "@/lib/defaults";
 import { Info, RotateCcw } from "lucide-react";
 import {
   Tooltip,
@@ -64,6 +65,16 @@ export default function ParametersPanel({
     const newStageParams = { ...parameters[stage], exitBuckets: newBuckets };
     updateParameter(stage, newStageParams);
   };
+
+  const updateFeeStructure = (
+    field: keyof FeeStructure,
+    value: number
+  ) => {
+    const currentFees = parameters.feeStructure ?? DEFAULT_FEE_STRUCTURE;
+    updateParameter("feeStructure", { ...currentFees, [field]: value });
+  };
+
+  const feeStructure = parameters.feeStructure ?? DEFAULT_FEE_STRUCTURE;
 
   const resetToDefaults = () => {
     onParametersChange(DEFAULT_PARAMETERS);
@@ -448,6 +459,81 @@ export default function ParametersPanel({
                 </div>
 
                 {renderExitDistribution("seriesAStage", "Series A", seriesATotalProbability, seriesAProbabilityValid)}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+
+        {/* Fund Economics */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-medium text-foreground">Fund Economics</h3>
+
+          <Accordion type="single" collapsible className="space-y-2">
+            <AccordionItem value="fees" className="border border-border rounded-lg bg-muted/30 shadow-sm">
+              <AccordionTrigger className="px-4 hover:no-underline">
+                <span className="text-sm font-medium text-amber-400">Fee Structure (2/20)</span>
+              </AccordionTrigger>
+              <AccordionContent className="px-4 pb-4 space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-foreground text-xs">Mgmt Fee (%)</Label>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      value={feeStructure.managementFeeRate}
+                      onChange={(e) => updateFeeStructure("managementFeeRate", Number(e.target.value))}
+                      onFocus={(e) => e.target.select()}
+                      className="bg-card border-input text-foreground h-8 text-xs"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-foreground text-xs">Step-down (%)</Label>
+                    <Input
+                      type="number"
+                      step="0.1"
+                      value={feeStructure.managementFeeStepDown}
+                      onChange={(e) => updateFeeStructure("managementFeeStepDown", Number(e.target.value))}
+                      onFocus={(e) => e.target.select()}
+                      className="bg-card border-input text-foreground h-8 text-xs"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-foreground text-xs">Carry (%)</Label>
+                    <Input
+                      type="number"
+                      step="1"
+                      value={feeStructure.carryRate}
+                      onChange={(e) => updateFeeStructure("carryRate", Number(e.target.value))}
+                      onFocus={(e) => e.target.select()}
+                      className="bg-card border-input text-foreground h-8 text-xs"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-foreground text-xs">Hurdle (%)</Label>
+                    <Input
+                      type="number"
+                      step="1"
+                      value={feeStructure.hurdleRate}
+                      onChange={(e) => updateFeeStructure("hurdleRate", Number(e.target.value))}
+                      onFocus={(e) => e.target.select()}
+                      className="bg-card border-input text-foreground h-8 text-xs"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-foreground text-xs">GP Commit (%)</Label>
+                  <Input
+                    type="number"
+                    step="0.5"
+                    value={feeStructure.gpCommitPercent}
+                    onChange={(e) => updateFeeStructure("gpCommitPercent", Number(e.target.value))}
+                    onFocus={(e) => e.target.select()}
+                    className="bg-card border-input text-foreground h-8 text-xs"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Industry standard: 2% mgmt fee, 20% carry, 8% hurdle
+                </p>
               </AccordionContent>
             </AccordionItem>
           </Accordion>

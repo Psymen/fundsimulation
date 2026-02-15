@@ -1,202 +1,239 @@
 # VC Portfolio Monte Carlo Simulator
 
-A professional Monte Carlo simulation tool for venture capital portfolio modeling with **stage-specific investment parameters**. Model seed and Series A investments separately with different risk/return profiles to generate realistic fund-level projections.
-
-## Features
-
-### 🎯 Stage-Specific Modeling
-- **Separate parameters for Seed and Series A** investments
-- Different check sizes, reserve ratios, and exit distributions per stage
-- Portfolio composition control (% seed vs % Series A)
-- Realistic defaults based on industry benchmarks
-
-### 📊 Comprehensive Analytics
-- **MOIC Distribution**: Histogram of Multiple on Invested Capital across simulations
-- **IRR Distribution**: Internal Rate of Return distribution with timing effects
-- **Outliers Analysis**: Track frequency of 20x+ returns
-- **Summary Statistics**: Median, P10, P90 percentiles for all metrics
-- **Probability Thresholds**: Chance of achieving 2x, 3x, 5x MOIC
-
-### 💾 Data Management
-- **Historical Runs**: Automatic saving of all simulation runs to localStorage
-- **Parameter Loading**: Reload parameters from any previous run
-- **CSV Export**: Download full simulation results for external analysis
-- **JSON Export**: Copy parameters to clipboard for sharing
-
-### 🎨 User Experience
-- Clean, professional dark theme optimized for extended use
-- Responsive design works on desktop, laptop, and tablet
-- Real-time validation with clear error messages
-- Informative tooltips explaining each parameter
-- Accordion UI for easy navigation between stages
+A rigorous Monte Carlo simulation tool for modeling venture capital fund returns. Features research-calibrated parameters, five specialized analysis views, and a full 2/20 fee waterfall — all sharing a common set of configurable fund parameters.
 
 ## Quick Start
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Start development server
-pnpm dev
-
-# Build for production
-pnpm build
+pnpm dev        # http://localhost:3000
 ```
 
-## How It Works
+Other commands:
 
-### Investment Stages
+```bash
+pnpm check      # TypeScript type checking
+pnpm test       # Run math correctness tests (45 tests)
+pnpm format     # Prettier formatting
+pnpm build      # Production build
+pnpm start      # Production server
+```
 
-The simulator models two distinct investment stages:
+## The Five Views
 
-**Seed Stage**
-- Typical check size: $2M
-- Higher risk profile: 50% total loss rate
-- Higher upside potential: 3% chance of 20x+ outliers
-- Follow-on reserve: 50% of initial check
+### 1. Monte Carlo Simulation (`/`)
 
-**Series A Stage**
-- Typical check size: $5M
-- Lower risk profile: 30% total loss rate
-- Moderate upside: 1% chance of 20x+ outliers
-- Follow-on reserve: 50% of initial check
+The main simulation view. Run 1,000 Monte Carlo iterations to understand the distribution of possible fund outcomes.
 
-### Portfolio Composition
+**What you get:**
+- MOIC and IRR distribution histograms
+- J-curve chart tracking DPI, TVPI, and RVPI year-by-year (with P10/P50/P90 bands)
+- Summary cards: Median MOIC, IRR, outlier count, write-off rate
+- Net returns after 2/20 fees: Net MOIC, Net IRR, fee drag %
+- Probability thresholds: chance of hitting 1x, 2x, 3x, 5x MOIC
+- Industry benchmark badges (Top Quartile, Above Median, etc.)
 
-Use the **Seed Percentage** slider to control the mix:
-- 60% seed = 15 seed investments + 10 Series A (for 25 company portfolio)
-- 40% seed = 10 seed investments + 15 Series A
-- Adjust based on your fund strategy
+**Layout:** Parameters panel (left) | Charts (center) | Historical runs (right)
 
-### Exit Distribution Buckets
+All simulation runs are automatically saved to IndexedDB. You can reload parameters from any previous run or delete old runs.
 
-Each stage has five outcome categories:
+### 2. Portfolio Construction (`/portfolio-construction`)
 
-1. **Total Loss (0x)**: Complete write-off
-2. **Low Return (0.1x - 1x)**: Partial loss or breakeven
-3. **Mid Return (1x - 5x)**: Solid returns
-4. **High Return (5x - 20x)**: Strong performers
-5. **Outlier (20x - 150x)**: Fund-returning winners
+Grid analysis to find the optimal number of companies and seed/Series A mix for your fund.
 
-The probability and return range for each bucket can be customized per stage.
+**How it works:**
+- Set a range of portfolio sizes (e.g., 15-40 companies)
+- Select seed percentage options (0%, 25%, 50%, 75%, 100%)
+- The engine runs 500+ simulations per scenario, testing every combination
 
-### Simulation Process
+**What you get:**
+- Color-coded heatmap of median MOIC across all configurations
+- Best strategies identified for: Highest MOIC, Highest IRR, Best Downside Protection, Best Capital Efficiency
+- Worst strategies to avoid
+- Commentary on diversification vs concentration trade-offs
 
-For each of 1000 simulations:
+### 3. Power Law Explorer (`/power-law`)
 
-1. **Portfolio Construction**
-   - Allocate companies to seed vs Series A based on composition %
-   - Assign initial check size per stage
+Visualize how VC returns follow power law distributions, where a handful of outliers drive most of the fund's value.
 
-2. **Company Outcomes**
-   - Sample from stage-specific exit distribution
-   - Apply random multiplier within bucket range
-   - Calculate follow-on investment (reserve ratio × initial check)
+**What you get:**
+- Return concentration chart showing what % of fund value comes from the top 1, 3, 5, and 10 companies
+- Outlier sensitivity curve: how fund MOIC changes as your best company's return varies
+- Equivalency table: "To hit 3x fund MOIC, you need 1 company at 100x OR 2 at 50x..."
+- Power law fit scatter plot (log scale) with theoretical Pareto curve (alpha ~1.9)
+- Gini coefficient measuring return concentration
 
-3. **Timing**
-   - Random exit year within exit window (default: years 3-10)
-   - Deploy capital evenly over investment period (default: 3 years)
+### 4. Fund Economics (`/fund-economics`)
 
-4. **Fund Metrics**
-   - Sum all returns across portfolio
-   - Calculate MOIC = Total Returns / Total Invested
-   - Calculate IRR using cash flow timing
+Model the full GP/LP fee waterfall and understand how fund size, fees, and carry affect net returns.
 
-5. **Aggregation**
-   - Collect MOIC, IRR, outlier count across all simulations
-   - Compute percentiles and probability thresholds
+**Configurable fee structure:**
+- Management fee % (with step-down after investment period)
+- Carried interest %
+- Hurdle rate (preferred return)
+- GP commit %
 
-## Key Modeling Assumptions
+**What you get:**
+- Waterfall chart: Gross Returns -> Management Fees -> Carry -> Net to LP
+- Fund size sensitivity analysis ($25M to $1B): how GP carry, LP net MOIC, and fee drag scale
+- GP vs LP economics table across MOIC scenarios (0.5x to 10x)
+- Carry kickoff threshold identification
 
-### What's Included
-- ✅ Stage-specific risk/return profiles
-- ✅ Follow-on reserve deployment
-- ✅ Exit timing variability
-- ✅ Capital deployment schedule
-- ✅ Portfolio construction effects
+### 5. Scenario Stress Test (`/stress-test`)
 
-### Simplifications
-- ❌ No management fees or carry
-- ❌ No recycling of proceeds
-- ❌ No partial exits or secondary sales
-- ❌ No correlation between company outcomes
-- ❌ No fund-level diversification across vintages
+Compare fund performance under different market conditions to understand portfolio resilience.
 
-### Important Notes
+**Pre-built scenarios:**
+- Base Case (your current parameters)
+- 2008 Financial Crisis (high failure, multiple compression)
+- 2021 Bull Market (low failure, multiple expansion)
+- Rate Hike 2022-23 (moderate stress, exit delays)
+- Exit Drought (extended hold periods)
 
-**Returns are GROSS, not net**
-The simulator shows gross MOIC and IRR before fees. Typical VC funds charge 2% annual management fees and 20% carry, which significantly reduce net returns to LPs.
+You can also build custom scenarios with sliders for failure rate modifier, multiple compression, and exit delay.
 
-**Stage labels are flexible**
-While defaults are set for seed/Series A, you can model any two stages:
-- Pre-seed / Seed
-- Series A / Series B
-- Growth / Late-stage
+**What you get:**
+- Side-by-side comparison table with deltas vs Base Case
+- Overlapping MOIC distribution chart for all selected scenarios
+- Key metrics: Median MOIC, P10/P90, probability of loss, IRR
 
-Simply adjust the parameters to match your target stages.
+## Configurable Parameters
 
-**Distributions are independent**
-Each company outcome is sampled independently. In reality, macro factors create correlation (e.g., market crashes affect multiple companies). This model assumes diversification across time and sector.
+All five views share the same underlying parameters. Changes propagate automatically.
 
-## Customizing Defaults
+### Fund Setup
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| Fund Size | $200M | Total committed capital |
+| Portfolio Companies | 25 | Number of investments |
+| Seed Percentage | 60% | Portion allocated to seed (rest is Series A) |
+| Investment Period | 5 years | Capital deployment window |
+| Fund Life | 10 years | Total fund duration |
+| Exit Window | 3-10 years | When companies exit |
+| Simulations | 1,000 | Monte Carlo iterations |
 
-Edit `client/src/lib/defaults.ts` to change:
-- Fund size and portfolio company count
-- Stage-specific check sizes and reserve ratios
-- Exit distribution probabilities and ranges
-- Investment period and exit windows
-- Number of Monte Carlo iterations
+### Stage Parameters (Seed / Series A)
+
+Each stage has its own:
+- **Check size**: $2M seed / $5M Series A
+- **Follow-on reserve ratio**: 50% for both
+- **Target ownership**: 15% seed / 12% Series A
+- **Exit distribution** with 6 buckets:
+
+| Bucket | Seed Default | Series A Default | Return Range |
+|--------|-------------|-----------------|--------------|
+| Total Loss | 40% | 25% | 0x |
+| Partial Loss | 20% | 20% | 0.1x - 0.5x |
+| Near Break-even | 15% | 15% | 0.5x - 1.5x |
+| Mid Return | 15% | 25% | 1.5x - 5x |
+| High Return | 7% | 12% | 5x - 20x |
+| Outlier | 3% | 3% | 20x - 150x |
+
+Probabilities must sum to 100%.
+
+### Fee Structure (2/20 Standard)
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| Management Fee | 2% | Annual fee on committed capital |
+| Fee Step-down | 1.5% | Reduced rate after investment period |
+| Carry | 20% | GP profit share above hurdle |
+| Hurdle Rate | 8% | Preferred return before carry kicks in |
+| GP Commit | 2% | GP co-investment |
+
+## Navigation & UI
+
+**Top bar** (sticky): Five view tabs + dark/light mode toggle
+
+**Parameters Summary Bar** (shown on all views except Home): Quick glance at active fund parameters — fund size, portfolio composition, timeline, and fees — with an "Edit" link back to the main parameters panel.
+
+**Historical Runs** (Home view): All simulation runs are persisted in IndexedDB. Load any previous run to restore its parameters and results.
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `Cmd/Ctrl + Enter` | Run simulation / grid analysis |
+| `T` | Toggle dark/light mode |
+| `?` | Show keyboard shortcuts help |
+| `Esc` | Close modal/dialog |
+
+All shortcuts work even when focused on input fields.
+
+## Export
+
+- **Copy Parameters** (JSON to clipboard) — share your exact configuration
+- **Export CSV** — download company-level results from all simulation iterations (invested capital, returned capital, stage, exit bucket, exit year, return multiple)
+
+## Modeling Details
+
+### Research-Calibrated Defaults
+
+All defaults are calibrated from empirical VC data (Cambridge Associates, Carta, PitchBook, Correlation Ventures):
+- Seed failure rate: 40% (industry avg 35-45%)
+- Series A failure rate: 25%
+- Outlier probability: 3% (consistent with ~1-3% unicorn rate)
+- Follow-on reserves: 50% (industry standard)
+
+### How the Simulation Works
+
+For each of 1,000 iterations:
+
+1. **Build portfolio** — allocate companies to seed vs Series A based on mix percentage
+2. **Sample outcomes** — each company draws from its stage's 6-bucket exit distribution using log-normal (mid-range) and Pareto (tail) sampling
+3. **Model follow-ons** — winners (10x+) get 90-100% pro-rata participation with 2-4x larger checks due to valuation step-ups; failures get zero follow-on capital
+4. **Apply timing** — deploy capital over the investment period; exits occur at randomly sampled years within the exit window
+5. **Calculate metrics** — MOIC, IRR (Newton-Raphson), DPI/TVPI/RVPI year-by-year
+6. **Apply fees** — 2/20 waterfall with management fee step-down and hurdle rate
+7. **Aggregate** — compute percentiles, probabilities, and summary statistics across all iterations
+
+### Industry Benchmarks
+
+Results are compared to VC industry data (Preqin/Cambridge Associates):
+
+| Quartile | MOIC | IRR |
+|----------|------|-----|
+| Top Quartile | 3.5x+ | 25%+ |
+| Above Median | 2.5x+ | 15%+ |
+| Below Median | 1.5x+ | 10%+ |
+| Bottom Quartile | <1.5x | <10% |
+
+### Key Assumptions & Simplifications
+
+**Included:**
+- Stage-specific risk/return profiles
+- Realistic follow-on reserve deployment
+- Exit timing variability and J-curve effects
+- Full 2/20 fee waterfall with hurdle
+- Power law return distributions
+
+**Simplified:**
+- No recycling of proceeds
+- No partial exits or secondary sales
+- No correlation between company outcomes
+- No vintage year diversification effects
+- Simple preferred return (not compound hurdle)
 
 ## Technical Stack
 
-- **React 19** with TypeScript for type safety
-- **Tailwind CSS 4** for styling
-- **Recharts** for data visualization
-- **shadcn/ui** for component primitives
-- **Wouter** for client-side routing
-- **localStorage** for persistence
+- React 18 + TypeScript + Vite 7
+- Tailwind CSS 4 + shadcn/ui
+- Recharts for data visualization
+- Wouter for client-side routing
+- IndexedDB for simulation history
+- Vitest for math correctness tests
 
-## Use Cases
+## Development
 
-### Fund Strategy Analysis
-- Compare seed-heavy vs Series A-heavy portfolio construction
-- Model impact of reserve ratio changes
-- Evaluate different exit distribution assumptions
+```bash
+pnpm dev          # Dev server on localhost:3000
+pnpm check        # Type check (tsc --noEmit)
+pnpm test         # Run 45 math correctness tests
+pnpm format       # Format with Prettier
+npx vite build    # Production build
+```
 
-### LP Communication
-- Generate realistic return distributions for fundraising
-- Illustrate portfolio construction effects
-- Demonstrate risk/return tradeoffs
-
-### Internal Planning
-- Stress test fund models with different assumptions
-- Calibrate expectations based on historical data
-- Scenario plan for different market environments
-
-## Limitations
-
-This is a **simplified model** for educational and planning purposes. Real VC portfolios involve:
-- Complex capital structures (preferred stock, liquidation preferences)
-- Dynamic follow-on decisions based on company performance
-- Market timing and vintage year effects
-- Sector-specific risk profiles
-- Fund-to-fund variation in selection skill
-
-**Always consult with financial professionals** for investment decisions.
+Path aliases: `@/*` maps to `client/src/*`, `@shared/*` to `shared/*`
 
 ## License
 
-MIT License - feel free to modify and use for your own analysis.
-
-## Contributing
-
-Suggestions for improvements:
-1. Add more investment stages (pre-seed, Series B, growth)
-2. Model correlation between company outcomes
-3. Add management fee and carry calculations
-4. Include fund recycling mechanics
-5. Support custom distribution shapes (lognormal, power law)
-
----
-
-Built with ❤️ for the VC community
+MIT

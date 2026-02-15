@@ -34,17 +34,9 @@ import type {
   SimulationResult,
 } from "@/types/simulation";
 import { Play, RefreshCw, TrendingUp, BarChart3, Zap } from "lucide-react";
-
-// -- Chart theme constants --------------------------------------------------
-
-const PURPLE = "#a371f7";
-const GOLD = "#d29922";
-const GREEN = "#3fb950";
-const RED = "#f85149";
-const GRID_COLOR = "#334155";
-const TEXT_COLOR = "#94a3b8";
-const TOOLTIP_BG = "#1e293b";
-const TOOLTIP_BORDER = "#334155";
+import { useParameters } from "@/contexts/ParametersContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { getChartTheme } from "@/lib/chart-theme";
 
 // -- Helpers ----------------------------------------------------------------
 
@@ -128,55 +120,17 @@ function computeEquivalentCombinations(
   });
 }
 
-// -- Custom Tooltip ---------------------------------------------------------
-
-function ChartTooltip({
-  active,
-  payload,
-  labelFormatter,
-}: {
-  active?: boolean;
-  payload?: Array<{ name: string; value: number; color: string }>;
-  labelFormatter?: (label: string) => string;
-}) {
-  if (!active || !payload || payload.length === 0) return null;
-  return (
-    <div
-      className="rounded-md border px-3 py-2 text-sm shadow-lg"
-      style={{
-        backgroundColor: TOOLTIP_BG,
-        borderColor: TOOLTIP_BORDER,
-        color: TEXT_COLOR,
-      }}
-    >
-      {payload.map((entry, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <span
-            className="inline-block h-2.5 w-2.5 rounded-full"
-            style={{ backgroundColor: entry.color }}
-          />
-          <span>
-            {entry.name}:{" "}
-            <span className="font-semibold text-foreground">
-              {typeof entry.value === "number"
-                ? entry.value.toFixed(1)
-                : entry.value}
-            </span>
-          </span>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 // -- Main Component ---------------------------------------------------------
 
 export default function PowerLawExplorer() {
-  // Parameters
-  const [numCompanies, setNumCompanies] = useState(
-    DEFAULT_PARAMETERS.numCompanies
-  );
-  const [fundSize, setFundSize] = useState(DEFAULT_PARAMETERS.fundSize);
+  const { parameters } = useParameters();
+  const { theme } = useTheme();
+  const ct = getChartTheme(theme);
+
+  // Use shared parameters
+  const numCompanies = parameters.numCompanies;
+  const fundSize = parameters.fundSize;
 
   // Simulation result
   const [result, setResult] = useState<SimulationResult | null>(null);
@@ -191,16 +145,14 @@ export default function PowerLawExplorer() {
     // Use setTimeout to allow the UI to update before the sync computation
     setTimeout(() => {
       const params: PortfolioParameters = {
-        ...DEFAULT_PARAMETERS,
-        numCompanies,
-        fundSize,
+        ...parameters,
         numSimulations: 1,
       };
       const sim = runSingleSimulation(params);
       setResult(sim);
       setIsRunning(false);
     }, 50);
-  }, [numCompanies, fundSize]);
+  }, [parameters]);
 
   // Derived data
   const concentrationData = useMemo(
@@ -236,8 +188,10 @@ export default function PowerLawExplorer() {
     const companies = [...result.companies].sort(
       (a, b) => b.returnMultiple - a.returnMultiple
     );
-    const totalInvested = result.totalInvestedCapital;
-    if (totalInvested === 0) return [];
+    // Use fundSize (committed capital) as denominator, consistent with main simulation MOIC
+    // Both fundSize and company capital values are in millions
+    const denominator = fundSize > 0 ? fundSize : result.totalInvestedCapital;
+    if (denominator === 0) return [];
 
     const points: { bestReturn: number; fundMOIC: number }[] = [];
     for (let mult = 10; mult <= 500; mult += 5) {
@@ -247,11 +201,11 @@ export default function PowerLawExplorer() {
         .slice(1)
         .reduce((s, c) => s + c.returnedCapital, 0);
       const adjustedTotal = bestInvested * mult + restReturned;
-      const moic = adjustedTotal / totalInvested;
+      const moic = adjustedTotal / denominator;
       points.push({ bestReturn: mult, fundMOIC: moic });
     }
     return points;
-  }, [result]);
+  }, [result, fundSize]);
 
   // Current MOIC at slider position
   const currentSensitivityMOIC = useMemo(() => {
@@ -259,14 +213,14 @@ export default function PowerLawExplorer() {
     const companies = [...result.companies].sort(
       (a, b) => b.returnMultiple - a.returnMultiple
     );
-    const totalInvested = result.totalInvestedCapital;
-    if (totalInvested === 0) return 0;
+    const denominator = fundSize > 0 ? fundSize : result.totalInvestedCapital;
+    if (denominator === 0) return 0;
     const bestInvested = companies[0]?.investedCapital ?? 0;
     const restReturned = companies
       .slice(1)
       .reduce((s, c) => s + c.returnedCapital, 0);
-    return (bestInvested * bestCompanyReturn + restReturned) / totalInvested;
-  }, [result, bestCompanyReturn]);
+    return (bestInvested * bestCompanyReturn + restReturned) / denominator;
+  }, [result, bestCompanyReturn, fundSize]);
 
   // Equivalent combinations table
   const equivalentCombinations = useMemo(() => {
@@ -301,7 +255,8 @@ export default function PowerLawExplorer() {
   }, [result]);
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8 space-y-6">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8 space-y-6 max-w-7xl">
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
@@ -323,13 +278,9 @@ export default function PowerLawExplorer() {
             <Input
               id="fundSize"
               type="number"
-              min={10}
-              max={5000}
               value={fundSize}
-              onChange={(e) =>
-                setFundSize(Math.max(1, parseInt(e.target.value) || 1))
-              }
-              className="w-28 h-9"
+              disabled
+              className="w-28 h-9 bg-muted cursor-not-allowed"
             />
           </div>
           <div className="space-y-1">
@@ -342,13 +293,9 @@ export default function PowerLawExplorer() {
             <Input
               id="numCompanies"
               type="number"
-              min={5}
-              max={200}
               value={numCompanies}
-              onChange={(e) =>
-                setNumCompanies(Math.max(2, parseInt(e.target.value) || 2))
-              }
-              className="w-28 h-9"
+              disabled
+              className="w-28 h-9 bg-muted cursor-not-allowed"
             />
           </div>
           <Button onClick={handleAnalyze} disabled={isRunning} className="h-9">
@@ -359,6 +306,9 @@ export default function PowerLawExplorer() {
             )}
             {isRunning ? "Running..." : "Analyze"}
           </Button>
+          <span className="text-xs text-muted-foreground">
+            From shared parameters
+          </span>
         </div>
       </div>
 
@@ -368,7 +318,7 @@ export default function PowerLawExplorer() {
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
             <TrendingUp
               className="h-12 w-12 mb-4"
-              style={{ color: PURPLE }}
+              style={{ color: ct.purple }}
             />
             <h2 className="text-lg font-semibold text-foreground mb-2">
               Ready to Explore
@@ -390,28 +340,28 @@ export default function PowerLawExplorer() {
               label="Gross MOIC"
               value={formatMultiple(result.grossMOIC)}
               icon={<TrendingUp className="h-4 w-4" />}
-              color={PURPLE}
+              color={ct.purple}
             />
             <SummaryCard
               label="Gini Coefficient"
               value={giniCoefficient.toFixed(2)}
               subtext="1.0 = max concentration"
               icon={<BarChart3 className="h-4 w-4" />}
-              color={GOLD}
+              color={ct.gold}
             />
             <SummaryCard
               label="Top 1 Company"
               value={formatPercent(top1Pct)}
               subtext="of total fund value"
               icon={<Zap className="h-4 w-4" />}
-              color={GREEN}
+              color={ct.green}
             />
             <SummaryCard
               label="Outliers (20x+)"
               value={`${result.numOutliers} / ${result.companies.length}`}
               subtext={`${((result.numOutliers / result.companies.length) * 100).toFixed(0)}% of portfolio`}
               icon={<Zap className="h-4 w-4" />}
-              color={RED}
+              color={ct.red}
             />
           </div>
 
@@ -419,7 +369,7 @@ export default function PowerLawExplorer() {
           <Card className="bg-card border-border">
             <CardHeader className="pb-2">
               <CardTitle className="text-foreground text-base font-semibold flex items-center gap-2">
-                <BarChart3 className="h-4 w-4" style={{ color: PURPLE }} />
+                <BarChart3 className="h-4 w-4" style={{ color: ct.purple }} />
                 Return Concentration
               </CardTitle>
               <p className="text-muted-foreground text-xs">
@@ -431,9 +381,9 @@ export default function PowerLawExplorer() {
             <CardContent>
               {/* Headline stats */}
               <div className="flex flex-wrap gap-4 mb-4">
-                <ConcentrationBadge label="Top 1" value={top1Pct} color={PURPLE} />
-                <ConcentrationBadge label="Top 3" value={top3Pct} color={GOLD} />
-                <ConcentrationBadge label="Top 5" value={top5Pct} color={GREEN} />
+                <ConcentrationBadge label="Top 1" value={top1Pct} color={ct.purple} />
+                <ConcentrationBadge label="Top 3" value={top3Pct} color={ct.gold} />
+                <ConcentrationBadge label="Top 5" value={top5Pct} color={ct.green} />
                 <ConcentrationBadge
                   label="Top 10"
                   value={
@@ -441,7 +391,7 @@ export default function PowerLawExplorer() {
                       ? concentrationData[9]?.cumulativePercent ?? 0
                       : top5Pct
                   }
-                  color={TEXT_COLOR}
+                  color={ct.text}
                 />
               </div>
 
@@ -449,38 +399,38 @@ export default function PowerLawExplorer() {
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart
                     data={concentrationData}
-                    margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
+                    margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
                   >
                     <CartesianGrid
                       strokeDasharray="3 3"
-                      stroke={GRID_COLOR}
+                      stroke={ct.grid}
                       vertical={false}
                     />
                     <XAxis
                       dataKey="rank"
-                      tick={{ fill: TEXT_COLOR, fontSize: 12 }}
-                      axisLine={{ stroke: GRID_COLOR }}
-                      tickLine={{ stroke: GRID_COLOR }}
+                      tick={{ fill: ct.text, fontSize: 12 }}
+                      axisLine={{ stroke: ct.grid }}
+                      tickLine={{ stroke: ct.grid }}
                       label={{
                         value: "Top N Companies",
                         position: "insideBottom",
-                        offset: -5,
-                        fill: TEXT_COLOR,
+                        offset: -15,
+                        fill: ct.text,
                         fontSize: 12,
                       }}
                     />
                     <YAxis
                       domain={[0, 100]}
-                      tick={{ fill: TEXT_COLOR, fontSize: 12 }}
-                      axisLine={{ stroke: GRID_COLOR }}
-                      tickLine={{ stroke: GRID_COLOR }}
+                      tick={{ fill: ct.text, fontSize: 12 }}
+                      axisLine={{ stroke: ct.grid }}
+                      tickLine={{ stroke: ct.grid }}
                       tickFormatter={(v) => `${v}%`}
                       label={{
                         value: "% of Total Fund Value",
                         angle: -90,
                         position: "insideLeft",
                         offset: 5,
-                        fill: TEXT_COLOR,
+                        fill: ct.text,
                         fontSize: 12,
                       }}
                     />
@@ -492,21 +442,21 @@ export default function PowerLawExplorer() {
                           <div
                             className="rounded-md border px-3 py-2 text-sm shadow-lg space-y-1"
                             style={{
-                              backgroundColor: TOOLTIP_BG,
-                              borderColor: TOOLTIP_BORDER,
+                              backgroundColor: ct.tooltipBg,
+                              borderColor: ct.tooltipBorder,
                             }}
                           >
                             <div className="text-foreground font-semibold">
                               Top {d.rank} compan{d.rank === 1 ? "y" : "ies"}
                             </div>
-                            <div style={{ color: PURPLE }}>
+                            <div style={{ color: ct.purple }}>
                               Actual: {formatPercent(d.cumulativePercent)} of
                               value
                             </div>
-                            <div style={{ color: GOLD }}>
+                            <div style={{ color: ct.gold }}>
                               Uniform: {formatPercent(d.uniformPercent)}
                             </div>
-                            <div className="text-muted-foreground text-xs pt-1 border-t" style={{ borderColor: TOOLTIP_BORDER }}>
+                            <div className="text-muted-foreground text-xs pt-1 border-t" style={{ borderColor: ct.tooltipBorder }}>
                               #{d.rank}: {d.stage} --{" "}
                               {formatMultiple(d.returnMultiple)} return
                             </div>
@@ -518,24 +468,24 @@ export default function PowerLawExplorer() {
                       type="monotone"
                       dataKey="cumulativePercent"
                       name="Actual"
-                      stroke={PURPLE}
-                      fill={PURPLE}
+                      stroke={ct.purple}
+                      fill={ct.purple}
                       fillOpacity={0.15}
                       strokeWidth={2}
                       dot={false}
-                      activeDot={{ r: 4, fill: PURPLE }}
+                      activeDot={{ r: 4, fill: ct.purple }}
                     />
                     <Line
                       type="monotone"
                       dataKey="uniformPercent"
                       name="Uniform Distribution"
-                      stroke={GOLD}
+                      stroke={ct.gold}
                       strokeWidth={1.5}
                       strokeDasharray="6 4"
                       dot={false}
                     />
                     <Legend
-                      wrapperStyle={{ color: TEXT_COLOR, fontSize: 12 }}
+                      wrapperStyle={{ color: ct.text, fontSize: 12 }}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -547,7 +497,7 @@ export default function PowerLawExplorer() {
           <Card className="bg-card border-border">
             <CardHeader className="pb-2">
               <CardTitle className="text-foreground text-base font-semibold flex items-center gap-2">
-                <Zap className="h-4 w-4" style={{ color: GOLD }} />
+                <Zap className="h-4 w-4" style={{ color: ct.gold }} />
                 Outlier Sensitivity Analysis
               </CardTitle>
               <p className="text-muted-foreground text-xs">
@@ -564,7 +514,7 @@ export default function PowerLawExplorer() {
                   </Label>
                   <span
                     className="text-sm font-bold"
-                    style={{ color: GOLD }}
+                    style={{ color: ct.gold }}
                   >
                     {bestCompanyReturn}x
                   </span>
@@ -591,7 +541,7 @@ export default function PowerLawExplorer() {
                   </span>
                   <span
                     className="text-lg font-bold"
-                    style={{ color: GOLD }}
+                    style={{ color: ct.gold }}
                   >
                     {formatMultiple(currentSensitivityMOIC)} Fund MOIC
                   </span>
@@ -603,38 +553,40 @@ export default function PowerLawExplorer() {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart
                     data={sensitivityData}
-                    margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
+                    margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
                   >
                     <CartesianGrid
                       strokeDasharray="3 3"
-                      stroke={GRID_COLOR}
+                      stroke={ct.grid}
                       vertical={false}
                     />
                     <XAxis
                       dataKey="bestReturn"
-                      tick={{ fill: TEXT_COLOR, fontSize: 12 }}
-                      axisLine={{ stroke: GRID_COLOR }}
-                      tickLine={{ stroke: GRID_COLOR }}
+                      type="number"
+                      domain={[10, 500]}
+                      tick={{ fill: ct.text, fontSize: 12 }}
+                      axisLine={{ stroke: ct.grid }}
+                      tickLine={{ stroke: ct.grid }}
                       tickFormatter={(v) => `${v}x`}
                       label={{
                         value: "Best Company Return",
                         position: "insideBottom",
-                        offset: -5,
-                        fill: TEXT_COLOR,
+                        offset: -15,
+                        fill: ct.text,
                         fontSize: 12,
                       }}
                     />
                     <YAxis
-                      tick={{ fill: TEXT_COLOR, fontSize: 12 }}
-                      axisLine={{ stroke: GRID_COLOR }}
-                      tickLine={{ stroke: GRID_COLOR }}
+                      tick={{ fill: ct.text, fontSize: 12 }}
+                      axisLine={{ stroke: ct.grid }}
+                      tickLine={{ stroke: ct.grid }}
                       tickFormatter={(v) => `${v.toFixed(1)}x`}
                       label={{
                         value: "Fund MOIC",
                         angle: -90,
                         position: "insideLeft",
                         offset: 5,
-                        fill: TEXT_COLOR,
+                        fill: ct.text,
                         fontSize: 12,
                       }}
                     />
@@ -646,14 +598,14 @@ export default function PowerLawExplorer() {
                           <div
                             className="rounded-md border px-3 py-2 text-sm shadow-lg"
                             style={{
-                              backgroundColor: TOOLTIP_BG,
-                              borderColor: TOOLTIP_BORDER,
+                              backgroundColor: ct.tooltipBg,
+                              borderColor: ct.tooltipBorder,
                             }}
                           >
-                            <div style={{ color: TEXT_COLOR }}>
+                            <div style={{ color: ct.text }}>
                               Best company: <span className="font-semibold text-foreground">{d.bestReturn}x</span>
                             </div>
-                            <div style={{ color: GOLD }}>
+                            <div style={{ color: ct.gold }}>
                               Fund MOIC: <span className="font-semibold">{formatMultiple(d.fundMOIC)}</span>
                             </div>
                           </div>
@@ -662,18 +614,18 @@ export default function PowerLawExplorer() {
                     />
                     <ReferenceLine
                       x={bestCompanyReturn}
-                      stroke={RED}
+                      stroke={ct.red}
                       strokeDasharray="4 4"
                       strokeWidth={1.5}
                     />
                     <ReferenceLine
                       y={1}
-                      stroke={GRID_COLOR}
+                      stroke={ct.grid}
                       strokeDasharray="3 3"
                       label={{
                         value: "1x (break-even)",
                         position: "right",
-                        fill: TEXT_COLOR,
+                        fill: ct.text,
                         fontSize: 10,
                       }}
                     />
@@ -681,10 +633,10 @@ export default function PowerLawExplorer() {
                       type="monotone"
                       dataKey="fundMOIC"
                       name="Fund MOIC"
-                      stroke={GOLD}
+                      stroke={ct.gold}
                       strokeWidth={2}
                       dot={false}
-                      activeDot={{ r: 4, fill: GOLD }}
+                      activeDot={{ r: 4, fill: ct.gold }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -719,11 +671,11 @@ export default function PowerLawExplorer() {
                           <td className="py-2 px-3 font-mono font-semibold text-foreground">
                             {row.multiple}x
                           </td>
-                          <td className="py-2 px-3 font-mono" style={{ color: GOLD }}>
+                          <td className="py-2 px-3 font-mono" style={{ color: ct.gold }}>
                             {row.numNeeded}
                           </td>
                           <td className="py-2 px-3">
-                            <DifficultyBadge multiple={row.multiple} />
+                            <DifficultyBadge multiple={row.multiple} ct={ct} />
                           </td>
                         </tr>
                       ))}
@@ -742,7 +694,7 @@ export default function PowerLawExplorer() {
           <Card className="bg-card border-border">
             <CardHeader className="pb-2">
               <CardTitle className="text-foreground text-base font-semibold flex items-center gap-2">
-                <TrendingUp className="h-4 w-4" style={{ color: GREEN }} />
+                <TrendingUp className="h-4 w-4" style={{ color: ct.green }} />
                 Power Law Fit Visualization
               </CardTitle>
               <p className="text-muted-foreground text-xs">
@@ -756,24 +708,24 @@ export default function PowerLawExplorer() {
               <div className="h-[400px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <ScatterChart
-                    margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
+                    margin={{ top: 10, right: 20, left: 10, bottom: 30 }}
                   >
                     <CartesianGrid
                       strokeDasharray="3 3"
-                      stroke={GRID_COLOR}
+                      stroke={ct.grid}
                     />
                     <XAxis
                       dataKey="rank"
                       type="number"
                       name="Rank"
-                      tick={{ fill: TEXT_COLOR, fontSize: 12 }}
-                      axisLine={{ stroke: GRID_COLOR }}
-                      tickLine={{ stroke: GRID_COLOR }}
+                      tick={{ fill: ct.text, fontSize: 12 }}
+                      axisLine={{ stroke: ct.grid }}
+                      tickLine={{ stroke: ct.grid }}
                       label={{
                         value: "Company Rank (by return)",
                         position: "insideBottom",
-                        offset: -5,
-                        fill: TEXT_COLOR,
+                        offset: -15,
+                        fill: ct.text,
                         fontSize: 12,
                       }}
                     />
@@ -783,9 +735,9 @@ export default function PowerLawExplorer() {
                       name="Return"
                       scale="log"
                       domain={["auto", "auto"]}
-                      tick={{ fill: TEXT_COLOR, fontSize: 12 }}
-                      axisLine={{ stroke: GRID_COLOR }}
-                      tickLine={{ stroke: GRID_COLOR }}
+                      tick={{ fill: ct.text, fontSize: 12 }}
+                      axisLine={{ stroke: ct.grid }}
+                      tickLine={{ stroke: ct.grid }}
                       tickFormatter={(v) =>
                         v >= 1 ? `${v.toFixed(0)}x` : `${v.toFixed(2)}x`
                       }
@@ -794,7 +746,7 @@ export default function PowerLawExplorer() {
                         angle: -90,
                         position: "insideLeft",
                         offset: 5,
-                        fill: TEXT_COLOR,
+                        fill: ct.text,
                         fontSize: 12,
                       }}
                     />
@@ -806,14 +758,14 @@ export default function PowerLawExplorer() {
                           <div
                             className="rounded-md border px-3 py-2 text-sm shadow-lg space-y-0.5"
                             style={{
-                              backgroundColor: TOOLTIP_BG,
-                              borderColor: TOOLTIP_BORDER,
+                              backgroundColor: ct.tooltipBg,
+                              borderColor: ct.tooltipBorder,
                             }}
                           >
                             <div className="text-foreground font-semibold">
                               Rank #{d.rank}
                             </div>
-                            <div style={{ color: GREEN }}>
+                            <div style={{ color: ct.green }}>
                               Return: {formatMultiple(d.returnMultiple)}
                             </div>
                             <div className="text-muted-foreground text-xs">
@@ -826,7 +778,7 @@ export default function PowerLawExplorer() {
                     <Scatter
                       name="Actual Returns"
                       data={scatterData}
-                      fill={GREEN}
+                      fill={ct.green}
                       fillOpacity={0.8}
                       r={5}
                     />
@@ -835,14 +787,14 @@ export default function PowerLawExplorer() {
                       data={theoreticalCurve}
                       dataKey="theoretical"
                       fill="none"
-                      stroke={PURPLE}
+                      stroke={ct.purple}
                       strokeWidth={2}
-                      line={{ stroke: PURPLE, strokeWidth: 2, strokeDasharray: "6 3" }}
+                      line={{ stroke: ct.purple, strokeWidth: 2, strokeDasharray: "6 3" }}
                       shape={() => <></>}
                       legendType="line"
                     />
                     <Legend
-                      wrapperStyle={{ color: TEXT_COLOR, fontSize: 12 }}
+                      wrapperStyle={{ color: ct.text, fontSize: 12 }}
                     />
                   </ScatterChart>
                 </ResponsiveContainer>
@@ -876,6 +828,7 @@ export default function PowerLawExplorer() {
           </Card>
         </>
       )}
+      </div>
     </div>
   );
 }
@@ -934,7 +887,7 @@ function ConcentrationBadge({
   );
 }
 
-function DifficultyBadge({ multiple }: { multiple: number }) {
+function DifficultyBadge({ multiple, ct }: { multiple: number; ct: ReturnType<typeof getChartTheme> }) {
   let label: string;
   let bgColor: string;
   let textColor: string;
@@ -942,23 +895,23 @@ function DifficultyBadge({ multiple }: { multiple: number }) {
   if (multiple >= 100) {
     label = "Extremely Rare";
     bgColor = "rgba(248, 81, 73, 0.15)";
-    textColor = RED;
+    textColor = ct.red;
   } else if (multiple >= 50) {
     label = "Very Rare";
     bgColor = "rgba(210, 153, 34, 0.15)";
-    textColor = GOLD;
+    textColor = ct.gold;
   } else if (multiple >= 30) {
     label = "Rare";
     bgColor = "rgba(210, 153, 34, 0.1)";
-    textColor = GOLD;
+    textColor = ct.gold;
   } else if (multiple >= 20) {
     label = "Uncommon";
     bgColor = "rgba(63, 185, 80, 0.15)";
-    textColor = GREEN;
+    textColor = ct.green;
   } else {
     label = "Achievable";
     bgColor = "rgba(63, 185, 80, 0.1)";
-    textColor = GREEN;
+    textColor = ct.green;
   }
 
   return (

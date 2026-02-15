@@ -164,7 +164,12 @@ function simulateCompany(
   );
 
   const investedCapital = initialCheck + followOn;
-  const returnedCapital = investedCapital * returnMultiple;
+
+  // Follow-on capital earns lower multiple due to higher valuations
+  const followOnReturnMultiple = returnMultiple * 0.5;
+  const initialReturn = initialCheck * returnMultiple;
+  const followOnReturn = followOn * followOnReturnMultiple;
+  const returnedCapital = initialReturn + followOnReturn;
 
   return {
     stage,
@@ -221,7 +226,7 @@ export function runSingleSimulation(
     0
   );
 
-  const grossMOIC = totalReturnedCapital / totalInvestedCapital;
+  const grossMOIC = totalReturnedCapital / params.fundSize;
   const multipleOnCommittedCapital = totalReturnedCapital / params.fundSize;
 
   const numWriteOffs = companies.filter((c) => c.returnMultiple < 0.1).length;
@@ -233,9 +238,13 @@ export function runSingleSimulation(
 
   // Capital deployment using realistic pacing (front-loaded)
   const investmentPeriodYears = params.investmentPeriod;
-  const pacingWeights = [0.30, 0.35, 0.25, 0.10]; // Front-loaded deployment
+  const rawWeights = [0.30, 0.35, 0.25, 0.10]; // Front-loaded deployment
+  const usedWeights = rawWeights.slice(0, investmentPeriodYears);
+  const weightSum = usedWeights.reduce((a, b) => a + b, 0);
+  const normalizedWeights = usedWeights.map(w => w / weightSum);
+
   for (let year = 0; year < investmentPeriodYears; year++) {
-    const weight = pacingWeights[year] ?? 1 / investmentPeriodYears;
+    const weight = normalizedWeights[year] ?? 1 / investmentPeriodYears;
     cashFlows.push(-totalInvestedCapital * weight);
     years.push(year + 0.5);
   }

@@ -51,8 +51,7 @@ export function calculateManagementFees(
  * European waterfall (whole-fund):
  * 1. Return LP capital first
  * 2. Pay LP preferred return (hurdle)
- * 3. GP catch-up to carry %
- * 4. Remaining split 80/20 (LP/GP)
+ * 3. Carry on excess above hurdle (no GP catch-up)
  *
  * @param grossProceeds - Total money returned from portfolio
  * @param fundSize - Total committed capital
@@ -84,8 +83,8 @@ export function calculateNetReturns(
   const lpCapital = fundSize;
 
   // Step 4: Preferred return (hurdle)
-  // Compound hurdle over fund life
-  const hurdleMultiple = Math.pow(1 + feeStructure.hurdleRate / 100, fundLife);
+  // Simple hurdle over fund life
+  const hurdleMultiple = 1 + (feeStructure.hurdleRate / 100) * fundLife;
   const hurdleAmount = lpCapital * hurdleMultiple;
 
   // Step 5: Waterfall distribution
@@ -105,7 +104,7 @@ export function calculateNetReturns(
     const lpPreferred = hurdleAmount;
     const excess = distributable - hurdleAmount;
 
-    // GP catch-up and carry on excess
+    // Carry on excess above hurdle (no GP catch-up)
     carriedInterest = excess * (feeStructure.carryRate / 100);
     netToLP = lpPreferred + (excess - carriedInterest);
   }
@@ -118,7 +117,7 @@ export function calculateNetReturns(
 
   // Net metrics
   const netMOIC = netToLP / lpCapital;
-  const grossMOIC = grossProceeds / Math.max(totalInvested, 1);
+  const grossMOIC = grossProceeds / fundSize;
   const feeDrag =
     grossMOIC > 0 ? ((grossMOIC - netMOIC) / grossMOIC) * 100 : 0;
 

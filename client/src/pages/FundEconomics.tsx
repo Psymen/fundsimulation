@@ -28,16 +28,8 @@ import {
   DEFAULT_FEE_STRUCTURE,
 } from "@/lib/fees";
 import type { FeeStructure } from "@/types/simulation";
-
-// ── Theme constants ───────────────────────────────────────────────────
-const PURPLE = "#a371f7";
-const GOLD = "#d29922";
-const GREEN = "#3fb950";
-const RED = "#f85149";
-const GRID_COLOR = "#334155";
-const TEXT_COLOR = "#94a3b8";
-const TOOLTIP_BG = "#1e293b";
-const TOOLTIP_BORDER = "#334155";
+import { useTheme } from "@/contexts/ThemeContext";
+import { getChartTheme } from "@/lib/chart-theme";
 
 // ── Helpers ───────────────────────────────────────────────────────────
 function fmt$(v: number): string {
@@ -53,11 +45,13 @@ function fmtPct(v: number, decimals = 1): string {
 
 // ── Custom tooltip ────────────────────────────────────────────────────
 function DarkTooltip({
+  ct,
   active,
   payload,
   label,
   formatter,
 }: {
+  ct: ReturnType<typeof getChartTheme>;
   active?: boolean;
   payload?: { name: string; value: number; color: string }[];
   label?: string;
@@ -68,9 +62,9 @@ function DarkTooltip({
     <div
       className="rounded-md px-3 py-2 text-sm shadow-lg"
       style={{
-        background: TOOLTIP_BG,
-        border: `1px solid ${TOOLTIP_BORDER}`,
-        color: TEXT_COLOR,
+        background: ct.tooltipBg,
+        border: `1px solid ${ct.tooltipBorder}`,
+        color: ct.text,
       }}
     >
       <p className="mb-1 font-medium text-foreground">{label}</p>
@@ -86,11 +80,13 @@ function DarkTooltip({
 
 // ── Section 1: Waterfall Calculator ───────────────────────────────────
 function WaterfallSection({
+  ct,
   feeStructure,
   fundSize,
   investmentPeriod,
   fundLife,
 }: {
+  ct: ReturnType<typeof getChartTheme>;
   feeStructure: FeeStructure;
   fundSize: number;
   investmentPeriod: number;
@@ -129,33 +125,33 @@ function WaterfallSection({
     const netLP = result.netToLP;
 
     return [
-      { name: "Gross Returns", value: gross, color: GREEN, type: "positive" },
+      { name: "Gross Returns", value: gross, color: ct.green, type: "positive" },
       {
         name: "Mgmt Fees",
         value: -mgmtFees,
-        color: RED,
+        color: ct.red,
         type: "negative",
       },
       {
         name: "Expenses",
         value: -expenses,
-        color: RED,
+        color: ct.red,
         type: "negative",
       },
       {
         name: "Distributable",
         value: distributable,
-        color: PURPLE,
+        color: ct.purple,
         type: "subtotal",
       },
       {
         name: "LP Hurdle",
         value: hurdle,
-        color: GOLD,
+        color: ct.gold,
         type: "positive",
       },
-      { name: "Carry (GP)", value: -carry, color: RED, type: "negative" },
-      { name: "Net to LP", value: netLP, color: GREEN, type: "total" },
+      { name: "Carry (GP)", value: -carry, color: ct.red, type: "negative" },
+      { name: "Net to LP", value: netLP, color: ct.green, type: "total" },
     ];
   }, [result, fundSize, feeStructure, fundLife]);
 
@@ -264,24 +260,24 @@ function WaterfallSection({
             >
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke={GRID_COLOR}
+                stroke={ct.grid}
                 vertical={false}
               />
               <XAxis
                 dataKey="name"
-                tick={{ fill: TEXT_COLOR, fontSize: 11 }}
-                axisLine={{ stroke: GRID_COLOR }}
+                tick={{ fill: ct.text, fontSize: 11 }}
+                axisLine={{ stroke: ct.grid }}
                 tickLine={false}
               />
               <YAxis
                 tickFormatter={(v: number) => fmt$(v)}
-                tick={{ fill: TEXT_COLOR, fontSize: 11 }}
-                axisLine={{ stroke: GRID_COLOR }}
+                tick={{ fill: ct.text, fontSize: 11 }}
+                axisLine={{ stroke: ct.grid }}
                 tickLine={false}
               />
               <RechartsTooltip
                 content={
-                  <DarkTooltip
+                  <DarkTooltip ct={ct}
                     formatter={(v: number, name: string) => {
                       if (name === "base") return "";
                       return fmt$(v);
@@ -307,10 +303,12 @@ function WaterfallSection({
 
 // ── Section 2: Fund Size Sensitivity ──────────────────────────────────
 function FundSizeSensitivitySection({
+  ct,
   feeStructure,
   investmentPeriod,
   fundLife,
 }: {
+  ct: ReturnType<typeof getChartTheme>;
   feeStructure: FeeStructure;
   investmentPeriod: number;
   fundLife: number;
@@ -380,47 +378,47 @@ function FundSizeSensitivitySection({
             >
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke={GRID_COLOR}
+                stroke={ct.grid}
                 vertical={false}
               />
               <XAxis
                 dataKey="fundSize"
-                tick={{ fill: TEXT_COLOR, fontSize: 11 }}
-                axisLine={{ stroke: GRID_COLOR }}
+                tick={{ fill: ct.text, fontSize: 11 }}
+                axisLine={{ stroke: ct.grid }}
                 tickLine={false}
               />
               <YAxis
                 yAxisId="left"
-                tick={{ fill: TEXT_COLOR, fontSize: 11 }}
-                axisLine={{ stroke: GRID_COLOR }}
+                tick={{ fill: ct.text, fontSize: 11 }}
+                axisLine={{ stroke: ct.grid }}
                 tickLine={false}
                 tickFormatter={(v: number) => `$${v.toFixed(0)}M`}
                 label={{
                   value: "GP Carry ($M)",
                   angle: -90,
                   position: "insideLeft",
-                  style: { fill: TEXT_COLOR, fontSize: 11 },
+                  style: { fill: ct.text, fontSize: 11 },
                   offset: -5,
                 }}
               />
               <YAxis
                 yAxisId="right"
                 orientation="right"
-                tick={{ fill: TEXT_COLOR, fontSize: 11 }}
-                axisLine={{ stroke: GRID_COLOR }}
+                tick={{ fill: ct.text, fontSize: 11 }}
+                axisLine={{ stroke: ct.grid }}
                 tickLine={false}
                 tickFormatter={(v: number) => `${v.toFixed(1)}`}
                 label={{
                   value: "MOIC / Fee Drag %",
                   angle: 90,
                   position: "insideRight",
-                  style: { fill: TEXT_COLOR, fontSize: 11 },
+                  style: { fill: ct.text, fontSize: 11 },
                   offset: -5,
                 }}
               />
               <RechartsTooltip
                 content={
-                  <DarkTooltip
+                  <DarkTooltip ct={ct}
                     formatter={(v: number, name: string) => {
                       if (name === "GP Carry") return `$${v.toFixed(1)}M`;
                       if (name === "LP Net MOIC") return `${v.toFixed(2)}x`;
@@ -431,16 +429,16 @@ function FundSizeSensitivitySection({
                 }
               />
               <Legend
-                wrapperStyle={{ color: TEXT_COLOR, fontSize: 12 }}
+                wrapperStyle={{ color: ct.text, fontSize: 12 }}
               />
               <Line
                 yAxisId="left"
                 type="monotone"
                 dataKey="gpCarry"
                 name="GP Carry"
-                stroke={GOLD}
+                stroke={ct.gold}
                 strokeWidth={2}
-                dot={{ fill: GOLD, r: 3 }}
+                dot={{ fill: ct.gold, r: 3 }}
                 activeDot={{ r: 5 }}
               />
               <Line
@@ -448,9 +446,9 @@ function FundSizeSensitivitySection({
                 type="monotone"
                 dataKey="lpNetMOIC"
                 name="LP Net MOIC"
-                stroke={PURPLE}
+                stroke={ct.purple}
                 strokeWidth={2}
-                dot={{ fill: PURPLE, r: 3 }}
+                dot={{ fill: ct.purple, r: 3 }}
                 activeDot={{ r: 5 }}
               />
               <Line
@@ -458,9 +456,9 @@ function FundSizeSensitivitySection({
                 type="monotone"
                 dataKey="feeDrag"
                 name="Fee Drag"
-                stroke={RED}
+                stroke={ct.red}
                 strokeWidth={2}
-                dot={{ fill: RED, r: 3 }}
+                dot={{ fill: ct.red, r: 3 }}
                 activeDot={{ r: 5 }}
                 strokeDasharray="5 3"
               />
@@ -474,11 +472,13 @@ function FundSizeSensitivitySection({
 
 // ── Section 3: GP vs LP Economics Table ────────────────────────────────
 function GPvsLPTable({
+  ct,
   feeStructure,
   fundSize,
   investmentPeriod,
   fundLife,
 }: {
+  ct: ReturnType<typeof getChartTheme>;
   feeStructure: FeeStructure;
   fundSize: number;
   investmentPeriod: number;
@@ -551,7 +551,7 @@ function GPvsLPTable({
                   key={row.grossMOIC}
                   className={`border-b border-border/50 transition-colors ${
                     row.carryKicksIn
-                      ? "bg-[#d29922]/5"
+                      ? "bg-amber-500/5"
                       : "hover:bg-muted/20"
                   }`}
                 >
@@ -564,7 +564,7 @@ function GPvsLPTable({
                   <td className="px-4 py-3">
                     <span
                       style={{
-                        color: row.carryKicksIn ? GOLD : TEXT_COLOR,
+                        color: row.carryKicksIn ? ct.gold : ct.text,
                       }}
                     >
                       {fmt$(row.carry)}
@@ -578,8 +578,8 @@ function GPvsLPTable({
                       style={{
                         color:
                           row.netLPMOIC >= 1
-                            ? GREEN
-                            : RED,
+                            ? ct.green
+                            : ct.red,
                       }}
                     >
                       {row.netLPMOIC.toFixed(2)}x
@@ -590,10 +590,10 @@ function GPvsLPTable({
                       style={{
                         color:
                           row.feeDrag > 30
-                            ? RED
+                            ? ct.red
                             : row.feeDrag > 15
-                              ? GOLD
-                              : GREEN,
+                              ? ct.gold
+                              : ct.green,
                       }}
                     >
                       {fmtPct(row.feeDrag)}
@@ -616,6 +616,8 @@ function GPvsLPTable({
 
 // ── Main Page ─────────────────────────────────────────────────────────
 export default function FundEconomics() {
+  const { theme } = useTheme();
+  const ct = getChartTheme(theme);
   // Configurable fee structure inputs
   const [feeRate, setFeeRate] = useState(DEFAULT_FEE_STRUCTURE.managementFeeRate);
   const [carryRate, setCarryRate] = useState(DEFAULT_FEE_STRUCTURE.carryRate);
@@ -813,6 +815,7 @@ export default function FundEconomics() {
 
       {/* Section 1: Waterfall */}
       <WaterfallSection
+        ct={ct}
         feeStructure={feeStructure}
         fundSize={fundSize}
         investmentPeriod={investmentPeriod}
@@ -821,6 +824,7 @@ export default function FundEconomics() {
 
       {/* Section 2: Fund Size Sensitivity */}
       <FundSizeSensitivitySection
+        ct={ct}
         feeStructure={feeStructure}
         investmentPeriod={investmentPeriod}
         fundLife={fundLife}
@@ -828,6 +832,7 @@ export default function FundEconomics() {
 
       {/* Section 3: GP vs LP Table */}
       <GPvsLPTable
+        ct={ct}
         feeStructure={feeStructure}
         fundSize={fundSize}
         investmentPeriod={investmentPeriod}

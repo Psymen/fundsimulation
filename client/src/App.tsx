@@ -4,6 +4,7 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { ParametersProvider } from "./contexts/ParametersContext";
 import Home from "./pages/Home";
 import PortfolioConstruction from "./pages/PortfolioConstruction";
 import PowerLawExplorer from "./pages/PowerLawExplorer";
@@ -31,11 +32,13 @@ function Router() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="dark">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+      <ThemeProvider defaultTheme="dark" switchable>
+        <ParametersProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </ParametersProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

@@ -1,0 +1,1291 @@
+{
+  "sim_initial": {
+    "headings": [
+      "App",
+      "Parameters",
+      "Fund Setup",
+      "Stage-Specific Parameters",
+      "Seed Stage",
+      "Seed Exit Distribution",
+      "Series A Stage",
+      "Series A Exit Distribution",
+      "Fund Economics",
+      "Fee Structure (2/20)",
+      "Historical Runs"
+    ],
+    "buttons": [
+      {
+        "text": "Simulation",
+        "disabled": false
+      },
+      {
+        "text": "Portfolio",
+        "disabled": false
+      },
+      {
+        "text": "Power Law",
+        "disabled": false
+      },
+      {
+        "text": "Economics",
+        "disabled": false
+      },
+      {
+        "text": "Stress Test",
+        "disabled": false
+      },
+      {
+        "text": "Run Simulations",
+        "disabled": false
+      },
+      {
+        "text": "Copy Parameters",
+        "disabled": false
+      },
+      {
+        "text": "Export CSV",
+        "disabled": true
+      },
+      {
+        "text": "Reset",
+        "disabled": false
+      },
+      {
+        "text": "Seed Stage",
+        "disabled": false
+      },
+      {
+        "text": "Series A Stage",
+        "disabled": false
+      },
+      {
+        "text": "Fee Structure (2/20)",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "type": "number",
+        "value": "200",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "25",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "60",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "3",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "10",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "3",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "10",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "1000",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "2",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "50",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "40",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "20",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.1",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "1.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "1.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "7",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "20",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "3",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "20",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "150",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "50",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "12",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "25",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "20",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.1",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "1.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "25",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "1.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "12",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "3",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "50",
+        "label": ""
+      }
+    ],
+    "charts": 27,
+    "tables": 0,
+    "sliders": 0
+  },
+  "sim_empty_state": {
+    "hasResults": false,
+    "bodyLength": 1324,
+    "first500": "App\nSimulation\nPortfolio\nPower Law\nEconomics\nStress Test\nRun Simulations\nCopy Parameters\nExport CSV\nParameters\nReset\nFund Setup\nFund Size ($M)\nNumber of Portfolio Companies\nSeed Percentage (%)\n\n15 seed, 10 Series A\n\nInvestment Period (years)\nFund Life (years)\nExit Window Min (years)\nExit Window Max (years)\nNumber of Simulations\nStage-Specific Parameters\nSeed Stage\nAverage Initial Check Size ($M)\nFollow-on Reserve Ratio (%)\nTarget Ownership (%) - Reference Only\nSeed Exit Distribution\nTotal Loss\nP"
+  },
+  "sim_results": {
+    "headings": [
+      "App",
+      "Parameters",
+      "Fund Setup",
+      "Stage-Specific Parameters",
+      "Seed Stage",
+      "Seed Exit Distribution",
+      "Series A Stage",
+      "Series A Exit Distribution",
+      "Fund Economics",
+      "Fee Structure (2/20)",
+      "Simulation Results",
+      "Historical Runs"
+    ],
+    "buttons": [
+      {
+        "text": "Simulation",
+        "disabled": false
+      },
+      {
+        "text": "Portfolio",
+        "disabled": false
+      },
+      {
+        "text": "Power Law",
+        "disabled": false
+      },
+      {
+        "text": "Economics",
+        "disabled": false
+      },
+      {
+        "text": "Stress Test",
+        "disabled": false
+      },
+      {
+        "text": "Run Simulations",
+        "disabled": false
+      },
+      {
+        "text": "Copy Parameters",
+        "disabled": false
+      },
+      {
+        "text": "Export CSV",
+        "disabled": false
+      },
+      {
+        "text": "Reset",
+        "disabled": false
+      },
+      {
+        "text": "Seed Stage",
+        "disabled": false
+      },
+      {
+        "text": "Series A Stage",
+        "disabled": false
+      },
+      {
+        "text": "Fee Structure (2/20)",
+        "disabled": false
+      },
+      {
+        "text": "Clear All",
+        "disabled": false
+      },
+      {
+        "text": "Load Parameters",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "type": "number",
+        "value": "200",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "25",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "60",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "3",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "10",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "3",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "10",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "1000",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "2",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "50",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "40",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "20",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.1",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "1.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "1.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "7",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "20",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "3",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "20",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "150",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "50",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "12",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "25",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "20",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.1",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "0.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "1.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "25",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "1.5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "12",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "3",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "50",
+        "label": ""
+      }
+    ],
+    "charts": 38,
+    "tables": 0,
+    "sliders": 0
+  },
+  "sim_content": {
+    "hasResults": true,
+    "bodySnippet": "App\nSimulation\nPortfolio\nPower Law\nEconomics\nStress Test\nRun Simulations\nCopy Parameters\nExport CSV\nParameters\nReset\nFund Setup\nFund Size ($M)\nNumber of Portfolio Companies\nSeed Percentage (%)\n\n15 seed, 10 Series A\n\nInvestment Period (years)\nFund Life (years)\nExit Window Min (years)\nExit Window Max (years)\nNumber of Simulations\nStage-Specific Parameters\nSeed Stage\nAverage Initial Check Size ($M)\nFollow-on Reserve Ratio (%)\nTarget Ownership (%) - Reference Only\nSeed Exit Distribution\nTotal Loss\nProb (%)\nMin (x)\nMax (x)\nPartial Loss\nProb (%)\nMin (x)\nMax (x)\nNear Break-even\nProb (%)\nMin (x)\nMax (x)\nMid Return\nProb (%)\nMin (x)\nMax (x)\nHigh Return\nProb (%)\nMin (x)\nMax (x)\nOutlier\nProb (%)\nMin (x)\nMax (x)\nTotal Probability: 100.0%\nSeries A Stage\nAverage Initial Check Size ($M)\nFollow-on Reserve Ratio (%)\nTarget Ownership (%) - Reference Only\nSeries A Exit Distribution\nTotal Loss\nProb (%)\nMin (x)\nMax (x)\nPartial Loss\nProb (%)\nMin (x)\nMax (x)\nNear Break-even\nProb (%)\nMin (x)\nMax (x)\nMid Return\nProb (%)\nMin (x)\nMax (x)\nHigh Return\nProb (%)\nMin (x)\nMax (x)\nOutlier\nProb (%)\nMin (x)\nMax (x)\nTotal Probability: 100.0%\nFund Economics\nFee Structure (2/20)\nSimulation Results\nMedian MOIC\n2.62x\nP10: 1.30x | P90: 5.32x | \u03c3: 1.60\nMultiple on Invested Capital - how many times the fund returns its invested capital\nMedian IRR\n20.8%\nP10: 7.2% | P90: 34.3% | \u03c3: 10.9%\nInternal Rate of Return - annualized return accounting for timing of cash flows\nAvg Outcomes\n0.6 outliers\n8.4 write-offs\nAverage number of 20x+ returns and total losses per simulation\nNet MOIC (LP)\n1.02x\nP10: 0.39x | P90: 2.19x\nNet-of-fees MOIC returned to limited partners after management fees and carry\nMedian Net IRR\n8.1%\nAfter fees and carry\nAnnualized net return to LPs after all fund expenses\nAvg Fee Drag\n62.6%\nAverage reduction in returns due to management fees and carried interest\nGross vs Net\n2.62x \u2192 1.02x\nFee drag: 61.0%\nComparison of gross fund returns to net LP returns showing fee impact\nProbability of Returns\n0.7%\nMOI"
+  },
+  "portfolio_initial": {
+    "headings": [
+      "App",
+      "Portfolio Construction Analyzer",
+      "Stage-Specific Parameters",
+      "Seed Stage Parameters",
+      "Series A Stage Parameters",
+      "No Analysis Yet"
+    ],
+    "buttons": [
+      {
+        "text": "Simulation",
+        "disabled": false
+      },
+      {
+        "text": "Portfolio",
+        "disabled": false
+      },
+      {
+        "text": "Power Law",
+        "disabled": false
+      },
+      {
+        "text": "Economics",
+        "disabled": false
+      },
+      {
+        "text": "Stress Test",
+        "disabled": false
+      },
+      {
+        "text": "Run Grid Analysis",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "Seed Stage Parameters",
+        "disabled": false
+      },
+      {
+        "text": "Series A Stage Parameters",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "type": "number",
+        "value": "200",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "40",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "500",
+        "label": ""
+      }
+    ],
+    "charts": 15,
+    "tables": 0,
+    "sliders": 0
+  },
+  "portfolio_text": "App\nSimulation\nPortfolio\nPower Law\nEconomics\nStress Test\nRun Grid Analysis\nPortfolio Construction Analyzer\n\nRun grid analysis across different portfolio configurations to identify optimal strategies\n\nAnalysis Parameters\nConfigure the grid search parameters\nFund Size ($M)\nInvestment Count Range\nMin\nMax\nSeed Percentage Mix\n0% Seed / 100% Series A\n25% Seed / 75% Series A\n50% Seed / 50% Series A\n75% Seed / 25% Series A\n100% Seed\nSimulations per Scenario\nStage-Specific Parameters\nSeed Stage Parameters\nSeries A Stage Parameters\nNo Analysis Yet\n\nConfigure your parameters and click \"Run Grid Analysis\" to explore optimal portfolio construction strategies",
+  "portfolio_results": {
+    "headings": [
+      "App",
+      "Portfolio Construction Analyzer",
+      "Stage-Specific Parameters",
+      "Seed Stage Parameters",
+      "Series A Stage Parameters",
+      "Highest Median MOIC",
+      "Highest Median IRR",
+      "Best Downside Protection",
+      "Lowest Median MOIC",
+      "Portfolio Construction Analysis: $200M Fund",
+      "Stage Mix Insights:",
+      "Portfolio Size Insights:",
+      "Capital Deployment:"
+    ],
+    "buttons": [
+      {
+        "text": "Simulation",
+        "disabled": false
+      },
+      {
+        "text": "Portfolio",
+        "disabled": false
+      },
+      {
+        "text": "Power Law",
+        "disabled": false
+      },
+      {
+        "text": "Economics",
+        "disabled": false
+      },
+      {
+        "text": "Stress Test",
+        "disabled": false
+      },
+      {
+        "text": "Run Grid Analysis",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "",
+        "disabled": false
+      },
+      {
+        "text": "Seed Stage Parameters",
+        "disabled": false
+      },
+      {
+        "text": "Series A Stage Parameters",
+        "disabled": false
+      },
+      {
+        "text": "View Benchmarks",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "type": "number",
+        "value": "200",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "15",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "40",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "500",
+        "label": ""
+      }
+    ],
+    "charts": 17,
+    "tables": 1,
+    "sliders": 0
+  },
+  "powerlaw_initial": {
+    "headings": [
+      "App",
+      "Power Law Explorer",
+      "Ready to Explore"
+    ],
+    "buttons": [
+      {
+        "text": "Simulation",
+        "disabled": false
+      },
+      {
+        "text": "Portfolio",
+        "disabled": false
+      },
+      {
+        "text": "Power Law",
+        "disabled": false
+      },
+      {
+        "text": "Economics",
+        "disabled": false
+      },
+      {
+        "text": "Stress Test",
+        "disabled": false
+      },
+      {
+        "text": "Analyze",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "type": "number",
+        "value": "200",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "25",
+        "label": ""
+      }
+    ],
+    "charts": 7,
+    "tables": 0,
+    "sliders": 0
+  },
+  "powerlaw_results": {
+    "headings": [
+      "App",
+      "Power Law Explorer",
+      "To achieve a 3x Fund MOIC, you need:",
+      "Key Insight"
+    ],
+    "buttons": [
+      {
+        "text": "Simulation",
+        "disabled": false
+      },
+      {
+        "text": "Portfolio",
+        "disabled": false
+      },
+      {
+        "text": "Power Law",
+        "disabled": false
+      },
+      {
+        "text": "Economics",
+        "disabled": false
+      },
+      {
+        "text": "Stress Test",
+        "disabled": false
+      },
+      {
+        "text": "Analyze",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "type": "number",
+        "value": "200",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "25",
+        "label": ""
+      }
+    ],
+    "charts": 19,
+    "tables": 1,
+    "sliders": 0
+  },
+  "fund_econ_initial": {
+    "headings": [
+      "App",
+      "Fund Economics Calculator"
+    ],
+    "buttons": [
+      {
+        "text": "Simulation",
+        "disabled": false
+      },
+      {
+        "text": "Portfolio",
+        "disabled": false
+      },
+      {
+        "text": "Power Law",
+        "disabled": false
+      },
+      {
+        "text": "Economics",
+        "disabled": false
+      },
+      {
+        "text": "Stress Test",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "type": "number",
+        "value": "100",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "10",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "2",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "20",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "8",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "2",
+        "label": ""
+      }
+    ],
+    "charts": 10,
+    "tables": 1,
+    "sliders": 0
+  },
+  "fund_econ_text": "App\nSimulation\nPortfolio\nPower Law\nEconomics\nStress Test\nFund Economics Calculator\n\nModel waterfall distributions, fee drag, and GP/LP economics\n\nFund Parameters\nFund Size ($M)\nFund Life (yrs)\nInvestment Period (yrs)\nMgmt Fee (%)\nCarry (%)\nHurdle (%)\nGP Commit (%)\nTotal Mgmt Fees\n$17.5M\nWaterfall Calculator\n\nStep-by-step fund distribution waterfall\n\nGross MOIC\n3.0x\n\nGross Proceeds\n\n$300.0M\n\nMgmt Fees\n\n$17.5M\n\nCarry\n\n$13.3M\n\nNet to LP\n\n$269.2M\n\nNet MOIC\n\n2.69x\n\nFee Drag\n\n28.2%\n\nGP Total Comp\n\n$38.3M\n\nDistributable\n\n$282.5M\n\nGross Returns\nMgmt Fees\nExpenses\nDistributable\nLP Hurdle\nCarry (GP)\nNet to LP\n$0\n$75.0M\n$150.0M\n$225.0M\n$300.0M\nFund Size Sensitivity\n\nHow fund size affects GP carry, LP net MOIC, and fee drag\n\nAssumed Gross MOIC\n3.0x\n$25M\n$50M\n$75M\n$100M\n$150M\n$200M\n$300M\n$400M\n$500M\n$750M\n$1000M\n$0M\n$35M\n$70M\n$105M\n$140M\nGP Carry ($M)\n0.0\n8.0\n16.0\n24.0\n32.0\nMOIC / Fee Drag %\nGP CarryLP Net MOICFee Drag\nGP vs LP Economics\n\nHow fees and carry impact LP returns across MOIC scenarios. Rows where carry kicks in are highlighted.\n\nGROSS MOIC\tMGMT FEES\tCARRY (GP)\tNET LP MOIC\tFEE DRAG %\n0.5x\t$17.5M\t$0\t0.33x\t48.0%\n1.0x\t$17.5M\t$0\t0.82x\t34.0%\n1.5x\t$17.5M\t$0\t1.32x\t29.3%\n2.0x\t$17.5M\t$0\t1.82x\t27.0%\n3.0x\t$17.5M\t$13.3M*\t2.69x\t28.2%\n5.0x\t$17.5M\t$53.3M*\t4.29x\t31.3%\n7.0x\t$17.5M\t$93.3M*\t5.89x\t32.7%\n10.0x\t$17.5M\t$153.3M*\t8.29x\t33.7%\n\n* Carry kicks in above the 8% hurdle rate. Note how fee drag is highest at lower MOICs (management fees are fixed) and carry adds non-linear drag at higher MOICs.\n\n0.0",
+  "fund_econ_results": {
+    "headings": [
+      "App",
+      "Fund Economics Calculator"
+    ],
+    "buttons": [
+      {
+        "text": "Simulation",
+        "disabled": false
+      },
+      {
+        "text": "Portfolio",
+        "disabled": false
+      },
+      {
+        "text": "Power Law",
+        "disabled": false
+      },
+      {
+        "text": "Economics",
+        "disabled": false
+      },
+      {
+        "text": "Stress Test",
+        "disabled": false
+      }
+    ],
+    "inputs": [
+      {
+        "type": "number",
+        "value": "100",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "10",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "5",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "2",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "20",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "8",
+        "label": ""
+      },
+      {
+        "type": "number",
+        "value": "2",
+        "label": ""
+      }
+    ],
+    "charts": 10,
+    "tables": 1,
+    "sliders": 0
+  },
+  "stress_initial": {
+    "headings": [
+      "App",
+      "Scenario Stress Testing"
+    ],
+    "buttons": [
+      {
+        "text": "Simulation",
+        "disabled": false
+      },
+      {
+        "text": "Portfolio",
+        "disabled": false
+      },
+      {
+        "text": "Power Law",
+        "disabled": false
+      },
+      {
+        "text": "Economics",
+        "disabled": false
+      },
+      {
+        "text": "Stress Test",
+        "disabled": false
+      },
+      {
+        "text": "Run Comparison",
+        "disabled": false
+      },
+      {
+        "text": "Base CaseDefault parameters with no modifications (control scenario)\u2713",
+        "disabled": false
+      },
+      {
+        "text": "2008 Financial CrisisFailure rate +50%, multiples x0.65, exit windows +2.5 years",
+        "disabled": false
+      },
+      {
+        "text": "2021 Bull MarketFailure rate -20%, multiples x1.4, exits -1 year\u2713",
+        "disabled": false
+      },
+      {
+        "text": "Rate Hike (2022-23)Failure rate +30%, multiples x0.75, exits +1.5 years\u2713",
+        "disabled": false
+      },
+      {
+        "text": "Exit DroughtNo early exits: exit window pushed to 7-12 years\u2713",
+        "disabled": false
+      },
+      {
+        "text": "Apply Custom",
+        "disabled": false
+      }
+    ],
+    "inputs": [],
+    "charts": 10,
+    "tables": 0,
+    "sliders": 0
+  },
+  "stress_text": "App\nSimulation\nPortfolio\nPower Law\nEconomics\nStress Test\nScenario Stress Testing\n\nCompare fund performance under different market conditions using Monte Carlo simulation\n\nPre-Built Scenarios\nRun Comparison\nSelect scenarios to compare. Toggle cards on/off, then click Run Comparison.\nBase Case\n\nDefault parameters with no modifications (control scenario)\n\n\u2713\n2008 Financial Crisis\n\nFailure rate +50%, multiples x0.65, exit windows +2.5 years\n\n\u2713\n2021 Bull Market\n\nFailure rate -20%, multiples x1.4, exits -1 year\n\n\u2713\nRate Hike (2022-23)\n\nFailure rate +30%, multiples x0.75, exits +1.5 years\n\n\u2713\nExit Drought\n\nNo early exits: exit window pushed to 7-12 years\n\n\u2713\nCustom Scenario Builder\nCreate a custom stress scenario by adjusting parameters below\nFailure Rate Modifier\n1.00x\n\n1.0 = default, 1.5 = 50% more failures, 0.5 = 50% fewer\n\nMultiple Compression\n1.00x\n\n1.0 = default, 0.65 = 35% compressed, 1.4 = 40% higher\n\nExit Delay (years)\n+0.0y\n\n0 = default, +2.5 = exits delayed 2.5 years, -1 = earlier exits\n\nApply Custom\n\nSelect scenarios above and click Run Comparison to see results",
+  "stress_results": {
+    "headings": [
+      "App",
+      "Scenario Stress Testing"
+    ],
+    "buttons": [
+      {
+        "text": "Simulation",
+        "disabled": false
+      },
+      {
+        "text": "Portfolio",
+        "disabled": false
+      },
+      {
+        "text": "Power Law",
+        "disabled": false
+      },
+      {
+        "text": "Economics",
+        "disabled": false
+      },
+      {
+        "text": "Stress Test",
+        "disabled": false
+      },
+      {
+        "text": "Run Comparison",
+        "disabled": false
+      },
+      {
+        "text": "Base CaseDefault parameters with no modifications (control scenario)\u2713",
+        "disabled": false
+      },
+      {
+        "text": "2008 Financial CrisisFailure rate +50%, multiples x0.65, exit windows +2.5 years",
+        "disabled": false
+      },
+      {
+        "text": "2021 Bull MarketFailure rate -20%, multiples x1.4, exits -1 year\u2713",
+        "disabled": false
+      },
+      {
+        "text": "Rate Hike (2022-23)Failure rate +30%, multiples x0.75, exits +1.5 years\u2713",
+        "disabled": false
+      },
+      {
+        "text": "Exit DroughtNo early exits: exit window pushed to 7-12 years\u2713",
+        "disabled": false
+      },
+      {
+        "text": "Apply Custom",
+        "disabled": false
+      }
+    ],
+    "inputs": [],
+    "charts": 16,
+    "tables": 1,
+    "sliders": 0
+  },
+  "stress_results_text": "App\nSimulation\nPortfolio\nPower Law\nEconomics\nStress Test\nScenario Stress Testing\n\nCompare fund performance under different market conditions using Monte Carlo simulation\n\nPre-Built Scenarios\nRun Comparison\nSelect scenarios to compare. Toggle cards on/off, then click Run Comparison.\nBase Case\n\nDefault parameters with no modifications (control scenario)\n\n\u2713\n2008 Financial Crisis\n\nFailure rate +50%, multiples x0.65, exit windows +2.5 years\n\n\u2713\n2021 Bull Market\n\nFailure rate -20%, multiples x1.4, exits -1 year\n\n\u2713\nRate Hike (2022-23)\n\nFailure rate +30%, multiples x0.75, exits +1.5 years\n\n\u2713\nExit Drought\n\nNo early exits: exit window pushed to 7-12 years\n\n\u2713\nCustom Scenario Builder\nCreate a custom stress scenario by adjusting parameters below\nFailure Rate Modifier\n1.00x\n\n1.0 = default, 1.5 = 50% more failures, 0.5 = 50% fewer\n\nMultiple Compression\n1.00x\n\n1.0 = default, 0.65 = 35% compressed, 1.4 = 40% higher\n\nExit Delay (years)\n+0.0y\n\n0 = default, +2.5 = exits delayed 2.5 years, -1 = earlier exits\n\nApply Custom\nScenario Comparison\nKey metrics across selected scenarios (deltas relative to Base Case)\nScenario\tMedian MOIC\tP10 MOIC\tP90 MOIC\tProb <1x\tMedian IRR\tNet MOIC\n\nBase Case\n\t2.60x\t1.30x\t4.89x\t4.0%\t20.7%\t1.01x\n\n2008 Financial Crisis\n\t\n1.29x\n(-1.32)\n\t\n0.53x\n(-0.77)\n\t\n2.74x\n(-2.15)\n\t\n36.2%\n(+32.2%)\n\t\n8.5%\n(-12.2%)\n\t\n0.38x\n(-0.64)\n\n\n2021 Bull Market\n\t\n3.83x\n(+1.23)\n\t\n2.08x\n(+0.78)\n\t\n6.97x\n(+2.08)\n\t\n0.6%\n(-3.4%)\n\t\n28.9%\n(+8.2%)\n\t\n1.65x\n(+0.64)\n\n\nRate Hike (2022-23)\n\t\n1.67x\n(-0.93)\n\t\n0.75x\n(-0.55)\n\t\n3.65x\n(-1.24)\n\t\n18.8%\n(+14.8%)\n\t\n12.7%\n(-8.0%)\n\t\n0.56x\n(-0.46)\n\n\nExit Drought\n\t\n2.51x\n(-0.09)\n\t\n1.24x\n(-0.06)\n\t\n5.21x\n(+0.32)\n\t\n4.6%\n(+0.6%)\n\t\n17.6%\n(-3.1%)\n\t\n0.97x\n(-0.05)\nMOIC Distribution Overlay\nOverlaid gross MOIC distributions across scenarios (% of simulations per bin)\n0.1x\n0.4x\n0.6x\n0.9x\n1.2x\n1.4x\n1.7x\n1.9x\n2.2x\n2.5x\n2.7x\n3.0x\n3.3x\n3.5x\n3.8x\n4.1x\n4.3x\n4.6x\n4.8x\n5.1x\n5.4x\n5.6x\n5.9x\n6.2x\n6.4x\n6.7x\n6.9x\n7.2x\n7.5x\n7.7x\n0%\n4%\n8%\n12%\n16%\nBase Case2008 Financial Crisis2021 Bull MarketRate Hike (2022-23)Exit Drought\n0%",
+  "nav_links": [
+    {
+      "text": "Simulation",
+      "href": "/",
+      "tag": "A"
+    },
+    {
+      "text": "Portfolio",
+      "href": "/portfolio-construction",
+      "tag": "A"
+    },
+    {
+      "text": "Power Law",
+      "href": "/power-law",
+      "tag": "A"
+    },
+    {
+      "text": "Economics",
+      "href": "/fund-economics",
+      "tag": "A"
+    },
+    {
+      "text": "Stress Test",
+      "href": "/stress-test",
+      "tag": "A"
+    }
+  ],
+  "nav_test": [
+    {
+      "text": "Simulation",
+      "url": "http://localhost:3000/",
+      "classes": ""
+    },
+    {
+      "text": "Portfolio",
+      "url": "http://localhost:3000/portfolio-construction",
+      "classes": ""
+    },
+    {
+      "text": "Power Law",
+      "url": "http://localhost:3000/power-law",
+      "classes": ""
+    },
+    {
+      "text": "Economics",
+      "url": "http://localhost:3000/fund-economics",
+      "classes": ""
+    },
+    {
+      "text": "Stress Test",
+      "url": "http://localhost:3000/stress-test",
+      "classes": ""
+    }
+  ],
+  "tablet": {
+    "navOverflow": false,
+    "navHeight": 32,
+    "bodyWidth": 768
+  },
+  "mobile": {
+    "navOverflow": true,
+    "hasHamburger": false,
+    "overflowElements": 17,
+    "bodyWidth": 375,
+    "windowWidth": 375
+  },
+  "keyboard_modal": [
+    "Keyboard Shortcuts\n\nUse these keyboard shortcuts to navigate and perform actions quickly\n\nGeneral\nShow keyboard shortcuts\n?\nClose dialog/modal\nEsc\nSimulation\nRun simulation (Mac)\n\u2318\n+\nEnter\nRun simulation (Windows/Linux)\nCtrl\n+\nEnter\nPortfolio Construction\nRun grid analysis (Mac)\n\u2318\n+\nEnter\nRun grid analysis (Windows/Linux)\nCtrl\n+\nEnter\nPress ? anytime to show this dialog\nClose"
+  ]
+}

@@ -38,6 +38,7 @@ export default function KeyboardShortcutsModal() {
       category: "General",
       items: [
         { keys: ["?"], description: "Show keyboard shortcuts" },
+        { keys: ["T"], description: "Toggle dark/light mode" },
         { keys: ["Esc"], description: "Close dialog/modal" },
       ],
     },

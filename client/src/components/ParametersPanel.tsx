@@ -220,6 +220,7 @@ export default function ParametersPanel({
             <Input
               id="fundSize"
               type="number"
+              min={1}
               value={parameters.fundSize}
               onChange={(e) => updateParameter("fundSize", Number(e.target.value))}
               className="bg-card border-input text-foreground"
@@ -233,6 +234,8 @@ export default function ParametersPanel({
             <Input
               id="numCompanies"
               type="number"
+              min={1}
+              max={500}
               value={parameters.numCompanies}
               onChange={(e) =>
                 updateParameter("numCompanies", Number(e.target.value))
@@ -282,6 +285,8 @@ export default function ParametersPanel({
             <Input
               id="investmentPeriod"
               type="number"
+              min={1}
+              max={15}
               value={parameters.investmentPeriod}
               onChange={(e) =>
                 updateParameter("investmentPeriod", Number(e.target.value))
@@ -297,6 +302,8 @@ export default function ParametersPanel({
             <Input
               id="fundLife"
               type="number"
+              min={1}
+              max={30}
               value={parameters.fundLife}
               onChange={(e) => updateParameter("fundLife", Number(e.target.value))}
               className="bg-card border-input text-foreground"
@@ -311,6 +318,8 @@ export default function ParametersPanel({
               <Input
                 id="exitWindowMin"
                 type="number"
+                min={1}
+                max={20}
                 value={parameters.exitWindowMin}
                 onChange={(e) =>
                   updateParameter("exitWindowMin", Number(e.target.value))
@@ -326,6 +335,8 @@ export default function ParametersPanel({
               <Input
                 id="exitWindowMax"
                 type="number"
+                min={1}
+                max={20}
                 value={parameters.exitWindowMax}
                 onChange={(e) =>
                   updateParameter("exitWindowMax", Number(e.target.value))
@@ -342,6 +353,8 @@ export default function ParametersPanel({
             <Input
               id="numSimulations"
               type="number"
+              min={1}
+              max={10000}
               value={parameters.numSimulations}
               onChange={(e) =>
                 updateParameter("numSimulations", Number(e.target.value))
@@ -355,7 +368,7 @@ export default function ParametersPanel({
         <div className="space-y-4">
           <h3 className="text-sm font-medium text-foreground">Stage-Specific Parameters</h3>
           
-          <Accordion type="multiple" defaultValue={["seed", "seriesA"]} className="space-y-2">
+          <Accordion type="multiple" className="space-y-2">
             {/* Seed Stage */}
             <AccordionItem value="seed" className="border border-border rounded-lg bg-muted/30 shadow-sm">
               <AccordionTrigger className="px-4 hover:no-underline">
@@ -369,6 +382,7 @@ export default function ParametersPanel({
                   <Input
                     type="number"
                     step="0.1"
+                    min={0.1}
                     value={parameters.seedStage.avgCheckSize}
                     onChange={(e) =>
                       updateStageParameter("seedStage", "avgCheckSize", Number(e.target.value))
@@ -383,6 +397,8 @@ export default function ParametersPanel({
                   </Label>
                   <Input
                     type="number"
+                    min={0}
+                    max={100}
                     value={parameters.seedStage.followOnReserveRatio}
                     onChange={(e) =>
                       updateStageParameter("seedStage", "followOnReserveRatio", Number(e.target.value))
@@ -397,6 +413,8 @@ export default function ParametersPanel({
                   </Label>
                   <Input
                     type="number"
+                    min={0.1}
+                    max={100}
                     value={parameters.seedStage.targetOwnership}
                     onChange={(e) =>
                       updateStageParameter("seedStage", "targetOwnership", Number(e.target.value))
@@ -422,6 +440,7 @@ export default function ParametersPanel({
                   <Input
                     type="number"
                     step="0.1"
+                    min={0.1}
                     value={parameters.seriesAStage.avgCheckSize}
                     onChange={(e) =>
                       updateStageParameter("seriesAStage", "avgCheckSize", Number(e.target.value))
@@ -436,6 +455,8 @@ export default function ParametersPanel({
                   </Label>
                   <Input
                     type="number"
+                    min={0}
+                    max={100}
                     value={parameters.seriesAStage.followOnReserveRatio}
                     onChange={(e) =>
                       updateStageParameter("seriesAStage", "followOnReserveRatio", Number(e.target.value))
@@ -450,6 +471,8 @@ export default function ParametersPanel({
                   </Label>
                   <Input
                     type="number"
+                    min={0.1}
+                    max={100}
                     value={parameters.seriesAStage.targetOwnership}
                     onChange={(e) =>
                       updateStageParameter("seriesAStage", "targetOwnership", Number(e.target.value))
@@ -480,6 +503,8 @@ export default function ParametersPanel({
                     <Input
                       type="number"
                       step="0.1"
+                      min={0}
+                      max={100}
                       value={feeStructure.managementFeeRate}
                       onChange={(e) => updateFeeStructure("managementFeeRate", Number(e.target.value))}
                       onFocus={(e) => e.target.select()}
@@ -491,6 +516,8 @@ export default function ParametersPanel({
                     <Input
                       type="number"
                       step="0.1"
+                      min={0}
+                      max={100}
                       value={feeStructure.managementFeeStepDown}
                       onChange={(e) => updateFeeStructure("managementFeeStepDown", Number(e.target.value))}
                       onFocus={(e) => e.target.select()}
@@ -502,6 +529,8 @@ export default function ParametersPanel({
                     <Input
                       type="number"
                       step="1"
+                      min={0}
+                      max={100}
                       value={feeStructure.carryRate}
                       onChange={(e) => updateFeeStructure("carryRate", Number(e.target.value))}
                       onFocus={(e) => e.target.select()}
@@ -513,6 +542,8 @@ export default function ParametersPanel({
                     <Input
                       type="number"
                       step="1"
+                      min={0}
+                      max={100}
                       value={feeStructure.hurdleRate}
                       onChange={(e) => updateFeeStructure("hurdleRate", Number(e.target.value))}
                       onFocus={(e) => e.target.select()}

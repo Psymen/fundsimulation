@@ -21,6 +21,8 @@ import {
   YAxis,
 } from "recharts";
 import { useMemo } from "react";
+import { useTheme } from "@/contexts/ThemeContext";
+import { getChartTheme } from "@/lib/chart-theme";
 
 interface ChartsPanelProps {
   results: SimulationResult[] | null;
@@ -28,6 +30,9 @@ interface ChartsPanelProps {
 }
 
 export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
+  const { theme } = useTheme();
+  const ct = getChartTheme(theme);
+
   // Aggregate yearly metrics for J-curve chart
   const jCurveData = useMemo(() => {
     if (!results) return [];
@@ -117,8 +122,20 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
           />
           <MetricCard
             title="Median IRR"
-            value={(summary.medianIRR * 100).toFixed(1) + "%"}
-            subtitle={`P10: ${(summary.irrP10 * 100).toFixed(1)}% | P90: ${(summary.irrP90 * 100).toFixed(1)}% | σ: ${(summary.irrStdDev * 100).toFixed(1)}%`}
+            value={
+              summary.medianIRR > 2.0 || summary.medianIRR < -1.0
+                ? "N/A"
+                : (summary.medianIRR * 100).toFixed(1) + "%"
+            }
+            subtitle={`P10: ${
+              summary.irrP10 > 2.0 || summary.irrP10 < -1.0
+                ? "N/A"
+                : (summary.irrP10 * 100).toFixed(1) + "%"
+            } | P90: ${
+              summary.irrP90 > 2.0 || summary.irrP90 < -1.0
+                ? "N/A"
+                : (summary.irrP90 * 100).toFixed(1) + "%"
+            } | σ: ${(summary.irrStdDev * 100).toFixed(1)}%`}
             helpText="Internal Rate of Return - annualized return accounting for timing of cash flows"
           />
           <MetricCard
@@ -138,8 +155,12 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
             helpText="Net-of-fees MOIC returned to limited partners after management fees and carry"
           />
           <MetricCard
-            title="Median Net IRR"
-            value={(medianNetIRR * 100).toFixed(1) + "%"}
+            title="Median Net IRR (est.)"
+            value={
+              medianNetIRR > 2.0 || medianNetIRR < -1.0
+                ? "N/A"
+                : (medianNetIRR * 100).toFixed(1) + "%"
+            }
             subtitle="After fees and carry"
             helpText="Annualized net return to LPs after all fund expenses"
           />
@@ -196,20 +217,20 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
             <CardContent>
               <ResponsiveContainer width="100%" height={350}>
                 <ComposedChart data={jCurveData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={ct.grid} />
                   <XAxis
                     dataKey="year"
-                    stroke="#94a3b8"
+                    stroke={ct.text}
                     label={{ value: "Year", position: "insideBottom", offset: -5 }}
                   />
                   <YAxis
-                    stroke="#94a3b8"
+                    stroke={ct.text}
                     label={{ value: "Multiple (x)", angle: -90, position: "insideLeft" }}
                   />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "#1e293b",
-                      border: "1px solid #334155",
+                      backgroundColor: ct.tooltipBg,
+                      border: `1px solid ${ct.grid}`,
                       color: "#e2e8f0",
                     }}
                     formatter={(value: number, name: string) => [
@@ -220,9 +241,9 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                   <Legend />
                   <ReferenceLine
                     y={1.0}
-                    stroke="#94a3b8"
+                    stroke={ct.text}
                     strokeDasharray="5 5"
-                    label={{ value: "1.0x", position: "right", fill: "#94a3b8" }}
+                    label={{ value: "1.0x", position: "right", fill: ct.text }}
                   />
                   {/* TVPI P10-P90 band */}
                   <Area
@@ -248,7 +269,7 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                     type="monotone"
                     dataKey="dpiP90"
                     stroke="none"
-                    fill="#3fb950"
+                    fill={ct.green}
                     fillOpacity={0.15}
                     name="DPI P90"
                     legendType="none"
@@ -275,7 +296,7 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                   <Area
                     type="monotone"
                     dataKey="dpiP50"
-                    stroke="#3fb950"
+                    stroke={ct.green}
                     strokeWidth={2}
                     fill="none"
                     name="DPI P50"
@@ -305,20 +326,20 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={moicHistogram}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <CartesianGrid strokeDasharray="3 3" stroke={ct.grid} />
                 <XAxis
                   dataKey="bin"
-                  stroke="#94a3b8"
+                  stroke={ct.text}
                   label={{ value: "MOIC (x)", position: "insideBottom", offset: -5 }}
                 />
                 <YAxis
-                  stroke="#94a3b8"
+                  stroke={ct.text}
                   label={{ value: "Frequency", angle: -90, position: "insideLeft" }}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#1e293b",
-                    border: "1px solid #334155",
+                    backgroundColor: ct.tooltipBg,
+                    border: `1px solid ${ct.grid}`,
                     color: "#e2e8f0",
                   }}
                 />
@@ -331,11 +352,11 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
             </p>
             <p className="text-xs mt-2">
               Benchmarks:{" "}
-              <span style={{ color: "#3fb950" }}>Top Q {"\u2265"}{VC_BENCHMARKS[0].moic}x</span>
+              <span style={{ color: ct.green }}>Top Q {"\u2265"}{VC_BENCHMARKS[0].moic}x</span>
               {" | "}
-              <span style={{ color: "#d29922" }}>Median {"\u2265"}{VC_BENCHMARKS[1].moic}x</span>
+              <span style={{ color: ct.gold }}>Median {"\u2265"}{VC_BENCHMARKS[1].moic}x</span>
               {" | "}
-              <span style={{ color: "#f85149" }}>Bottom Q {"\u2265"}{VC_BENCHMARKS[2].moic}x</span>
+              <span style={{ color: ct.red }}>Bottom Q {"\u2265"}{VC_BENCHMARKS[2].moic}x</span>
             </p>
           </CardContent>
         </Card>
@@ -348,25 +369,25 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={irrHistogram}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <CartesianGrid strokeDasharray="3 3" stroke={ct.grid} />
                 <XAxis
                   dataKey="bin"
-                  stroke="#94a3b8"
+                  stroke={ct.text}
                   label={{ value: "IRR (%)", position: "insideBottom", offset: -5 }}
                 />
                 <YAxis
-                  stroke="#94a3b8"
+                  stroke={ct.text}
                   label={{ value: "Frequency", angle: -90, position: "insideLeft" }}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#1e293b",
-                    border: "1px solid #334155",
+                    backgroundColor: ct.tooltipBg,
+                    border: `1px solid ${ct.grid}`,
                     color: "#e2e8f0",
                   }}
                 />
                 <Legend />
-                <Bar dataKey="count" fill="#d29922" name="Count" />
+                <Bar dataKey="count" fill={ct.gold} name="Count" />
               </BarChart>
             </ResponsiveContainer>
             <p className="text-xs text-muted-foreground mt-2">
@@ -385,10 +406,10 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={outliersData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <CartesianGrid strokeDasharray="3 3" stroke={ct.grid} />
                 <XAxis
                   dataKey="outliers"
-                  stroke="#94a3b8"
+                  stroke={ct.text}
                   label={{
                     value: "Number of Outliers (≥20x)",
                     position: "insideBottom",
@@ -396,18 +417,18 @@ export default function ChartsPanel({ results, summary }: ChartsPanelProps) {
                   }}
                 />
                 <YAxis
-                  stroke="#94a3b8"
+                  stroke={ct.text}
                   label={{ value: "Frequency", angle: -90, position: "insideLeft" }}
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#1e293b",
-                    border: "1px solid #334155",
+                    backgroundColor: ct.tooltipBg,
+                    border: `1px solid ${ct.grid}`,
                     color: "#e2e8f0",
                   }}
                 />
                 <Legend />
-                <Bar dataKey="count" fill="#3fb950" name="Count" />
+                <Bar dataKey="count" fill={ct.green} name="Count" />
               </BarChart>
             </ResponsiveContainer>
             <p className="text-xs text-muted-foreground mt-2">
@@ -455,7 +476,7 @@ function ProbabilityBadge({ label, probability }: ProbabilityBadgeProps) {
   return (
     <div className="text-center p-3 bg-muted rounded-lg border border-border">
       <div className="text-2xl font-bold text-primary">
-        {probability.toFixed(1)}%
+        {(probability * 100).toFixed(1)}%
       </div>
       <div className="text-xs text-muted-foreground mt-1">{label}</div>
     </div>

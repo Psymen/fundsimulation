@@ -30,10 +30,11 @@ import { Copy, Download } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useParameters } from "@/contexts/ParametersContext";
+import { Link } from "wouter";
 
 export default function Home() {
-  const [parameters, setParameters] =
-    useState<PortfolioParameters>(DEFAULT_PARAMETERS);
+  const { parameters, updateParameters } = useParameters();
   const [results, setResults] = useState<SimulationResult[] | null>(null);
   const [summary, setSummary] = useState<SummaryStatistics | null>(null);
   const [savedRuns, setSavedRuns] = useState<SavedRun[]>([]);
@@ -123,7 +124,7 @@ export default function Home() {
   };
 
   const handleLoadRun = (run: SavedRun) => {
-    setParameters(run.parameters);
+    updateParameters(run.parameters);
     // IndexedDB stores full results, so we can load them
     setResults(run.results);
     setSummary(run.summary);
@@ -156,7 +157,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Action Bar - Pinned */}
-      <div className="sticky top-0 z-40 bg-background border-b border-border shadow-lg">
+      <div className="sticky top-14 z-40 bg-background border-b border-border shadow-lg">
         <div className="container mx-auto py-4 px-6">
           <div className="flex items-center justify-between gap-4">
             {/* Run Simulation Button - Pinned */}
@@ -202,7 +203,7 @@ export default function Home() {
         <div className="w-80 flex-shrink-0">
           <ParametersPanel
             parameters={parameters}
-            onParametersChange={setParameters}
+            onParametersChange={updateParameters}
             onRunSimulation={handleRunSimulation}
             isRunning={isRunning}
             validationError={validationError}
@@ -210,8 +211,23 @@ export default function Home() {
         </div>
 
         {/* Center Panel - Charts */}
-        <div className="flex-1 overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-          <ChartsPanel results={results} summary={summary} />
+        <div className="flex-1 overflow-hidden flex flex-col">
+          <div className="flex-1 overflow-hidden rounded-lg border border-border bg-card shadow-sm">
+            <ChartsPanel results={results} summary={summary} />
+          </div>
+          {results && (
+            <div className="flex gap-2 mt-4">
+              <Link href="/portfolio-construction">
+                <Button variant="outline" size="sm">Optimize Portfolio →</Button>
+              </Link>
+              <Link href="/fund-economics">
+                <Button variant="outline" size="sm">Model Fees →</Button>
+              </Link>
+              <Link href="/stress-test">
+                <Button variant="outline" size="sm">Stress Test →</Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Right Panel - Historical Runs */}

@@ -19,20 +19,20 @@ export interface BenchmarkData {
 export const VC_BENCHMARKS: BenchmarkData[] = [
   {
     category: "Top Quartile",
-    moic: 4.5,
-    irr: 0.35, // 35%
+    moic: 3.5,
+    irr: 0.28, // 28%
     description: "Top 25% of VC funds - exceptional performance with multiple unicorn exits",
   },
   {
     category: "Median",
-    moic: 2.5,
-    irr: 0.20, // 20%
+    moic: 2.0,
+    irr: 0.15, // 15%
     description: "Median VC fund performance - solid returns with 1-2 strong exits",
   },
   {
     category: "Bottom Quartile",
     moic: 1.2,
-    irr: 0.05, // 5%
+    irr: 0.03, // 3%
     description: "Bottom 25% of VC funds - struggling to return capital",
   },
 ];

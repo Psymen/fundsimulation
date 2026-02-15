@@ -153,7 +153,7 @@ export const DEFAULT_PARAMETERS: PortfolioParameters = {
   seedPercentage: 60,
   seedStage: DEFAULT_SEED_STAGE,
   seriesAStage: DEFAULT_SERIES_A_STAGE,
-  investmentPeriod: 3,
+  investmentPeriod: 5,
   fundLife: 10,
   exitWindowMin: 3,
   exitWindowMax: 10,

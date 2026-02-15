@@ -13,18 +13,22 @@ import { runGridAnalysis, identifyBestStrategies, identifyWorstStrategies, gener
 import GridResultsView from "@/components/GridResultsView";
 import StageParametersEditor from "@/components/StageParametersEditor";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { useParameters } from "@/contexts/ParametersContext";
+import { toast } from "sonner";
 
 export default function PortfolioConstruction() {
-  // Grid parameters
-  const [fundSize, setFundSize] = useState(200);
+  const { parameters } = useParameters();
+
+  // Grid parameters (local state for grid-specific settings)
   const [investmentCountMin, setInvestmentCountMin] = useState(15);
   const [investmentCountMax, setInvestmentCountMax] = useState(40);
   const [selectedSeedPercentages, setSelectedSeedPercentages] = useState<number[]>([0, 25, 50, 75, 100]);
   const [numSimulations, setNumSimulations] = useState(500);
-  
-  // Stage-specific parameters
-  const [seedStage, setSeedStage] = useState<StageParameters>(DEFAULT_PARAMETERS.seedStage);
-  const [seriesAStage, setSeriesAStage] = useState<StageParameters>(DEFAULT_PARAMETERS.seriesAStage);
+
+  // Stage-specific parameters from shared context
+  const fundSize = parameters.fundSize;
+  const seedStage = parameters.seedStage;
+  const seriesAStage = parameters.seriesAStage;
   
   // Results
   const [gridResults, setGridResults] = useState<GridScenario[] | null>(null);
@@ -44,12 +48,12 @@ export default function PortfolioConstruction() {
   
   const handleRunAnalysis = async () => {
     if (selectedSeedPercentages.length === 0) {
-      alert("Please select at least one seed percentage to analyze");
+      toast.error("Please select at least one seed percentage to analyze");
       return;
     }
-    
+
     if (investmentCountMin > investmentCountMax) {
-      alert("Minimum investment count must be less than or equal to maximum");
+      toast.error("Minimum investment count must be less than or equal to maximum");
       return;
     }
     
@@ -65,10 +69,10 @@ export default function PortfolioConstruction() {
         numSimulationsPerScenario: numSimulations,
         seedStage,
         seriesAStage,
-        investmentPeriod: DEFAULT_PARAMETERS.investmentPeriod,
-        fundLife: DEFAULT_PARAMETERS.fundLife,
-        exitWindowMin: DEFAULT_PARAMETERS.exitWindowMin,
-        exitWindowMax: DEFAULT_PARAMETERS.exitWindowMax,
+        investmentPeriod: parameters.investmentPeriod,
+        fundLife: parameters.fundLife,
+        exitWindowMin: parameters.exitWindowMin,
+        exitWindowMax: parameters.exitWindowMax,
       };
       
       const scenarios = await runGridAnalysis(params, (current, total) => {
@@ -93,7 +97,7 @@ export default function PortfolioConstruction() {
       setAnalysis(result);
     } catch (error) {
       console.error("Error running grid analysis:", error);
-      alert("Error running analysis. Please try again.");
+      toast.error("Error running analysis. Please try again.");
     } finally {
       setIsRunning(false);
     }
@@ -114,7 +118,7 @@ export default function PortfolioConstruction() {
   return (
     <div className="min-h-screen bg-background">
       {/* Top Action Bar - Pinned */}
-      <div className="sticky top-0 z-40 bg-background border-b border-border shadow-lg">
+      <div className="sticky top-14 z-40 bg-background border-b border-border shadow-lg">
         <div className="container mx-auto py-3 px-4">
           <div className="flex items-center justify-between gap-4">
             {/* Run Grid Analysis Button - Pinned */}
@@ -143,9 +147,9 @@ export default function PortfolioConstruction() {
         </div>
       </div>
       
-      <div className="container mx-auto py-8">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Portfolio Construction Analyzer</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-2">Portfolio Construction Analyzer</h1>
           <p className="text-muted-foreground">
             Run grid analysis across different portfolio configurations to identify optimal strategies
           </p>
@@ -166,11 +170,12 @@ export default function PortfolioConstruction() {
                     id="fundSize"
                     type="number"
                     value={fundSize}
-                    onChange={(e) => setFundSize(Number(e.target.value))}
-                    onFocus={(e) => e.target.select()}
-                    min={10}
-                    max={1000}
+                    disabled
+                    className="bg-muted cursor-not-allowed"
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    From shared parameters
+                  </p>
                 </div>
                 
                 <div className="space-y-2">
@@ -258,38 +263,22 @@ export default function PortfolioConstruction() {
                   />
                 </div>
                 
-                {/* Stage-Specific Parameters */}
+                {/* Stage-Specific Parameters - Read-only from shared context */}
                 <div className="border-t pt-4">
                   <h3 className="font-semibold mb-3">Stage-Specific Parameters</h3>
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="seed">
-                      <AccordionTrigger className="text-sm">
-                        <span className="text-emerald-400 font-semibold">Seed Stage Parameters</span>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <StageParametersEditor
-                          stage="seed"
-                          parameters={seedStage}
-                          onChange={setSeedStage}
-                          color="emerald"
-                        />
-                      </AccordionContent>
-                    </AccordionItem>
-                    
-                    <AccordionItem value="seriesA">
-                      <AccordionTrigger className="text-sm">
-                        <span className="text-blue-400 font-semibold">Series A Stage Parameters</span>
-                      </AccordionTrigger>
-                      <AccordionContent>
-                        <StageParametersEditor
-                          stage="seriesA"
-                          parameters={seriesAStage}
-                          onChange={setSeriesAStage}
-                          color="blue"
-                        />
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                  <p className="text-xs text-muted-foreground mb-2">
+                    Using parameters from Simulation tab
+                  </p>
+                  <div className="bg-muted/30 p-3 rounded space-y-2 text-xs">
+                    <div className="flex justify-between">
+                      <span className="text-emerald-400">Seed Check Size:</span>
+                      <span className="text-foreground">${seedStage.avgCheckSize}M</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-blue-400">Series A Check Size:</span>
+                      <span className="text-foreground">${seriesAStage.avgCheckSize}M</span>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>

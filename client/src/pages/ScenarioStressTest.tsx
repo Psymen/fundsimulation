@@ -4,6 +4,7 @@
  */
 
 import { useState, useMemo, useCallback } from "react";
+import { useParameters } from "@/contexts/ParametersContext";
 import {
   Card,
   CardContent,
@@ -36,6 +37,8 @@ import {
   Area,
 } from "recharts";
 import { Play, Loader2, BarChart3, Sliders, Zap } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
+import { getChartTheme } from "@/lib/chart-theme";
 
 // ---------------------------------------------------------------------------
 // Helpers for parameter modification
@@ -105,18 +108,19 @@ interface ScenarioModifier {
   modifyParams: (params: PortfolioParameters) => PortfolioParameters;
 }
 
-const SCENARIOS: ScenarioModifier[] = [
+function getScenariosWithTheme(ct: ReturnType<typeof getChartTheme>): ScenarioModifier[] {
+  return [
   {
     name: "Base Case",
     description: "Default parameters with no modifications (control scenario)",
-    color: "#a371f7",
+    color: ct.purple,
     modifyParams: (params) => deepCloneParams(params),
   },
   {
     name: "2008 Financial Crisis",
     description:
       "Failure rate +50%, multiples x0.65, exit windows +2.5 years",
-    color: "#f85149",
+    color: ct.red,
     modifyParams: (params) => {
       const p = deepCloneParams(params);
       p.seedStage = modifyStageFailureRate(p.seedStage, 1.5);
@@ -131,7 +135,7 @@ const SCENARIOS: ScenarioModifier[] = [
   {
     name: "2021 Bull Market",
     description: "Failure rate -20%, multiples x1.4, exits -1 year",
-    color: "#3fb950",
+    color: ct.green,
     modifyParams: (params) => {
       const p = deepCloneParams(params);
       p.seedStage = modifyStageFailureRate(p.seedStage, 0.8);
@@ -146,7 +150,7 @@ const SCENARIOS: ScenarioModifier[] = [
   {
     name: "Rate Hike (2022-23)",
     description: "Failure rate +30%, multiples x0.75, exits +1.5 years",
-    color: "#d29922",
+    color: ct.gold,
     modifyParams: (params) => {
       const p = deepCloneParams(params);
       p.seedStage = modifyStageFailureRate(p.seedStage, 1.3);
@@ -161,7 +165,7 @@ const SCENARIOS: ScenarioModifier[] = [
   {
     name: "Exit Drought",
     description: "No early exits: exit window pushed to 7-12 years",
-    color: "#58a6ff",
+    color: ct.blue,
     modifyParams: (params) => {
       const p = deepCloneParams(params);
       p.exitWindowMin = 7;
@@ -169,7 +173,8 @@ const SCENARIOS: ScenarioModifier[] = [
       return p;
     },
   },
-];
+  ];
+}
 
 // ---------------------------------------------------------------------------
 // Types for results
@@ -233,18 +238,18 @@ function buildMOICHistogram(
 // Custom tooltip for charts
 // ---------------------------------------------------------------------------
 
-function CustomTooltip({ active, payload, label }: any) {
+function CustomTooltip({ active, payload, label, ct }: any) {
   if (!active || !payload?.length) return null;
   return (
     <div
       className="rounded-md border px-3 py-2 text-xs shadow-lg"
       style={{
-        backgroundColor: "#1e293b",
-        borderColor: "#334155",
-        color: "#94a3b8",
+        backgroundColor: ct.tooltipBg,
+        borderColor: ct.grid,
+        color: ct.text,
       }}
     >
-      <p className="mb-1 font-medium text-white">{label}</p>
+      <p className="mb-1 font-medium text-foreground">{label}</p>
       {payload.map((entry: any) => (
         <p key={entry.name} style={{ color: entry.color }}>
           {entry.name}: {entry.value}%
@@ -261,6 +266,11 @@ function CustomTooltip({ active, payload, label }: any) {
 const NUM_SIMS_PER_SCENARIO = 500;
 
 export default function ScenarioStressTest() {
+  const { parameters } = useParameters();
+  const { theme } = useTheme();
+  const ct = getChartTheme(theme);
+  const SCENARIOS = useMemo(() => getScenariosWithTheme(ct), [ct]);
+
   // Scenario selection
   const [selectedScenarios, setSelectedScenarios] = useState<Set<string>>(
     () => new Set(SCENARIOS.map((s) => s.name))
@@ -325,7 +335,7 @@ export default function ScenarioStressTest() {
       }
 
       const results: ScenarioResult[] = scenariosToRun.map((scenario) => {
-        const modifiedParams = scenario.modifyParams(DEFAULT_PARAMETERS);
+        const modifiedParams = scenario.modifyParams(parameters);
         modifiedParams.numSimulations = NUM_SIMS_PER_SCENARIO;
         const simResults = runSimulations(modifiedParams);
         const summary = calculateSummaryStatistics(simResults);
@@ -335,7 +345,7 @@ export default function ScenarioStressTest() {
       setScenarioResults(results);
       setIsRunning(false);
     }, 50);
-  }, [selectedScenarios, customIncluded, customScenario]);
+  }, [selectedScenarios, customIncluded, customScenario, parameters]);
 
   // Apply custom scenario
   const handleApplyCustom = useCallback(() => {
@@ -349,7 +359,7 @@ export default function ScenarioStressTest() {
       scenariosToRun.push(customScenario);
 
       const results: ScenarioResult[] = scenariosToRun.map((scenario) => {
-        const modifiedParams = scenario.modifyParams(DEFAULT_PARAMETERS);
+        const modifiedParams = scenario.modifyParams(parameters);
         modifiedParams.numSimulations = NUM_SIMS_PER_SCENARIO;
         const simResults = runSimulations(modifiedParams);
         const summary = calculateSummaryStatistics(simResults);
@@ -359,7 +369,7 @@ export default function ScenarioStressTest() {
       setScenarioResults(results);
       setIsRunning(false);
     }, 50);
-  }, [selectedScenarios, customScenario]);
+  }, [selectedScenarios, customScenario, parameters]);
 
   // Histogram data
   const histogramData = useMemo(() => {
@@ -373,13 +383,14 @@ export default function ScenarioStressTest() {
   );
 
   return (
-    <div className="min-h-screen bg-background p-6 space-y-8">
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-8 space-y-8 max-w-7xl">
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="text-2xl font-bold text-foreground">
           Scenario Stress Testing
         </h1>
-        <p className="mt-1 text-sm" style={{ color: "#94a3b8" }}>
+        <p className="mt-1 text-sm text-muted-foreground">
           Compare fund performance under different market conditions using Monte
           Carlo simulation
         </p>
@@ -392,8 +403,8 @@ export default function ScenarioStressTest() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Zap className="h-5 w-5" style={{ color: "#a371f7" }} />
-              <CardTitle className="text-lg text-white">
+              <Zap className="h-5 w-5" style={{ color: ct.purple }} />
+              <CardTitle className="text-lg text-foreground">
                 Pre-Built Scenarios
               </CardTitle>
             </div>
@@ -418,7 +429,7 @@ export default function ScenarioStressTest() {
               )}
             </Button>
           </div>
-          <CardDescription style={{ color: "#94a3b8" }}>
+          <CardDescription className="text-muted-foreground">
             Select scenarios to compare. Toggle cards on/off, then click Run
             Comparison.
           </CardDescription>
@@ -447,17 +458,17 @@ export default function ScenarioStressTest() {
                       className="inline-block h-3 w-3 rounded-full"
                       style={{ backgroundColor: scenario.color }}
                     />
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-sm font-semibold text-foreground">
                       {scenario.name}
                     </span>
                   </div>
-                  <p className="text-xs" style={{ color: "#94a3b8" }}>
+                  <p className="text-xs text-muted-foreground">
                     {scenario.description}
                   </p>
                   {/* Selected checkmark */}
                   {isSelected && (
                     <div
-                      className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-white"
+                      className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-foreground"
                       style={{ backgroundColor: scenario.color }}
                     >
                       ✓
@@ -477,11 +488,11 @@ export default function ScenarioStressTest() {
         <CardHeader>
           <div className="flex items-center gap-2">
             <Sliders className="h-5 w-5" style={{ color: "#f0883e" }} />
-            <CardTitle className="text-lg text-white">
+            <CardTitle className="text-lg text-foreground">
               Custom Scenario Builder
             </CardTitle>
           </div>
-          <CardDescription style={{ color: "#94a3b8" }}>
+          <CardDescription className="text-muted-foreground">
             Create a custom stress scenario by adjusting parameters below
           </CardDescription>
         </CardHeader>
@@ -490,7 +501,7 @@ export default function ScenarioStressTest() {
             {/* Failure Rate Modifier */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm text-white">
+                <Label className="text-sm text-foreground">
                   Failure Rate Modifier
                 </Label>
                 <span
@@ -507,7 +518,7 @@ export default function ScenarioStressTest() {
                 value={[failureRateMod * 100]}
                 onValueChange={(v) => setFailureRateMod(v[0] / 100)}
               />
-              <p className="text-xs" style={{ color: "#94a3b8" }}>
+              <p className="text-xs text-muted-foreground">
                 1.0 = default, 1.5 = 50% more failures, 0.5 = 50% fewer
               </p>
             </div>
@@ -515,7 +526,7 @@ export default function ScenarioStressTest() {
             {/* Multiple Compression */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm text-white">
+                <Label className="text-sm text-foreground">
                   Multiple Compression
                 </Label>
                 <span
@@ -532,7 +543,7 @@ export default function ScenarioStressTest() {
                 value={[multipleMod * 100]}
                 onValueChange={(v) => setMultipleMod(v[0] / 100)}
               />
-              <p className="text-xs" style={{ color: "#94a3b8" }}>
+              <p className="text-xs text-muted-foreground">
                 1.0 = default, 0.65 = 35% compressed, 1.4 = 40% higher
               </p>
             </div>
@@ -540,7 +551,7 @@ export default function ScenarioStressTest() {
             {/* Exit Delay */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm text-white">
+                <Label className="text-sm text-foreground">
                   Exit Delay (years)
                 </Label>
                 <span
@@ -558,7 +569,7 @@ export default function ScenarioStressTest() {
                 value={[exitDelayMod * 10]}
                 onValueChange={(v) => setExitDelayMod(v[0] / 10)}
               />
-              <p className="text-xs" style={{ color: "#94a3b8" }}>
+              <p className="text-xs text-muted-foreground">
                 0 = default, +2.5 = exits delayed 2.5 years, -1 = earlier exits
               </p>
             </div>
@@ -580,7 +591,7 @@ export default function ScenarioStressTest() {
               Apply Custom
             </Button>
             {customIncluded && (
-              <span className="text-xs" style={{ color: "#3fb950" }}>
+              <span className="text-xs" style={{ color: ct.green }}>
                 Custom scenario included in results
               </span>
             )}
@@ -597,12 +608,12 @@ export default function ScenarioStressTest() {
           <Card className="bg-card border-border">
             <CardHeader>
               <div className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5" style={{ color: "#58a6ff" }} />
-                <CardTitle className="text-lg text-white">
+                <BarChart3 className="h-5 w-5" style={{ color: ct.blue }} />
+                <CardTitle className="text-lg text-foreground">
                   Scenario Comparison
                 </CardTitle>
               </div>
-              <CardDescription style={{ color: "#94a3b8" }}>
+              <CardDescription className="text-muted-foreground">
                 Key metrics across selected scenarios
                 {baseResult && " (deltas relative to Base Case)"}
               </CardDescription>
@@ -612,27 +623,27 @@ export default function ScenarioStressTest() {
                 <thead>
                   <tr
                     className="border-b text-left"
-                    style={{ borderColor: "#334155" }}
+                    style={{ borderColor: ct.grid }}
                   >
-                    <th className="px-3 py-2 font-medium text-white">
+                    <th className="px-3 py-2 font-medium text-foreground">
                       Scenario
                     </th>
-                    <th className="px-3 py-2 font-medium text-white text-right">
+                    <th className="px-3 py-2 font-medium text-foreground text-right">
                       Median MOIC
                     </th>
-                    <th className="px-3 py-2 font-medium text-white text-right">
+                    <th className="px-3 py-2 font-medium text-foreground text-right">
                       P10 MOIC
                     </th>
-                    <th className="px-3 py-2 font-medium text-white text-right">
+                    <th className="px-3 py-2 font-medium text-foreground text-right">
                       P90 MOIC
                     </th>
-                    <th className="px-3 py-2 font-medium text-white text-right">
+                    <th className="px-3 py-2 font-medium text-foreground text-right">
                       Prob &lt;1x
                     </th>
-                    <th className="px-3 py-2 font-medium text-white text-right">
+                    <th className="px-3 py-2 font-medium text-foreground text-right">
                       Median IRR
                     </th>
-                    <th className="px-3 py-2 font-medium text-white text-right">
+                    <th className="px-3 py-2 font-medium text-foreground text-right">
                       Net MOIC
                     </th>
                   </tr>
@@ -660,7 +671,7 @@ export default function ScenarioStressTest() {
                     ) => {
                       if (isBase || baseVal === undefined)
                         return (
-                          <span className="text-white font-mono">
+                          <span className="text-foreground font-mono">
                             {val.toFixed(2)}
                             {suffix}
                           </span>
@@ -672,7 +683,7 @@ export default function ScenarioStressTest() {
 
                       return (
                         <span className="flex items-center justify-end gap-1">
-                          <span className="text-white font-mono">
+                          <span className="text-foreground font-mono">
                             {val.toFixed(2)}
                             {suffix}
                           </span>
@@ -680,7 +691,7 @@ export default function ScenarioStressTest() {
                             <span
                               className="text-xs font-mono"
                               style={{
-                                color: isGood ? "#3fb950" : "#f85149",
+                                color: isGood ? ct.green : ct.red,
                               }}
                             >
                               ({isPositive ? "+" : ""}
@@ -698,7 +709,7 @@ export default function ScenarioStressTest() {
                     ) => {
                       if (isBase || baseVal === undefined)
                         return (
-                          <span className="text-white font-mono">
+                          <span className="text-foreground font-mono">
                             {val.toFixed(1)}%
                           </span>
                         );
@@ -709,14 +720,14 @@ export default function ScenarioStressTest() {
 
                       return (
                         <span className="flex items-center justify-end gap-1">
-                          <span className="text-white font-mono">
+                          <span className="text-foreground font-mono">
                             {val.toFixed(1)}%
                           </span>
                           {Math.abs(delta) > 0.05 && (
                             <span
                               className="text-xs font-mono"
                               style={{
-                                color: isGood ? "#3fb950" : "#f85149",
+                                color: isGood ? ct.green : ct.red,
                               }}
                             >
                               ({isPositive ? "+" : ""}
@@ -739,7 +750,7 @@ export default function ScenarioStressTest() {
                       <tr
                         key={sr.scenario.name}
                         className="border-b transition-colors hover:bg-muted/30"
-                        style={{ borderColor: "#334155" }}
+                        style={{ borderColor: ct.grid }}
                       >
                         <td className="px-3 py-3">
                           <div className="flex items-center gap-2">
@@ -749,7 +760,7 @@ export default function ScenarioStressTest() {
                                 backgroundColor: sr.scenario.color,
                               }}
                             />
-                            <span className="font-medium text-white">
+                            <span className="font-medium text-foreground">
                               {sr.scenario.name}
                             </span>
                           </div>
@@ -796,10 +807,10 @@ export default function ScenarioStressTest() {
           {/* MOIC Distribution Histogram */}
           <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-lg text-white">
+              <CardTitle className="text-lg text-foreground">
                 MOIC Distribution Overlay
               </CardTitle>
-              <CardDescription style={{ color: "#94a3b8" }}>
+              <CardDescription className="text-muted-foreground">
                 Overlaid gross MOIC distributions across scenarios (% of
                 simulations per bin)
               </CardDescription>
@@ -813,25 +824,25 @@ export default function ScenarioStressTest() {
                   >
                     <CartesianGrid
                       strokeDasharray="3 3"
-                      stroke="#334155"
+                      stroke={ct.grid}
                       vertical={false}
                     />
                     <XAxis
                       dataKey="bin"
-                      tick={{ fill: "#94a3b8", fontSize: 11 }}
-                      axisLine={{ stroke: "#334155" }}
-                      tickLine={{ stroke: "#334155" }}
+                      tick={{ fill: ct.text, fontSize: 11 }}
+                      axisLine={{ stroke: ct.grid }}
+                      tickLine={{ stroke: ct.grid }}
                       interval="preserveStartEnd"
                     />
                     <YAxis
-                      tick={{ fill: "#94a3b8", fontSize: 11 }}
-                      axisLine={{ stroke: "#334155" }}
-                      tickLine={{ stroke: "#334155" }}
+                      tick={{ fill: ct.text, fontSize: 11 }}
+                      axisLine={{ stroke: ct.grid }}
+                      tickLine={{ stroke: ct.grid }}
                       tickFormatter={(v) => `${v}%`}
                     />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltip ct={ct} />} />
                     <Legend
-                      wrapperStyle={{ color: "#94a3b8", fontSize: 12 }}
+                      wrapperStyle={{ color: ct.text, fontSize: 12 }}
                     />
                     {scenarioResults.map((sr) => (
                       <Area
@@ -859,16 +870,17 @@ export default function ScenarioStressTest() {
           <CardContent className="flex flex-col items-center justify-center py-16">
             <BarChart3
               className="mb-4 h-12 w-12"
-              style={{ color: "#334155" }}
+              style={{ color: ct.grid }}
             />
-            <p className="text-sm" style={{ color: "#94a3b8" }}>
+            <p className="text-sm text-muted-foreground">
               Select scenarios above and click{" "}
-              <span className="font-semibold text-white">Run Comparison</span>{" "}
+              <span className="font-semibold text-foreground">Run Comparison</span>{" "}
               to see results
             </p>
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   );
 }
